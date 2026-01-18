@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import type { Report, Ship, CodeData, RCode } from '../types';
 import { Ship as ShipIcon } from 'lucide-react';
 
