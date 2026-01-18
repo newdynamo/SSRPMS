@@ -1,0 +1,14 @@
+[
+    {
+        "code": "M01",
+        "name": "In Port"
+    },
+    {
+        "code": "M02",
+        "name": "Harbor"
+    },
+    {
+        "code": "M03",
+        "name": "At Sea"
+    }
+]

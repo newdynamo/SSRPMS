@@ -1,0 +1,296 @@
+[
+    {
+        "code": "T01",
+        "name": "S/By ENG",
+        "description": "For Arriving, Departure, Shifting and etc.,",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T02",
+        "name": "R/up ENG",
+        "description": "Main Engine Running-up",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T03",
+        "name": "FWE (Finished With Engine )",
+        "description": "Main Engine Stop",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T04",
+        "name": "Noon report",
+        "description": "The date/time to report Noon log",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T05",
+        "name": "Pilot embark",
+        "description": "Pilot onboard for maneuvering",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 3
+    },
+    {
+        "code": "T06",
+        "name": "Pilot disembark",
+        "description": "Pilot offboard after maneuvering",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 3
+    },
+    {
+        "code": "T07",
+        "name": "Begin date of off-hire",
+        "description": "Start of off-hire period",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 3
+    },
+    {
+        "code": "T08",
+        "name": "End date of off-hire",
+        "description": "End of off-hire period",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 3
+    },
+    {
+        "code": "T09",
+        "name": "STS area departure",
+        "description": "Departure from STS (Ship-to-Ship) area",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 3
+    },
+    {
+        "code": "T10",
+        "name": "STS area arrival",
+        "description": "Arrival into designated STS area",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 4
+    },
+    {
+        "code": "T11",
+        "name": "STS operation start",
+        "description": "Actual start time of STS operation",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 4
+    },
+    {
+        "code": "T12",
+        "name": "STS operation end",
+        "description": "Completion of STS operation",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 4
+    },
+    {
+        "code": "T13",
+        "name": "Begin date of canal passage",
+        "description": "Entry into canal passage (e.g. Suez, Panama)",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 4
+    },
+    {
+        "code": "T14",
+        "name": "End date of canal passage",
+        "description": "Exit from canal passage",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 4
+    },
+    {
+        "code": "T15",
+        "name": "First line to shore",
+        "description": "First mooring line connected to shore",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 5
+    },
+    {
+        "code": "T16",
+        "name": "All line made fast",
+        "description": "All mooring lines secured (berthing complete)",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 5
+    },
+    {
+        "code": "T17",
+        "name": "All line let go",
+        "description": "All mooring lines released (departure start)",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 5
+    },
+    {
+        "code": "T18",
+        "name": "Anchor drop",
+        "description": "Anchor drop (vessel stopped)",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 5
+    },
+    {
+        "code": "T19",
+        "name": "Anchor aweigh",
+        "description": "Anchor aweigh (vessel ready for manuvering )",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 5
+    },
+    {
+        "code": "T20",
+        "name": "Begin date of drifting",
+        "description": "Start of drifting operation (waiting or idle)",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 5
+    },
+    {
+        "code": "T21",
+        "name": "End date of drifting",
+        "description": "End of drifting operation",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 5
+    },
+    {
+        "code": "T22",
+        "name": "Arm connected",
+        "description": "Loading/discharging arm connected",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 5
+    },
+    {
+        "code": "T23",
+        "name": "Arm disconnected",
+        "description": "Loading/discharging arm disconnected",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 5
+    },
+    {
+        "code": "T24",
+        "name": "Commenced cargo operation",
+        "description": "Cargo loading/discharging started",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T25",
+        "name": "Completed cargo operation",
+        "description": "Cargo loading/discharging completed",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T27",
+        "name": "Start date of Ballast operation",
+        "description": "Beginning of ballast water operation",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T28",
+        "name": "End date of Ballast operation",
+        "description": "End of ballast water operation",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T29",
+        "name": "Start date of Bunkering",
+        "description": "Fuel oil supply operation started",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T30",
+        "name": "End date of Bunkering",
+        "description": "Fuel oil supply operation completed",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T31",
+        "name": "Supply date of LO",
+        "description": "Date/time of LO supplied",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T32",
+        "name": "Fresh water produced & Supplied",
+        "description": "Amount of fresh water generated onboard",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T35",
+        "name": "Begin date of fuel change over",
+        "description": "Start of fuel type change (e.g. LSFO to HSFO)",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T36",
+        "name": "End date of fuel change over",
+        "description": "Completion of fuel type change",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T38",
+        "name": "Begin date of deviation",
+        "description": "Start of route deviation from original plan",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T39",
+        "name": "End date of deviation",
+        "description": "Return to original planned route",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T40",
+        "name": "Entering date to special area",
+        "description": "Entry into ECA or other regulated area",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T41",
+        "name": "Leaving date from special area",
+        "description": "Exit from ECA or other regulated area",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T42",
+        "name": "Begin date of Shifting",
+        "description": "Departure for shifting",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T43",
+        "name": "End date of Shifting",
+        "description": "Arrival from shifting",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T44",
+        "name": "Begin date of new charter",
+        "description": "To be used when a new charter voyage begins.",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T45",
+        "name": "End date of charter",
+        "description": "Charter voyage ends.",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 2
+    },
+    {
+        "code": "T46",
+        "name": "Last Event Report",
+        "description": "Last Event Report( Last T_Code, Description)",
+        "unit": "YYYY-MM-DD HH:MM",
+        "priority": 1
+    }
+]

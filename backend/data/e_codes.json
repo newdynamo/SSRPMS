@@ -1,0 +1,62 @@
+[
+    {
+        "code": "E01",
+        "name": "M/E",
+        "applicability": "Y/N",
+        "numberRange": "0-2"
+    },
+    {
+        "code": "E02",
+        "name": "M/BLR",
+        "applicability": "Y/N",
+        "numberRange": "0-2"
+    },
+    {
+        "code": "E03",
+        "name": "D/G",
+        "applicability": "Y/N",
+        "numberRange": "1-4"
+    },
+    {
+        "code": "E04",
+        "name": "T/G",
+        "applicability": "Y/N",
+        "numberRange": "0-4"
+    },
+    {
+        "code": "E05",
+        "name": "A/BLR",
+        "applicability": "Y/N",
+        "numberRange": "0-3"
+    },
+    {
+        "code": "E06",
+        "name": "IGG",
+        "applicability": "Y/N",
+        "numberRange": "1"
+    },
+    {
+        "code": "E07",
+        "name": "GCU",
+        "applicability": "Y/N",
+        "numberRange": "1"
+    },
+    {
+        "code": "E08",
+        "name": "Incinerator",
+        "applicability": "Y/N",
+        "numberRange": "1"
+    },
+    {
+        "code": "E09",
+        "name": "Shaft/Gen.",
+        "applicability": "Y/N",
+        "numberRange": "0-2"
+    },
+    {
+        "code": "E10",
+        "name": "ALS",
+        "applicability": "Y/N",
+        "numberRange": "1"
+    }
+]

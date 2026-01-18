@@ -1,0 +1,38 @@
+[
+    {
+        "code": "F01",
+        "name": "HFO",
+        "lcv": 0.0405
+    },
+    {
+        "code": "F02",
+        "name": "VLSFO",
+        "lcv": 0.0410
+    },
+    {
+        "code": "F03",
+        "name": "LSMGO",
+        "lcv": 0.0427
+    },
+    {
+        "code": "F04",
+        "name": "MDO",
+        "lcv": 0.0427
+    },
+    {
+        "code": "F05",
+        "name": "LNG",
+        "lcv": 0.0491
+    },
+    {
+        "code": "F06",
+        "name": "LPG(B)",
+        "lcv": 0.0460,
+        "remark": "NBOG+FBOG"
+    },
+    {
+        "code": "F07",
+        "name": "LPG(P)",
+        "lcv": 0.0460
+    }
+]

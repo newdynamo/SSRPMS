@@ -1,0 +1,1225 @@
+[
+  {
+    "code": "R001",
+    "name": "Vessel name",
+    "description": "Name of the vessel",
+    "unit": "-",
+    "group": "Common",
+    "priority": 1,
+    "type": "string"
+  },
+  {
+    "code": "R012",
+    "name": "Arrival type",
+    "description": "Type of arrival (berth, anchorage, STS)",
+    "unit": "Categorical",
+    "group": "Conditions",
+    "priority": 1,
+    "type": "string"
+  },
+  {
+    "code": "R014",
+    "name": "Weather state",
+    "description": "Weather condition",
+    "unit": "Categorical",
+    "group": "Weather",
+    "priority": 1,
+    "type": "string"
+  },
+  {
+    "code": "R015",
+    "name": "Visibility",
+    "description": "Visibility range",
+    "unit": "nm",
+    "group": "Weather",
+    "priority": 1,
+    "type": "number"
+  },
+  {
+    "code": "R016",
+    "name": "Air Temp",
+    "description": "Air temperature",
+    "unit": "℃",
+    "group": "Weather",
+    "priority": 1,
+    "type": "number"
+  },
+  {
+    "code": "R017",
+    "name": "Bar Pressure",
+    "description": "Atmospheric Pressure",
+    "unit": "hPa",
+    "group": "Weather",
+    "priority": 1,
+    "type": "number"
+  },
+  {
+    "code": "R018",
+    "name": "Bar Movement",
+    "description": "Tendency of barometric pressure",
+    "unit": "hPa/h",
+    "group": "Weather",
+    "priority": 1,
+    "type": "number"
+  },
+  {
+    "code": "R133",
+    "name": "Total Revo.Counter",
+    "type": "number",
+    "unit": "Revs",
+    "priority": 1,
+    "group": "Engine"
+  },
+  {
+    "code": "R037",
+    "name": "Start Revo.Counter",
+    "type": "number",
+    "unit": "Revs",
+    "priority": 1,
+    "group": "Engine"
+  },
+  {
+    "code": "R201",
+    "name": "Stop Revo.Counter",
+    "type": "number",
+    "unit": "Revs",
+    "priority": 1,
+    "group": "Engine"
+  },
+  {
+    "code": "R013",
+    "name": "Today Distance",
+    "type": "number",
+    "unit": "nm",
+    "priority": 1,
+    "group": "Conditions"
+  },
+  {
+    "code": "R205",
+    "name": "Harbour Distance",
+    "type": "number",
+    "unit": "nm",
+    "priority": 1,
+    "group": "Conditions"
+  },
+  {
+    "code": "R202",
+    "name": "Total Distance",
+    "type": "number",
+    "unit": "nm",
+    "priority": 1,
+    "group": "Conditions"
+  },
+  {
+    "code": "R019",
+    "name": "Wind force",
+    "description": "Wind force (true wind speed)",
+    "unit": "Kts",
+    "group": "Weather",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R020",
+    "name": "Wind direction",
+    "description": "Wind coming direction (true wind direction from north)",
+    "unit": "° (Deg)",
+    "group": "Weather",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R021",
+    "name": "Sea Temp",
+    "description": "Temperature of sea surface",
+    "unit": "℃",
+    "group": "Weather",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R022",
+    "name": "Sea height",
+    "description": "Wave height",
+    "unit": "m",
+    "group": "Weather",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R023",
+    "name": "Sea direction",
+    "description": "Wave direction",
+    "unit": "° (Deg)",
+    "group": "Weather",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R024",
+    "name": "Swell height",
+    "description": "Height of swell waves",
+    "unit": "m",
+    "group": "Weather",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R025",
+    "name": "Swell direction",
+    "description": "Direction of swell waves",
+    "unit": "° (Deg)",
+    "group": "Weather",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R026",
+    "name": "Current speed",
+    "description": "Speed of ocean current",
+    "unit": "Kts",
+    "group": "Weather",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R027",
+    "name": "Current direction",
+    "description": "Direction of ocean current",
+    "unit": "° (Deg)",
+    "group": "Weather",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R028",
+    "name": "Bad weather Hours",
+    "description": "Duration of bad weather conditions",
+    "unit": "hr",
+    "group": "Weather",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R029",
+    "name": "Bad weather Dist",
+    "description": "Distance sailed in bad weather",
+    "unit": "nm",
+    "group": "Weather",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R030",
+    "name": "Fuel ROB",
+    "description": "Remaining Fuel on board",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R031",
+    "name": "Fuel Consumption",
+    "description": "Amount of consumed Fuel on board",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R032",
+    "name": "Spplied FW Quantity",
+    "description": "Amount of supplied FW",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R033",
+    "name": "Produced FW Quantity",
+    "description": "Produced amount of FW",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R034",
+    "name": "Estimated Speed",
+    "description": "Estimated vessel speed under current conditions",
+    "unit": "Kts",
+    "group": "Conditions",
+    "priority": 2,
+    "type": "number"
+  },
+  {
+    "code": "R035",
+    "name": "ETA",
+    "description": "Estimated Time of Arrival",
+    "unit": "YYYY-MM-DD HH:MM",
+    "group": "Conditions",
+    "priority": 2,
+    "type": "string"
+  },
+  {
+    "code": "R036",
+    "name": "Changed ETA",
+    "description": "Updated ETA after change",
+    "unit": "YYYY-MM-DD HH:MM",
+    "group": "Conditions",
+    "priority": 2,
+    "type": "string"
+  },
+  {
+    "code": "R073",
+    "name": "Today Eng.Mile",
+    "type": "number",
+    "unit": "nm",
+    "priority": 2,
+    "group": "Engine"
+  },
+  {
+    "code": "R203",
+    "name": "Total Eng.Mile",
+    "type": "number",
+    "unit": "NM",
+    "priority": 2,
+    "group": "Engine"
+  },
+  {
+    "code": "R081",
+    "name": "Today Slip",
+    "type": "number",
+    "unit": "%",
+    "priority": 2,
+    "group": "Engine"
+  },
+  {
+    "code": "R204",
+    "name": "Total Slip",
+    "type": "number",
+    "unit": "%",
+    "priority": 2,
+    "group": "Engine"
+  },
+  {
+    "code": "R002",
+    "name": "Document no",
+    "type": "string",
+    "unit": "10-digit number",
+    "priority": 2,
+    "group": "Common"
+  },
+  {
+    "code": "R038",
+    "name": "True Course",
+    "description": "True course over ground",
+    "unit": "° (Deg)",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R039",
+    "name": "Heading",
+    "description": "Vessel heading",
+    "unit": "° (Deg)",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R041",
+    "name": "DWT",
+    "description": "Deadweight tonnage",
+    "unit": "DWT",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R042",
+    "name": "Displacement",
+    "description": "Displacement of vessel",
+    "unit": "MT",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R043",
+    "name": "Fore draft",
+    "description": "Draft at the bow",
+    "unit": "m",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R044",
+    "name": "Mid draft(STBD)",
+    "description": "Draft at midship (starboard)",
+    "unit": "m",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R045",
+    "name": "Mid draft(PORT)",
+    "description": "Draft at midship (port)",
+    "unit": "m",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R046",
+    "name": "Aft draft",
+    "description": "Draft at the stern",
+    "unit": "m",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R047",
+    "name": "Shear Force",
+    "description": "Positive/Negative shear force at specific frame positions",
+    "unit": "kN",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R048",
+    "name": "GM",
+    "description": "Metacentric height (stability)",
+    "unit": "m",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R049",
+    "name": "STS Partner vessel",
+    "description": "Vessel name engaged in STS operation",
+    "unit": "Text",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R050",
+    "name": "Purpose",
+    "description": "Purpose of event",
+    "unit": "Categorical",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R051",
+    "name": "Anchorage area",
+    "description": "Designated anchorage location",
+    "unit": "Text",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R052",
+    "name": "Ballast tank name /No.",
+    "description": "Name or number of ballast tank",
+    "unit": "Text",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R053",
+    "name": "Ballast qunatity",
+    "description": "Amount of ballast water",
+    "unit": "MT",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R054",
+    "name": "Bunkering type",
+    "description": "Bunkering type by method",
+    "unit": "Categorical",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R055",
+    "name": "Bunker type",
+    "description": "Bunker type by product",
+    "unit": "Categorical",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R056",
+    "name": "Supplied bunker quantity",
+    "description": "Amount of bunker fuel supplied",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R057",
+    "name": "Supplied bunker density at 15℃",
+    "description": "Density of fuel at 15℃",
+    "unit": "Kg/m3",
+    "group": "Consumable",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R058",
+    "name": "Supplied bunker sulfur",
+    "description": "Sulfur content of supplied fuel",
+    "unit": "wt%",
+    "group": "Consumable",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R059",
+    "name": "Bunker supplier",
+    "description": "Name of the bunker fuel supplier",
+    "unit": "Text",
+    "group": "Consumable",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R060",
+    "name": "LO type",
+    "description": "Type of Lube Oil",
+    "unit": "Text",
+    "group": "Consumable",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R061",
+    "name": "LO supplier",
+    "description": "Name of Lube Oil supplier",
+    "unit": "Text",
+    "group": "Consumable",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R063",
+    "name": "From fuel To fuel",
+    "description": "Fuel change over: from -> to",
+    "unit": "Text",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R064",
+    "name": "Equipment effected",
+    "description": "Equipment affected by operation/event",
+    "unit": "Text",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R065",
+    "name": "Undefined activities",
+    "description": "Other activities not predefined",
+    "unit": "Text",
+    "group": "ETC",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R066",
+    "name": "Delay reason",
+    "description": "Reason for delay",
+    "unit": "Text",
+    "group": "ETC",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R077",
+    "name": "Avg Speed",
+    "description": "Average vessel speed",
+    "unit": "kts",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R086",
+    "name": "Berth name",
+    "description": "Designated Berth name",
+    "unit": "Text",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R087",
+    "name": "Shifting type",
+    "description": "Type of shifting",
+    "unit": "Categorical",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R088",
+    "name": "Cargo type",
+    "description": "Type of cargo carried",
+    "unit": "Categorical",
+    "group": "Conditions",
+    "priority": 3,
+    "type": "string"
+  },
+  {
+    "code": "R091",
+    "name": "Tank temperature",
+    "description": "Cargo tank temperature",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R092",
+    "name": "Tank temperature(STBD_H)",
+    "description": "Cargo tank temperature",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R093",
+    "name": "Tank temperature(STBD_M)",
+    "description": "Cargo tank temperature",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R094",
+    "name": "Tank temperature(STBD_L)",
+    "description": "Cargo tank temperature",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R095",
+    "name": "Tank temperature(PORT_H)",
+    "description": "Cargo tank temperature",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R096",
+    "name": "Tank temperature(PORT_M)",
+    "description": "Cargo tank temperature",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R097",
+    "name": "Tank temperature(PORT_H)",
+    "description": "Cargo tank temperature",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R098",
+    "name": "Tank pressure(STBD)",
+    "description": "Cargo tank pressure",
+    "unit": "mbar",
+    "group": "Cargo Monitoring",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R099",
+    "name": "Tank pressure(PORT)",
+    "description": "Cargo tank pressure",
+    "unit": "mbar",
+    "group": "Cargo Monitoring",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R100",
+    "name": "Average vapor",
+    "description": "Average vapor temperature in tank",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R101",
+    "name": "Average liquid(STBD)",
+    "description": "Average liquid temperature in tank",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R102",
+    "name": "Average liquid(PORT)",
+    "description": "Average liquid temperature in tank",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R103",
+    "name": "LNG Cargo loading quantity",
+    "description": "Total loaded cargo amount",
+    "unit": "CBM",
+    "group": "Cargo Operation",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R104",
+    "name": "LPG Cargo loading quantity",
+    "description": "Total loaded cargo amount",
+    "unit": "MT",
+    "group": "Cargo Operation",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R105",
+    "name": "Cargo loading rate",
+    "description": "Rate of cargo loading",
+    "unit": "MT/hr",
+    "group": "Cargo Operation",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R106",
+    "name": "Cargo loading temperature",
+    "description": "Temperature of loaded cargo",
+    "unit": "℃",
+    "group": "Cargo Operation",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R107",
+    "name": "LNG Cargo discharging quantity",
+    "description": "Total discharged cargo amount",
+    "unit": "CBM",
+    "group": "Cargo Operation",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R108",
+    "name": "LPG Cargo discharging quantity",
+    "description": "Total discharged cargo amount",
+    "unit": "MT",
+    "group": "Cargo Operation",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R109",
+    "name": "Cargo discharging rate",
+    "description": "Rate of cargo discharging",
+    "unit": "MT/hr",
+    "group": "Cargo Operation",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R110",
+    "name": "Cargo discharging temperature",
+    "description": "Temperature of discharged cargo",
+    "unit": "℃",
+    "group": "Cargo Operation",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R158",
+    "name": "Drinking water ROB",
+    "description": "Remaining drinking water onboard",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R159",
+    "name": "Supplied drinking water quantity",
+    "description": "Amount of drinking water supplied",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 3,
+    "type": "number"
+  },
+  {
+    "code": "R089",
+    "name": "Cargo quantity(ROB)",
+    "type": "number",
+    "unit": "CBM",
+    "priority": 3,
+    "group": "Cargo Monitoring"
+  },
+  {
+    "code": "R090",
+    "name": "Cargo quantity(ROB)",
+    "type": "number",
+    "unit": "MT",
+    "priority": 3,
+    "group": "Cargo Monitoring"
+  },
+  {
+    "code": "R084",
+    "name": "MCR",
+    "type": "number",
+    "unit": "%",
+    "priority": 3,
+    "group": "Engine"
+  },
+  {
+    "code": "R074",
+    "name": "ME RPM",
+    "type": "number",
+    "unit": "rpm",
+    "priority": 3,
+    "group": "Engine"
+  },
+  {
+    "code": "R067",
+    "name": "M/E R/H",
+    "type": "number",
+    "unit": "hrs",
+    "priority": 3,
+    "group": "Engine"
+  },
+  {
+    "code": "R078",
+    "name": "M/E Power",
+    "type": "number",
+    "unit": "kW",
+    "priority": 3,
+    "group": "Engine"
+  },
+  {
+    "code": "R005",
+    "name": "Voyage number",
+    "type": "string",
+    "unit": "3-digit number",
+    "priority": 3,
+    "group": "Common"
+  },
+  {
+    "code": "R114",
+    "name": "D/G power",
+    "type": "number",
+    "unit": "kW/h",
+    "priority": 4,
+    "group": "Engine"
+  },
+  {
+    "code": "R113",
+    "name": "D/G R/H",
+    "type": "number",
+    "unit": "hrs",
+    "priority": 4,
+    "group": "Engine"
+  },
+  {
+    "code": "R007",
+    "name": "Arrival port",
+    "type": "string",
+    "unit": "UN Port code",
+    "priority": 4,
+    "group": "Common"
+  },
+  {
+    "code": "R122",
+    "name": "Supplied LO quantity",
+    "description": "Amount of LO supplied",
+    "unit": "LTR",
+    "group": "Consumable",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R123",
+    "name": "FW Consumption",
+    "description": "Amount of consumed FW on board",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R124",
+    "name": "LO Consumption",
+    "description": "Amount of consumed LO on board",
+    "unit": "LTR",
+    "group": "Consumable",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R125",
+    "name": "BOG Consumption",
+    "description": "Amount of consumed BOG on board",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R126",
+    "name": "LO ROB",
+    "description": "Remaining LO on board",
+    "unit": "LTR",
+    "group": "Consumable",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R127",
+    "name": "FW ROB",
+    "description": "Remaining FW on board",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R128",
+    "name": "Boiler water Consumption",
+    "description": "Amount of consumed FW on board",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R129",
+    "name": "Boiler water ROB",
+    "description": "Remaining Boiler water on board",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R130",
+    "name": "Supplied boiler water quantity",
+    "description": "Amount of boiler water supplied",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R131",
+    "name": "Sea Force",
+    "description": "Wave Force",
+    "unit": "Kts",
+    "group": "Weather",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R137",
+    "name": "BF Sacle",
+    "description": "Beaufort Scale",
+    "unit": "Categorical",
+    "group": "Weather",
+    "priority": 5,
+    "type": "string"
+  },
+  {
+    "code": "R138",
+    "name": "FW Generate Qty",
+    "description": "Amount of FW Generated",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R139",
+    "name": "Dst Port",
+    "description": "Port of Destination",
+    "unit": "UN Port code",
+    "group": "ETC",
+    "priority": 5,
+    "type": "string"
+  },
+  {
+    "code": "R140",
+    "name": "Dst ZD",
+    "description": "Zone Description of Destination",
+    "unit": "-12~+12 from UTC",
+    "group": "ETC",
+    "priority": 5,
+    "type": "string"
+  },
+  {
+    "code": "R141",
+    "name": "Dst ETA",
+    "description": "ETA of Destination",
+    "unit": "YYYY-MM-DD HH:MM",
+    "group": "ETC",
+    "priority": 5,
+    "type": "string"
+  },
+  {
+    "code": "R142",
+    "name": "DTG",
+    "description": "Distance to Go",
+    "unit": "nm",
+    "group": "ETC",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R143",
+    "name": "T.Speed",
+    "description": "Speed to Destination",
+    "unit": "kts",
+    "group": "ETC",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R146",
+    "name": "Tank temperature(No.1)",
+    "description": "Cargo tank temparture",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R147",
+    "name": "Tank temperature(No.2)",
+    "description": "Cargo tank temparture",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R148",
+    "name": "Tank temperature(No.3)",
+    "description": "Cargo tank temparture",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R149",
+    "name": "Tank temperature(No.4)",
+    "description": "Cargo tank temparture",
+    "unit": "℃",
+    "group": "Cargo Monitoring",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R150",
+    "name": "Steaming Hours",
+    "description": "Steaming hour of the day (24 hours base)",
+    "unit": "hrs",
+    "group": "Engine",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R151",
+    "name": "Tank pressure",
+    "description": "Cargo tank pressure (for LNG)",
+    "unit": "mbar",
+    "group": "Cargo Monitoring",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R157",
+    "name": "Drinking water consumption",
+    "description": "Amount of consumed drinking water onboard",
+    "unit": "MT",
+    "group": "Consumable",
+    "priority": 5,
+    "type": "number"
+  },
+  {
+    "code": "R115",
+    "name": "Shaft/Gen. R/H",
+    "type": "number",
+    "unit": "hrs",
+    "priority": 5,
+    "group": "Engine"
+  },
+  {
+    "code": "R152",
+    "name": "Shaft/Gen. power",
+    "type": "number",
+    "unit": "kW/h",
+    "priority": 5,
+    "group": "Engine"
+  },
+  {
+    "code": "R008",
+    "name": "Departure port",
+    "type": "string",
+    "unit": "UN Port code",
+    "priority": 5,
+    "group": "Common"
+  },
+  {
+    "code": "R155",
+    "name": "T/G R/H",
+    "type": "number",
+    "unit": "hrs",
+    "priority": 6,
+    "group": "Engine"
+  },
+  {
+    "code": "R156",
+    "name": "T/G power",
+    "type": "number",
+    "unit": "kW/h",
+    "priority": 6,
+    "group": "Engine"
+  },
+  {
+    "code": "R003",
+    "name": "Report date(LT)",
+    "type": "string",
+    "unit": "YYYY-MM-DD HH:MM",
+    "priority": 6,
+    "group": "Common"
+  },
+  {
+    "code": "R085",
+    "name": "A/BLR R/H",
+    "type": "number",
+    "unit": "hrs",
+    "priority": 7,
+    "group": "Engine"
+  },
+  {
+    "code": "R004",
+    "name": "Report date(UTC)",
+    "type": "string",
+    "unit": "YYYY-MM-DD HH:MM",
+    "priority": 7,
+    "group": "Common"
+  },
+  {
+    "code": "R120",
+    "name": "HI-COM R/H",
+    "type": "number",
+    "unit": "hrs",
+    "priority": 8,
+    "group": "Engine"
+  },
+  {
+    "code": "R119",
+    "name": "Re-liquefied Quantity",
+    "type": "number",
+    "unit": "MT",
+    "priority": 8,
+    "group": "Engine"
+  },
+  {
+    "code": "R118",
+    "name": "Re-liquefaction System R/H",
+    "type": "number",
+    "unit": "hrs",
+    "priority": 8,
+    "group": "Engine"
+  },
+  {
+    "code": "R009",
+    "name": "ZD",
+    "type": "string",
+    "unit": "-12~+12 from UTC",
+    "priority": 8,
+    "group": "Common"
+  },
+  {
+    "code": "R062",
+    "name": "Documents",
+    "description": "Related documents or references",
+    "unit": "File/PDF",
+    "group": "Conditions",
+    "priority": 9,
+    "type": "string"
+  },
+  {
+    "code": "R121",
+    "name": "HI-VAR R/H",
+    "type": "number",
+    "unit": "hrs",
+    "priority": 9,
+    "group": "Engine"
+  },
+  {
+    "code": "R200",
+    "name": "Operation Time",
+    "type": "number",
+    "unit": "HRS",
+    "priority": 9,
+    "group": "Common"
+  },
+  {
+    "code": "R112",
+    "name": "ALS R/H",
+    "type": "number",
+    "unit": "hrs",
+    "priority": 10,
+    "group": "Engine"
+  },
+  {
+    "code": "R006",
+    "name": "Location(Lat/Long)",
+    "type": "string",
+    "unit": "DD-MM-Direction",
+    "priority": 10,
+    "group": "Common"
+  }
+]

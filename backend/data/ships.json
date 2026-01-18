@@ -1,0 +1,721 @@
+[
+  {
+    "yard": "HSHI",
+    "hullNo": "8118",
+    "name": "HLS CITRINE",
+    "code": "HCR",
+    "class": "LR+KR",
+    "flag": "LIBERIA",
+    "deliveryDate": "2023-02-10",
+    "cargo": "LPG",
+    "dwt": 55383.4,
+    "configSourceShipId": "HDM"
+  },
+  {
+    "yard": "HSHI",
+    "hullNo": "8138",
+    "name": "HLS DIAMOND",
+    "code": "HDM",
+    "class": "ABS+KR",
+    "flag": "LIBERIA",
+    "deliveryDate": "2023-03-20",
+    "cargo": "LPG",
+    "dwt": 55383.4
+  },
+  {
+    "yard": "DSME",
+    "hullNo": "2365",
+    "name": "HLS EMERALD",
+    "code": "HEM",
+    "class": "LR+KR",
+    "flag": "LIBERIA",
+    "deliveryDate": "2023-07-27",
+    "cargo": "LPG",
+    "dwt": 58607.2
+  },
+  {
+    "yard": "DSME",
+    "hullNo": "2366",
+    "name": "HLS FLUORITE",
+    "code": "HFL",
+    "class": "ABS+KR",
+    "flag": "LIBERIA",
+    "deliveryDate": "2023-12-14",
+    "cargo": "LPG",
+    "dwt": 58591.5
+  },
+  {
+    "yard": "HHI",
+    "hullNo": "3297",
+    "name": "PUTERI LEDANG",
+    "code": "GPLD",
+    "class": "DNV+KR",
+    "flag": "MARSHALL ISLAND",
+    "deliveryDate": "2024-05-01",
+    "cargo": "LNG",
+    "dwt": 93414,
+    "configSourceShipId": "GPSD"
+  },
+  {
+    "yard": "HHI",
+    "hullNo": "3295",
+    "name": "PUTERI SANTUBONG",
+    "code": "GPSB",
+    "class": "BV+LR",
+    "flag": "MARSHALL ISLAND",
+    "deliveryDate": "2024-06-03",
+    "cargo": "LNG",
+    "dwt": 93414,
+    "configSourceShipId": "GPSD"
+  },
+  {
+    "yard": "HHI",
+    "hullNo": "3296",
+    "name": "PUTERI SEJINJANG",
+    "code": "GPSJ",
+    "class": "DNV+KR",
+    "flag": "MARSHALL ISLAND",
+    "deliveryDate": "2024-07-01",
+    "cargo": "LNG",
+    "dwt": 93414,
+    "configSourceShipId": "GPSD"
+  },
+  {
+    "yard": "DSME",
+    "hullNo": "2522",
+    "name": "HLS CARTAGENA",
+    "code": "HCT",
+    "class": "KR+ABS",
+    "flag": "MALTA",
+    "deliveryDate": "2024-06-28",
+    "cargo": "LNG",
+    "dwt": 94926.9
+  },
+  {
+    "yard": "HHI",
+    "hullNo": "3298",
+    "name": "PUTERI MAHSURI",
+    "code": "PMH",
+    "class": "BV+LR",
+    "flag": "MARSHALL ISLAND",
+    "deliveryDate": "2024-10-04",
+    "cargo": "LNG",
+    "dwt": 93414,
+    "configSourceShipId": "GPSD"
+  },
+  {
+    "yard": "HHI",
+    "hullNo": "3299",
+    "name": "PUTERI MAYANG",
+    "code": "PMY",
+    "class": "DNV+KR",
+    "flag": "MARSHALL ISLAND",
+    "deliveryDate": "2025-01-11",
+    "cargo": "LNG",
+    "dwt": 93414,
+    "configSourceShipId": "GPSD"
+  },
+  {
+    "yard": "HHI",
+    "hullNo": "3132",
+    "name": "HLS AMBER",
+    "code": "HAM",
+    "class": "KR+LR",
+    "flag": "LIBERIA",
+    "deliveryDate": "2020-09-22",
+    "cargo": "LPG",
+    "dwt": 54223,
+    "equipment": [
+      {
+        "code": "E01",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F01",
+          "F03"
+        ]
+      },
+      {
+        "code": "E03",
+        "installed": true,
+        "count": 3,
+        "validFuels": [
+          "F01",
+          "F03"
+        ]
+      },
+      {
+        "code": "E06",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03"
+        ]
+      },
+      {
+        "code": "E08",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03"
+        ]
+      }
+    ],
+    "fuels": [
+      {
+        "code": "F01",
+        "initialRob": 1000
+      },
+      {
+        "code": "F03",
+        "initialRob": 2000
+      }
+    ],
+    "lubeOils": [
+      {
+        "code": "L01",
+        "initialRob": 1000
+      },
+      {
+        "code": "L02",
+        "initialRob": 1000
+      }
+    ]
+  },
+  {
+    "yard": "DSME",
+    "hullNo": "2451",
+    "name": "HYUNDAI PRINCEPIA",
+    "code": "HPR",
+    "class": "KR+ABS",
+    "flag": "PANAMA",
+    "deliveryDate": "2017-05-04",
+    "cargo": "LNG",
+    "dwt": 98344,
+    "fuels": [
+      {
+        "code": "F03",
+        "initialRob": 1800
+      },
+      {
+        "code": "F05",
+        "initialRob": 0
+      }
+    ],
+    "lubeOils": [
+      {
+        "code": "L03",
+        "initialRob": 0
+      },
+      {
+        "code": "L06",
+        "initialRob": 0
+      }
+    ]
+  },
+  {
+    "yard": "HHI",
+    "hullNo": "1157",
+    "name": "HYUNDAI OCEANPIA",
+    "code": "HOA",
+    "class": "KR+ABS",
+    "flag": "MARSHALL ISLAND",
+    "deliveryDate": "2000-07-31",
+    "cargo": "LNG",
+    "dwt": 77512.8,
+    "equipment": [
+      {
+        "code": "E02",
+        "installed": true,
+        "count": 2,
+        "validFuels": []
+      }
+    ],
+    "fuels": [
+      {
+        "code": "F03",
+        "initialRob": 1000
+      },
+      {
+        "code": "F05",
+        "initialRob": 0
+      }
+    ],
+    "configSourceShipId": "HUT",
+    "waters": [
+      {
+        "code": "W01",
+        "initialRob": 3000
+      },
+      {
+        "code": "W02",
+        "initialRob": 2000
+      },
+      {
+        "code": "W03",
+        "initialRob": 100
+      }
+    ],
+    "lubeOils": [
+      {
+        "code": "L03",
+        "initialRob": 100
+      },
+      {
+        "code": "L04",
+        "initialRob": 100
+      },
+      {
+        "code": "L05",
+        "initialRob": 100
+      },
+      {
+        "code": "L06",
+        "initialRob": 100
+      }
+    ],
+    "additionalInfo": [
+      {
+        "label": "Propeller Pitch",
+        "value": "0.004284"
+      }
+    ]
+  },
+  {
+    "yard": "DSME",
+    "hullNo": "2452",
+    "name": "HYUNDAI PEACEPIA",
+    "code": "HPE",
+    "class": "KR+LR",
+    "flag": "PANAMA",
+    "deliveryDate": "2017-06-05",
+    "cargo": "LNG",
+    "dwt": 98344,
+    "equipment": [
+      {
+        "code": "E01",
+        "installed": true,
+        "count": 2,
+        "validFuels": [
+          "F03",
+          "F01",
+          "F05"
+        ]
+      },
+      {
+        "code": "E03",
+        "installed": true,
+        "count": 3,
+        "validFuels": [
+          "F03",
+          "F01",
+          "F05"
+        ]
+      },
+      {
+        "code": "E05",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03"
+        ]
+      },
+      {
+        "code": "E06",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03",
+          "F05"
+        ]
+      },
+      {
+        "code": "E07",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03",
+          "F05"
+        ]
+      },
+      {
+        "code": "E08",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03"
+        ]
+      }
+    ],
+    "fuels": [
+      {
+        "code": "F03",
+        "initialRob": 0
+      },
+      {
+        "code": "F01",
+        "initialRob": 0
+      },
+      {
+        "code": "F05",
+        "initialRob": 0
+      }
+    ]
+  },
+  {
+    "yard": "HHI",
+    "hullNo": "760",
+    "name": "HYUNDAI UTOPIA",
+    "code": "HUT",
+    "class": "KR",
+    "flag": "KOREA",
+    "deliveryDate": "1994-07-01",
+    "cargo": "LNG",
+    "dwt": 71909.8,
+    "equipment": [
+      {
+        "code": "E02",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F05",
+          "F03"
+        ]
+      },
+      {
+        "code": "E03",
+        "installed": true,
+        "count": 2,
+        "validFuels": [
+          "F03"
+        ]
+      },
+      {
+        "code": "E04",
+        "installed": true,
+        "count": 1
+      },
+      {
+        "code": "E06",
+        "installed": true,
+        "count": 1
+      },
+      {
+        "code": "E07",
+        "installed": true,
+        "count": 1
+      },
+      {
+        "code": "E08",
+        "installed": true,
+        "count": 1
+      },
+      {
+        "code": "E01",
+        "installed": true,
+        "count": 1,
+        "validFuels": []
+      }
+    ],
+    "fuels": [
+      {
+        "code": "F05",
+        "initialRob": 0
+      },
+      {
+        "code": "F03",
+        "initialRob": 800
+      }
+    ],
+    "lubeOils": [
+      {
+        "code": "L03",
+        "initialRob": 3500
+      },
+      {
+        "code": "L04",
+        "initialRob": 1800
+      },
+      {
+        "code": "L05",
+        "initialRob": 1800
+      },
+      {
+        "code": "L06",
+        "initialRob": 1000
+      }
+    ],
+    "waters": [
+      {
+        "code": "W01",
+        "initialRob": 200
+      },
+      {
+        "code": "W02",
+        "initialRob": 200
+      },
+      {
+        "code": "W03",
+        "initialRob": 450
+      }
+    ],
+    "customValues": {
+      "Propeller Pitch": "0.004284"
+    }
+  },
+  {
+    "yard": "DSME",
+    "hullNo": "2521",
+    "name": "HLS BILBAO",
+    "code": "HBO",
+    "class": "KR",
+    "flag": "MALTA",
+    "deliveryDate": "2024-02-15",
+    "cargo": "LNG",
+    "dwt": 94926.9,
+    "fuels": [
+      {
+        "code": "F01",
+        "initialRob": 1000
+      },
+      {
+        "code": "F03",
+        "initialRob": 1000
+      },
+      {
+        "code": "F05",
+        "initialRob": 0
+      }
+    ],
+    "equipment": [
+      {
+        "code": "E01",
+        "installed": true,
+        "count": 2,
+        "validFuels": [
+          "F01",
+          "F03",
+          "F05"
+        ]
+      },
+      {
+        "code": "E03",
+        "installed": true,
+        "count": 3,
+        "validFuels": [
+          "F01",
+          "F03",
+          "F05"
+        ]
+      },
+      {
+        "code": "E06",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03"
+        ]
+      },
+      {
+        "code": "E07",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03",
+          "F05"
+        ]
+      },
+      {
+        "code": "E08",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03"
+        ]
+      },
+      {
+        "code": "E09",
+        "installed": true,
+        "count": 2,
+        "validFuels": []
+      }
+    ]
+  },
+  {
+    "yard": "HHI",
+    "hullNo": "3294",
+    "name": "PUTERI SAADONG",
+    "code": "GPSD",
+    "class": "BV+LR",
+    "flag": "MARSHALL ISLAND",
+    "deliveryDate": "2024-02-01",
+    "cargo": "LNG",
+    "dwt": 93414,
+    "equipment": [
+      {
+        "code": "E01",
+        "installed": true,
+        "count": 2,
+        "validFuels": [
+          "F03",
+          "F01",
+          "F05"
+        ]
+      },
+      {
+        "code": "E03",
+        "installed": true,
+        "count": 3,
+        "validFuels": [
+          "F03",
+          "F05",
+          "F01"
+        ]
+      },
+      {
+        "code": "E05",
+        "installed": true,
+        "count": 2,
+        "validFuels": [
+          "F03",
+          "F01",
+          "F05"
+        ]
+      },
+      {
+        "code": "E06",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03"
+        ]
+      },
+      {
+        "code": "E07",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03",
+          "F05"
+        ]
+      },
+      {
+        "code": "E08",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03"
+        ]
+      },
+      {
+        "code": "E09",
+        "installed": true,
+        "count": 2,
+        "validFuels": []
+      },
+      {
+        "code": "E10",
+        "installed": true,
+        "count": 1,
+        "validFuels": []
+      }
+    ],
+    "fuels": [
+      {
+        "code": "F01",
+        "initialRob": 2298.3
+      },
+      {
+        "code": "F03",
+        "initialRob": 1000
+      },
+      {
+        "code": "F05",
+        "initialRob": 0
+      }
+    ],
+    "lubeOils": [
+      {
+        "code": "L03",
+        "initialRob": 1000
+      },
+      {
+        "code": "L04",
+        "initialRob": 1000
+      }
+    ],
+    "tankCounts": {
+      "cargo": 4,
+      "ballast": 0
+    },
+    "waters": [
+      {
+        "code": "W01",
+        "initialRob": 100
+      }
+    ]
+  },
+  {
+    "yard": "HSHI",
+    "hullNo": "8117",
+    "name": "HLS BLUE SAPPHIRE",
+    "code": "HBS",
+    "class": "LR+KR",
+    "flag": "LIBERIA",
+    "deliveryDate": "2023-01-04",
+    "cargo": "LPG",
+    "dwt": 55383.4,
+    "fuels": [
+      {
+        "code": "F01",
+        "initialRob": 0
+      },
+      {
+        "code": "F03",
+        "initialRob": 0
+      },
+      {
+        "code": "F07",
+        "initialRob": 0
+      }
+    ],
+    "equipment": [
+      {
+        "code": "E01",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F01",
+          "F03",
+          "F07"
+        ]
+      },
+      {
+        "code": "E03",
+        "installed": true,
+        "count": 3,
+        "validFuels": [
+          "F01",
+          "F03"
+        ]
+      },
+      {
+        "code": "E05",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F01",
+          "F03"
+        ]
+      },
+      {
+        "code": "E08",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03"
+        ]
+      }
+    ]
+  }
+]

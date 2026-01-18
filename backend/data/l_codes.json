@@ -1,0 +1,26 @@
+[
+    {
+        "code": "L01",
+        "name": "M/E Cyl. Oil (H BN)"
+    },
+    {
+        "code": "L02",
+        "name": "M/E Cyl. Oil (L BN)"
+    },
+    {
+        "code": "L03",
+        "name": "M/E Cyl. Oil"
+    },
+    {
+        "code": "L04",
+        "name": "D/G System (H BN)"
+    },
+    {
+        "code": "L05",
+        "name": "D/G System (L BN)"
+    },
+    {
+        "code": "L06",
+        "name": "T/G System"
+    }
+]

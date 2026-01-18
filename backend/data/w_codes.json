@@ -1,0 +1,23 @@
+[
+    {
+        "code": "W01",
+        "name": "F.Water",
+        "description": "Fresh Water",
+        "unit": "MT",
+        "priority": 1
+    },
+    {
+        "code": "W02",
+        "name": "D.Water",
+        "description": "Distilled/Drinking Water",
+        "unit": "MT",
+        "priority": 2
+    },
+    {
+        "code": "W03",
+        "name": "Boiler Water",
+        "description": "Boiler Water",
+        "unit": "MT",
+        "priority": 3
+    }
+]
