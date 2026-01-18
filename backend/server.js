@@ -228,9 +228,13 @@ app.post('/api/ship-custom-fields', async (req, res) => {
     }
 });
 
-// Verify Server
-app.get('/', (req, res) => {
-    res.send('SSRPMS Backend is Running on Port ' + PORT);
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 app.listen(PORT, () => {
