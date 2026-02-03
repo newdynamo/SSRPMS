@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FileText, History, Settings, Ship } from 'lucide-react';
+import { LayoutDashboard, FileText, History, Activity, Settings, Ship } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 interface LayoutProps {
@@ -26,6 +26,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     <NavItem to="/" icon={<LayoutDashboard />} label="Dashboard" />
                     <NavItem to="/new-report" icon={<FileText />} label="New Report" />
                     <NavItem to="/history" icon={<History />} label="History" />
+                    <NavItem to="/monitoring" icon={<Activity />} label="Monitoring" />
                 </nav>
 
                 <div className="p-4 border-t border-ocean-700">

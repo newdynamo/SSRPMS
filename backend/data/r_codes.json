@@ -174,15 +174,6 @@
     "type": "number"
   },
   {
-    "code": "R026",
-    "name": "Current speed",
-    "description": "Speed of ocean current",
-    "unit": "Kts",
-    "group": "Weather",
-    "priority": 2,
-    "type": "number"
-  },
-  {
     "code": "R027",
     "name": "Current direction",
     "description": "Direction of ocean current",
@@ -246,15 +237,6 @@
     "type": "number"
   },
   {
-    "code": "R034",
-    "name": "Estimated Speed",
-    "description": "Estimated vessel speed under current conditions",
-    "unit": "Kts",
-    "group": "Conditions",
-    "priority": 2,
-    "type": "number"
-  },
-  {
     "code": "R035",
     "name": "ETA",
     "description": "Estimated Time of Arrival",
@@ -311,6 +293,30 @@
     "unit": "10-digit number",
     "priority": 2,
     "group": "Common"
+  },
+  {
+    "code": "R034",
+    "name": "Speed",
+    "type": "number",
+    "unit": "Kts",
+    "priority": 2,
+    "group": "Conditions"
+  },
+  {
+    "code": "R077",
+    "name": "Avg Speed",
+    "type": "number",
+    "unit": "kts",
+    "priority": 2,
+    "group": "Conditions"
+  },
+  {
+    "code": "R026",
+    "name": "Current speed",
+    "type": "number",
+    "unit": "Kts",
+    "priority": 2,
+    "group": "Conditions"
   },
   {
     "code": "R038",
@@ -554,15 +560,6 @@
     "group": "ETC",
     "priority": 3,
     "type": "string"
-  },
-  {
-    "code": "R077",
-    "name": "Avg Speed",
-    "description": "Average vessel speed",
-    "unit": "kts",
-    "group": "Conditions",
-    "priority": 3,
-    "type": "number"
   },
   {
     "code": "R086",
@@ -1221,5 +1218,29 @@
     "unit": "DD-MM-Direction",
     "priority": 10,
     "group": "Common"
+  },
+  {
+    "code": "R202",
+    "name": "Total Distance",
+    "type": "number",
+    "unit": "nm",
+    "priority": 10,
+    "group": "Common"
+  },
+  {
+    "code": "R203",
+    "name": "Total Eng.Mile",
+    "type": "number",
+    "unit": "nm",
+    "priority": 10,
+    "group": "Engine"
+  },
+  {
+    "code": "R204",
+    "name": "Total Slip",
+    "type": "number",
+    "unit": "%",
+    "priority": 10,
+    "group": "Engine"
   }
 ]

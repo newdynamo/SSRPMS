@@ -7,6 +7,7 @@
     "install-frontend": "cd frontend && npm install",
     "build-frontend": "cd frontend && npm run build",
     "build": "npm run install-backend && npm run install-frontend && npm run build-frontend",
+    "clean": "cd frontend && rmdir /s /q dist",
     "start": "cd backend && node server.js"
   },
   "keywords": [],

@@ -52,7 +52,6 @@
       "R131",
       "R137",
       "R013",
-      "R038",
       "R043",
       "R046",
       "R033",
@@ -64,7 +63,6 @@
       "R129",
       "R157",
       "R158",
-      "R092",
       "R085",
       "R082",
       "R069",
@@ -84,12 +82,14 @@
       "R078",
       "R114",
       "R152",
-      "R155"
+      "R155",
+      "R038",
+      "R077"
     ]
   },
   {
     "code": "EV04",
-    "name": "EOSP(At Stb'y ENG)",
+    "name": "EOSP(At Stb'y ENG, EOP)",
     "mCode": "M03",
     "description": "Sea Passage - to be used on arrival at pilot station when end of sea passage",
     "priority": 2,
@@ -201,7 +201,7 @@
   },
   {
     "code": "EV03",
-    "name": "COSP(At R/up ENG)",
+    "name": "COSP(At R/up ENG, FAOP)",
     "mCode": "M02",
     "description": "Sea Passage - to be used on departure from pilot station when full away",
     "priority": 5,
@@ -224,7 +224,8 @@
       "R009",
       "R205",
       "R030",
-      "R031"
+      "R031",
+      "R133"
     ]
   },
   {

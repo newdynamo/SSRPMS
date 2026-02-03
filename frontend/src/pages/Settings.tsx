@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { fetchCodes, saveTCodes, saveRCodes, saveEVCodes } from '../api/codes';
 import { fetchShips, saveShips } from '../api/ships';
-import type { CodeData, Ship } from '../types/index';
-import { Database, Server, Ship as ShipIcon, Trash2, Plus, CheckCircle, Search, ChevronUp, ChevronDown, Filter, Box } from 'lucide-react';
+import { fetchPorts, savePorts } from '../api/ports';
+// import { FixedSizeList as List } from 'react-window';
+import type { CodeData, Ship, Port } from '../types/index';
+import { Database, Server, Ship as ShipIcon, Trash2, Plus, CheckCircle, Search, ChevronUp, ChevronDown, Filter, Box, Anchor } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const TabButton = ({ active, onClick, icon, label }: any) => (
@@ -90,11 +92,13 @@ const Input = ({ value, onChange, placeholder, type = 'text' }: { value: any, on
     />
 );
 
+
+
 const Settings: React.FC = () => {
     const [codes, setCodes] = useState<CodeData | null>(null);
     const [ships, setShips] = useState<Ship[]>([]);
     const [customFields, setCustomFields] = useState<string[]>([]);
-    const [activeTab, setActiveTab] = useState<'general' | 'events' | 'codes' | 'ships'>('general');
+    const [activeTab, setActiveTab] = useState<'general' | 'events' | 'codes' | 'ships' | 'ports'>('general');
     const [activeCodeTab, setActiveCodeTab] = useState<'m' | 't' | 'r'>('m');
     const [selectedShip, setSelectedShip] = useState<Ship | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -113,6 +117,22 @@ const Settings: React.FC = () => {
     const [filterQuery, setFilterQuery] = useState('');
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+
+    // Port Management State
+    const [ports, setPorts] = useState<Port[]>([]);
+    const [isPortEditMode, setIsPortEditMode] = useState(false);
+    const [editingPort, setEditingPort] = useState<Partial<Port>>({});
+
+    const visiblePorts = React.useMemo(() => {
+        if (!ports) return [];
+        if (!filterQuery) return ports;
+        const lower = filterQuery.toLowerCase();
+        return ports.filter(p =>
+            (p.code || '').toLowerCase().includes(lower) ||
+            (p.name || '').toLowerCase().includes(lower) ||
+            (p.country || '').toLowerCase().includes(lower)
+        );
+    }, [ports, filterQuery]);
 
     useEffect(() => {
         setFilterQuery('');
@@ -167,14 +187,16 @@ const Settings: React.FC = () => {
             setIsLoading(true);
             setError(null);
             try {
-                const [codeData, shipData, customFieldsData] = await Promise.all([
+                const [codeData, shipData, customFieldsData, portData] = await Promise.all([
                     fetchCodes(),
                     fetchShips(),
-                    fetch('http://localhost:8500/api/ship-custom-fields').then(res => res.json())
+                    fetch('http://localhost:8500/api/ship-custom-fields').then(res => res.json()),
+                    fetchPorts()
                 ]);
                 setCodes(codeData);
                 setShips(shipData);
                 setCustomFields(customFieldsData);
+                setPorts(portData);
             } catch (err: any) {
                 console.error("Failed to load configuration", err);
                 setError(err.message || "Failed to load configuration data.");
@@ -184,6 +206,72 @@ const Settings: React.FC = () => {
         };
         load();
     }, []);
+
+    // ... (handleShipSelect, handleDeleteShip, openShipEdit, handleSaveShip)
+
+    // Port Handlers
+    const openPortEdit = (port?: Port) => {
+        if (port) {
+            setEditingPort({ ...port });
+        } else {
+            setEditingPort({ code: '', name: '', country: '' });
+        }
+        setIsPortEditMode(true);
+    };
+
+    const handleSavePort = async () => {
+        if (!editingPort.code || !editingPort.name) {
+            alert('Port Code and Name are required');
+            return;
+        }
+
+        // Check for duplicates (by Code)
+        // const isNew = !ports.some(p => p.code === editingPort.code);
+        // Warning: This simple logic assumes Code is the primary key and doesn't allow editing Code of existing port if it creates a conflict, 
+        // or rather, if we edit a Port, we match by Code. If code is editable, we might need a separate ID. 
+        // For simplicity, we'll assume Code is unique ID. If editing existing, we update list.
+
+        // Actually, if editing an existing port, we likely want to allow Code change only if it doesn't conflict.
+        // But simpler: Filter out the "old" version if it exists? 
+        // We don't have a stable ID here. Let's assume Code is the ID.
+        // If we are "Editing", we should know which one we are editing.
+        // Let's rely on the user not to create duplicate codes or handle it simply:
+
+        let updatedPorts = [...ports];
+        // If we are in "Edit Mode" and we have an original code? 
+        // Let's just filter out by code if it matches current editing code (Update) or just push if new?
+        // Better: Remove any existing port with the SAME code (Update) or just add.
+
+        // Issue: If I change the code of a port, I need to know the OLD code to remove it.
+        // Since we don't track "original code" in `editingPort`, let's assume Code is immutable or we just Upsert by Code.
+        // "Add/Edit" usually implies Upsert.
+
+        updatedPorts = updatedPorts.filter(p => p.code !== editingPort.code);
+        updatedPorts.push(editingPort as Port);
+        updatedPorts.sort((a, b) => a.code.localeCompare(b.code));
+
+        try {
+            await savePorts(updatedPorts);
+            setPorts(updatedPorts);
+            setIsPortEditMode(false);
+            setEditingPort({});
+        } catch (err) {
+            console.error("Failed to save port", err);
+            alert("Failed to save port");
+        }
+    };
+
+    const handleDeletePort = async (code: string) => {
+        if (!confirm('Are you sure you want to delete this port?')) return;
+        const updated = ports.filter(p => p.code !== code);
+        try {
+            await savePorts(updated);
+            setPorts(updated);
+        } catch (err) {
+            console.error("Failed to delete port", err);
+            alert("Failed to delete port");
+        }
+    };
 
     const handleShipSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const ship = ships.find(s => s.code === e.target.value);
@@ -203,7 +291,7 @@ const Settings: React.FC = () => {
             setEditingShip(JSON.parse(JSON.stringify(ship))); // Deep copy
         } else {
             setEditingShip({
-                code: '', name: '', yard: '', hullNo: '', class: '', flag: '', cargo: '', dwt: 0,
+                code: '', name: '', yard: '', hullNo: '', imoNo: '', class: '', flag: '', cargo: '', dwt: 0,
                 equipment: [], fuels: [], lubeOils: [], customValues: {}
             });
         }
@@ -410,6 +498,22 @@ const Settings: React.FC = () => {
         }
     };
 
+    const updateFuelLcv = (code: string, value: string) => {
+        const numVal = parseFloat(value) || 0;
+        const currentFuels = editingShip.fuels || [];
+        if (currentFuels.some(f => f.code === code)) {
+            setEditingShip({
+                ...editingShip,
+                fuels: currentFuels.map(f => f.code === code ? { ...f, lcv: numVal } : f)
+            });
+        } else {
+            setEditingShip({
+                ...editingShip,
+                fuels: [...currentFuels, { code, initialRob: 0, lcv: numVal }]
+            });
+        }
+    };
+
     const toggleLube = (code: string) => {
         if (!editingShip.lubeOils) {
             setEditingShip({ ...editingShip, lubeOils: [{ code, initialRob: 0 }] });
@@ -483,10 +587,11 @@ const Settings: React.FC = () => {
     // Helper for rendering the checkbox list with inputs
     const renderConfigList = (
         allCodes: any[],
-        selected: { code: string; initialRob?: number }[] | undefined,
+        selected: { code: string; initialRob?: number; lcv?: number }[] | undefined,
         toggle: (code: string) => void,
         updateRob: (code: string, val: string) => void,
-        isInherited: boolean = false
+        isInherited: boolean = false,
+        updateLcv?: (code: string, val: string) => void
     ) => (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {allCodes.map(c => {
@@ -505,15 +610,29 @@ const Settings: React.FC = () => {
                             <div className="text-xs text-slate-500">{c.code}</div>
                         </div>
                         {isChecked && (
-                            <div className="flex flex-col items-end gap-1">
-                                <label className="text-[10px] uppercase font-bold text-primary-400">Initial ROB</label>
-                                <input
-                                    type="number"
-                                    className="w-24 bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-right text-white text-sm focus:border-primary-500 outline-none"
-                                    value={item?.initialRob ?? ''}
-                                    onChange={(e) => updateRob(c.code, e.target.value)}
-                                    placeholder="0.0"
-                                />
+                            <div className="flex gap-2">
+                                <div className="flex flex-col items-end gap-1">
+                                    <label className="text-[10px] uppercase font-bold text-primary-400">Initial ROB</label>
+                                    <input
+                                        type="number"
+                                        className="w-24 bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-right text-white text-sm focus:border-primary-500 outline-none"
+                                        value={item?.initialRob ?? ''}
+                                        onChange={(e) => updateRob(c.code, e.target.value)}
+                                        placeholder="0.0"
+                                    />
+                                </div>
+                                {updateLcv && (
+                                    <div className="flex flex-col items-end gap-1">
+                                        <label className="text-[10px] uppercase font-bold text-emerald-400">LCV (MJ/Ton)</label>
+                                        <input
+                                            type="number"
+                                            className="w-24 bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-right text-white text-sm focus:border-emerald-500 outline-none"
+                                            value={item?.lcv ?? ''}
+                                            onChange={(e) => updateLcv(c.code, e.target.value)}
+                                            placeholder="0.0"
+                                        />
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
@@ -584,6 +703,12 @@ const Settings: React.FC = () => {
                     icon={<Database size={18} />}
                     label="Code Management"
                 />
+                <TabButton
+                    active={activeTab === 'ports'}
+                    onClick={() => setActiveTab('ports')}
+                    icon={<Anchor size={18} />}
+                    label="Port Management"
+                />
             </div>
 
             {/* General Configuration Tab */}
@@ -617,6 +742,7 @@ const Settings: React.FC = () => {
                                     <InfoField label="Ship Code" value={selectedShip.code} />
                                     <InfoField label="Yard" value={selectedShip.yard} />
                                     <InfoField label="Hull No" value={selectedShip.hullNo} />
+                                    <InfoField label="IMO No" value={selectedShip.imoNo} />
                                     <InfoField label="Class" value={selectedShip.class} />
                                     <InfoField label="Flag" value={selectedShip.flag} />
                                     <InfoField label="DWT" value={selectedShip.dwt?.toLocaleString()} />
@@ -781,6 +907,7 @@ const Settings: React.FC = () => {
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                             <LabeledInput label="Yard" placeholder="Yard" value={editingShip.yard} onChange={v => setEditingShip({ ...editingShip, yard: v })} />
                                                             <LabeledInput label="Hull No" placeholder="Hull No" value={editingShip.hullNo} onChange={v => setEditingShip({ ...editingShip, hullNo: v })} />
+                                                            <LabeledInput label="IMO No" placeholder="IMO No" value={editingShip.imoNo} onChange={v => setEditingShip({ ...editingShip, imoNo: v })} />
                                                             <LabeledInput label="Vessel Name" placeholder="Ship Name" value={editingShip.name} onChange={v => setEditingShip({ ...editingShip, name: v })} />
                                                             <LabeledInput label="Ship Code" placeholder="Code" value={editingShip.code} onChange={v => setEditingShip({ ...editingShip, code: v })} />
                                                             <LabeledInput label="Class" placeholder="Class" value={editingShip.class} onChange={v => setEditingShip({ ...editingShip, class: v })} />
@@ -977,12 +1104,14 @@ const Settings: React.FC = () => {
                                                             isInherited
                                                                 ? sourceShip?.fuels?.map(src => ({
                                                                     code: src.code,
-                                                                    initialRob: editingShip.fuels?.find(t => t.code === src.code)?.initialRob ?? 0 // Default inherited to 0 if not set locally
+                                                                    initialRob: editingShip.fuels?.find(t => t.code === src.code)?.initialRob ?? 0,
+                                                                    lcv: editingShip.fuels?.find(t => t.code === src.code)?.lcv ?? 0
                                                                 }))
                                                                 : editingShip.fuels,
                                                             toggleFuel,
                                                             updateFuelRob,
-                                                            isInherited
+                                                            isInherited,
+                                                            updateFuelLcv
                                                         )}
                                                     </div>
                                                 )}
@@ -1433,6 +1562,98 @@ const Settings: React.FC = () => {
                     </div>
                 )
             }
+
+            {/* Port Management Tab */}
+            {activeTab === 'ports' && (
+                <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-bold text-white">Registered Ports</h2>
+                        <div className="flex gap-4">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+                                <input
+                                    type="text"
+                                    placeholder="Search ports..."
+                                    className="bg-ocean-900 border border-ocean-600 rounded-lg pl-10 pr-4 py-2 text-white placeholder-slate-500 focus:ring-1 focus:ring-primary-500 outline-none w-64"
+                                    value={filterQuery}
+                                    onChange={(e) => setFilterQuery(e.target.value)}
+                                />
+                            </div>
+                            <button onClick={() => openPortEdit()} className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium transition flex items-center gap-2">
+                                <Plus size={18} /> Add New Port
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Virtualized Port List */}
+                    <div className="bg-ocean-800 rounded-2xl border border-ocean-700 overflow-hidden flex flex-col h-[600px]">
+                        <div className="bg-ocean-900/50 text-slate-400 text-xs uppercase tracking-wider flex border-b border-ocean-700 shrink-0">
+                            <div className="w-32 px-6 py-4 font-semibold">Port Code</div>
+                            <div className="flex-1 px-6 py-4 font-semibold">Port Name</div>
+                            <div className="w-32 px-6 py-4 font-semibold">Country</div>
+                            <div className="w-[150px] px-6 py-4 text-right font-semibold">Actions</div>
+                        </div>
+
+                        <div className="flex-1">
+                            {visiblePorts.length > 0 ? (
+                                <div className="overflow-y-auto h-[550px]">
+                                    {visiblePorts.slice(0, 50).map((port, index) => (
+                                        <div key={port.code || index} className="flex items-center hover:bg-ocean-700/30 transition-colors border-b border-ocean-700/50">
+                                            <div className="w-32 px-6 py-4 text-sm text-primary-400 font-mono truncate">{port.code}</div>
+                                            <div className="flex-1 px-6 py-4 text-sm text-slate-300 truncate" title={port.name}>{port.name}</div>
+                                            <div className="w-32 px-6 py-4 text-sm text-slate-400 truncate">{port.country}</div>
+                                            <div className="w-[150px] px-6 py-4 text-right flex justify-end gap-2 shrink-0">
+                                                <button onClick={() => openPortEdit(port)} className="text-blue-400 hover:text-blue-300 text-sm">Edit</button>
+                                                <button onClick={() => handleDeletePort(port.code)} className="text-red-400 hover:text-red-300 text-sm">Delete</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="p-8 text-center text-slate-500">
+                                    No ports found matching your search.
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Port Edit Modal */}
+                    {isPortEditMode && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                            <div className="bg-ocean-800 rounded-2xl border border-ocean-700 w-full max-w-lg shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                                <div className="p-6 border-b border-ocean-700 flex justify-between items-center">
+                                    <h2 className="text-xl font-bold text-white">{editingPort.code ? 'Edit Port' : 'Add New Port'}</h2>
+                                    <button onClick={() => setIsPortEditMode(false)} className="text-slate-400 hover:text-white">✕</button>
+                                </div>
+                                <div className="p-6 space-y-4">
+                                    <LabeledInput
+                                        label="Port Code (UN/LOCODE)"
+                                        value={editingPort.code}
+                                        onChange={v => setEditingPort({ ...editingPort, code: v.toUpperCase() })}
+                                        placeholder="e.g. KRPUS"
+                                    />
+                                    <LabeledInput
+                                        label="Port Name"
+                                        value={editingPort.name}
+                                        onChange={v => setEditingPort({ ...editingPort, name: v })}
+                                        placeholder="e.g. Busan"
+                                    />
+                                    <LabeledInput
+                                        label="Country Code"
+                                        value={editingPort.country}
+                                        onChange={v => setEditingPort({ ...editingPort, country: v.toUpperCase() })}
+                                        placeholder="e.g. KR"
+                                    />
+                                </div>
+                                <div className="p-6 border-t border-ocean-700 flex justify-end gap-3">
+                                    <button onClick={() => setIsPortEditMode(false)} className="px-4 py-2 text-slate-300 hover:text-white transition-colors">Cancel</button>
+                                    <button onClick={handleSavePort} className="px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-bold">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
         </div >
     );
 };

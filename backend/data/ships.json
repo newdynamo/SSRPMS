@@ -8,8 +8,7 @@
     "flag": "LIBERIA",
     "deliveryDate": "2023-02-10",
     "cargo": "LPG",
-    "dwt": 55383.4,
-    "configSourceShipId": "HDM"
+    "dwt": 55383.4
   },
   {
     "yard": "HSHI",
@@ -43,18 +42,6 @@
     "deliveryDate": "2023-12-14",
     "cargo": "LPG",
     "dwt": 58591.5
-  },
-  {
-    "yard": "HHI",
-    "hullNo": "3297",
-    "name": "PUTERI LEDANG",
-    "code": "GPLD",
-    "class": "DNV+KR",
-    "flag": "MARSHALL ISLAND",
-    "deliveryDate": "2024-05-01",
-    "cargo": "LNG",
-    "dwt": 93414,
-    "configSourceShipId": "GPSD"
   },
   {
     "yard": "HHI",
@@ -542,120 +529,6 @@
     ]
   },
   {
-    "yard": "HHI",
-    "hullNo": "3294",
-    "name": "PUTERI SAADONG",
-    "code": "GPSD",
-    "class": "BV+LR",
-    "flag": "MARSHALL ISLAND",
-    "deliveryDate": "2024-02-01",
-    "cargo": "LNG",
-    "dwt": 93414,
-    "equipment": [
-      {
-        "code": "E01",
-        "installed": true,
-        "count": 2,
-        "validFuels": [
-          "F03",
-          "F01",
-          "F05"
-        ]
-      },
-      {
-        "code": "E03",
-        "installed": true,
-        "count": 3,
-        "validFuels": [
-          "F03",
-          "F05",
-          "F01"
-        ]
-      },
-      {
-        "code": "E05",
-        "installed": true,
-        "count": 2,
-        "validFuels": [
-          "F03",
-          "F01",
-          "F05"
-        ]
-      },
-      {
-        "code": "E06",
-        "installed": true,
-        "count": 1,
-        "validFuels": [
-          "F03"
-        ]
-      },
-      {
-        "code": "E07",
-        "installed": true,
-        "count": 1,
-        "validFuels": [
-          "F03",
-          "F05"
-        ]
-      },
-      {
-        "code": "E08",
-        "installed": true,
-        "count": 1,
-        "validFuels": [
-          "F03"
-        ]
-      },
-      {
-        "code": "E09",
-        "installed": true,
-        "count": 2,
-        "validFuels": []
-      },
-      {
-        "code": "E10",
-        "installed": true,
-        "count": 1,
-        "validFuels": []
-      }
-    ],
-    "fuels": [
-      {
-        "code": "F01",
-        "initialRob": 2298.3
-      },
-      {
-        "code": "F03",
-        "initialRob": 1000
-      },
-      {
-        "code": "F05",
-        "initialRob": 0
-      }
-    ],
-    "lubeOils": [
-      {
-        "code": "L03",
-        "initialRob": 1000
-      },
-      {
-        "code": "L04",
-        "initialRob": 1000
-      }
-    ],
-    "tankCounts": {
-      "cargo": 4,
-      "ballast": 0
-    },
-    "waters": [
-      {
-        "code": "W01",
-        "initialRob": 100
-      }
-    ]
-  },
-  {
     "yard": "HSHI",
     "hullNo": "8117",
     "name": "HLS BLUE SAPPHIRE",
@@ -715,6 +588,204 @@
         "validFuels": [
           "F03"
         ]
+      }
+    ]
+  },
+  {
+    "yard": "HHI",
+    "hullNo": "3297",
+    "imoNo": "9947598",
+    "name": "PUTERI LEDANG",
+    "code": "GPLD",
+    "class": "DNV+KR",
+    "flag": "MARSHALL ISLAND",
+    "deliveryDate": "2024-05-01",
+    "cargo": "LNG",
+    "dwt": 93414,
+    "configSourceShipId": "GPSD",
+    "customValues": {
+      "Propeller Pitch": "0.004515"
+    },
+    "fuels": [
+      {
+        "code": "F01",
+        "initialRob": 100,
+        "lcv": 0.406
+      },
+      {
+        "code": "F03",
+        "initialRob": 482.6,
+        "lcv": 0.427
+      },
+      {
+        "code": "F05",
+        "initialRob": 0,
+        "lcv": 0.5
+      }
+    ],
+    "waters": [
+      {
+        "code": "W01",
+        "initialRob": 500
+      }
+    ]
+  },
+  {
+    "yard": "HHI",
+    "hullNo": "3294",
+    "name": "PUTERI SAADONG",
+    "code": "GPSD",
+    "class": "BV+LR",
+    "flag": "MARSHALL ISLAND",
+    "deliveryDate": "2024-02-01",
+    "cargo": "LNG",
+    "dwt": 93414,
+    "equipment": [
+      {
+        "code": "E01",
+        "installed": true,
+        "count": 2,
+        "validFuels": [
+          "F03",
+          "F01",
+          "F05"
+        ]
+      },
+      {
+        "code": "E03",
+        "installed": true,
+        "count": 3,
+        "validFuels": [
+          "F03",
+          "F05",
+          "F01"
+        ]
+      },
+      {
+        "code": "E05",
+        "installed": true,
+        "count": 2,
+        "validFuels": [
+          "F01",
+          "F03",
+          "F05"
+        ]
+      },
+      {
+        "code": "E06",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03"
+        ]
+      },
+      {
+        "code": "E07",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03",
+          "F05"
+        ]
+      },
+      {
+        "code": "E09",
+        "installed": true,
+        "count": 2,
+        "validFuels": []
+      },
+      {
+        "code": "E08",
+        "installed": true,
+        "count": 1,
+        "validFuels": [
+          "F03"
+        ]
+      },
+      {
+        "code": "E10",
+        "installed": true,
+        "count": 1,
+        "validFuels": []
+      }
+    ],
+    "fuels": [
+      {
+        "code": "F01",
+        "initialRob": 2298.3,
+        "lcv": 0.406
+      },
+      {
+        "code": "F03",
+        "initialRob": 1000,
+        "lcv": 0.427
+      },
+      {
+        "code": "F05",
+        "initialRob": 0,
+        "lcv": 0.5
+      }
+    ],
+    "lubeOils": [
+      {
+        "code": "L03",
+        "initialRob": 1000
+      },
+      {
+        "code": "L04",
+        "initialRob": 1000
+      }
+    ],
+    "tankCounts": {
+      "cargo": 4,
+      "ballast": 0
+    },
+    "waters": [
+      {
+        "code": "W01",
+        "initialRob": 100
+      }
+    ],
+    "customValues": {
+      "Propeller Pitch": "0.004515"
+    }
+  },
+  {
+    "yard": "HHI",
+    "hullNo": "3297",
+    "imoNo": "9947598",
+    "name": "PUTERI LEDANG",
+    "code": "PLD",
+    "class": "DNV+KR",
+    "flag": "MARSHALL ISLAND",
+    "deliveryDate": "2024-05-01",
+    "cargo": "LNG",
+    "dwt": 93414,
+    "configSourceShipId": "GPSD",
+    "customValues": {
+      "Propeller Pitch": "0.004515"
+    },
+    "fuels": [
+      {
+        "code": "F01",
+        "initialRob": 100,
+        "lcv": 0.406
+      },
+      {
+        "code": "F03",
+        "initialRob": 482.6,
+        "lcv": 0.427
+      },
+      {
+        "code": "F05",
+        "initialRob": 0,
+        "lcv": 0.5
+      }
+    ],
+    "waters": [
+      {
+        "code": "W01",
+        "initialRob": 500
       }
     ]
   }

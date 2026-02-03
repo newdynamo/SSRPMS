@@ -74,7 +74,12 @@ const resolveShipConfig = (targetShip: Ship, allShips: Ship[]): Ship => {
                     const targetW = targetShip.waters?.find(t => t.code === srcW.code);
                     return { ...srcW, initialRob: targetW?.initialRob ?? srcW.initialRob };
                 }),
-                tankCounts: sourceShip.tankCounts // Tank counts are structural
+                tankCounts: sourceShip.tankCounts, // Tank counts are structural
+                // Merge Custom Values (Inherit Pitch, etc.)
+                customValues: {
+                    ...sourceShip.customValues,
+                    ...targetShip.customValues
+                }
             };
         }
     }
@@ -282,163 +287,140 @@ const NewReport: React.FC = () => {
 
         // 1. Identify Codes
         const TOTAL_REVO_CODE = 'R133';
-        const STOP_REVO_CODE = 'R201';
         const START_REVO_CODE = 'R037';
+        const ENG_MILE_CODE = 'R073'; // Today Eng.Mile
+        const TOTAL_ENG_MILE_CODE = 'R203'; // Total Eng.Mile
+        const TODAY_DIST_CODE = 'R013';
+        const TOTAL_DIST_CODE = 'R202'; // Total Distance (Was R201: Stop Revo)
+        const TOTAL_SLIP_CODE = 'R204'; // Total Slip
+        const TODAY_SLIP_CODE = 'R081';
 
-        // Find Eng.Mile code dynamically (looks for "Eng.Mile" or specific port/stbd if needed)
-        // We look for a code named exactly "Eng.Mile" first, then fallback to others if needed.
-        // Based on user request, it's likely "Eng.Mile".
-        const engMileCode = codes?.rCodes?.find(r =>
-            ['Today Eng.Mile', 'Eng.Mile', 'Eng.Mile(STBD)'].includes(r.name)
-        )?.code;
-
-        if (!engMileCode) return;
-
-        // 2. Get Propeller Pitch from Custom Values
-        // "Propeller Pitch" is the key in customValues
+        // 2. Get Propeller Pitch
+        // Ensure exact key match with Settings
         const pitchStr = activeShip.customValues?.['Propeller Pitch'];
         const pitch = parseFloat(pitchStr || '0');
 
-        // If pitch is not defined or 0, we cannot calculate
         if (!pitch) return;
 
-        // 3. Get Current Revo (Total or Stop)
-        // Priority: R133 (Total) > R201 (Stop)
-        // CHECK FOR MULTIPLE ENGINES (M/E)
+        // 3. Engine Config
         const meEq = activeShip.equipment?.find(e => e.code === 'E01' && e.installed);
         const isMultiMe = meEq && meEq.count > 1;
+        const engineCount = isMultiMe ? meEq.count : 1;
 
-        let diffToday = 0;
-        let diffTotal = 0; // For Total Mile
+        // 4. Calculate TODAY Eng.Mile (Diff from Last Report)
 
-        if (isMultiMe) {
-            // MULTI-ENGINE LOGIC
-            let totalDiffSum = 0;
-            let totalCurrentSum = 0; // Just for Total calculation if valid
-            let activeEnginesForAvg = isMultiMe ? meEq.count : 1; // Divisor for Average
+        let totalDiffSum = 0;
+        let validEngines = 0;
+        let calculatedTodayMile = 0;
 
-            for (let i = 1; i <= meEq.count; i++) {
-                const key = `${TOTAL_REVO_CODE}_${i}`;
-                const curStr = itemValues[key];
-                // Fallback to single key if missing? No, user enters split data.
-                if (curStr) {
-                    const cur = parseFloat(curStr.toString());
-                    totalCurrentSum += cur;
+        for (let i = 1; i <= engineCount; i++) {
+            const suffix = isMultiMe ? `_${i}` : '';
+            const legacyKey = `${TOTAL_REVO_CODE}${suffix}`; // R133 or R133_1
+            const rhKey = `RH_${TOTAL_REVO_CODE}_E01_${i}`; // RH_R133_E01_1
 
-                    // Get Last Report Value
-                    let lastVal = 0;
-                    if (lastReport) {
-                        // Try split key first, then fallback to single R133 (legacy data migration)
-                        // If migrating from 1 -> 2, R133 might exist. But hard to split. 
-                        // Assume user manages transition for first report.
-                        const lastStr = lastReport.items?.[key];
-                        if (lastStr) {
-                            lastVal = parseFloat(lastStr.toString());
-                        }
-                    }
+            // Start Revo Input (Fallback for First Report / No Previous)
+            // Rendered via explicit Start Revo block: R037_{unitNum} (Forced Standard)
+            // Also check older formats for backward compatibility
+            const startRevoKeyRH = `RH_${START_REVO_CODE}_E01_${i}`; // RH_R037_E01_1
+            const startRevoKeyStd = `${START_REVO_CODE}_${i}`;       // R037_1 (Standardized)
+            const startRevoKeyLeg = `${START_REVO_CODE}${suffix}`;   // R037 (if single)
 
-                    if (cur > 0 && lastVal > 0) {
-                        const d = cur - lastVal;
-                        if (d >= 0) totalDiffSum += d;
-                    }
-                }
-            }
+            const startRevoStr = itemValues[startRevoKeyStd] || itemValues[startRevoKeyRH] || itemValues[startRevoKeyLeg];
+            const startRevo = parseFloat(startRevoStr?.toString() || '0');
 
-            // Calculation Strategy
-            // 1. One Engine Operation (Sum)
-            // 2. Normal (Average)
-            if (isOneEngineOp) {
-                diffToday = totalDiffSum; // SUM
-            } else {
-                diffToday = totalDiffSum / activeEnginesForAvg; // AVERAGE
-            }
+            // Current Value (Try RH key first, then legacy)
+            const curStr = itemValues[rhKey] || itemValues[legacyKey];
+            const cur = parseFloat(curStr?.toString() || '0');
 
-            // Note: Total Eng.Mile logic for multi-engine is complex (needs multi-start revs). 
-            // For now, disabling Total Eng.Mile auto-calc for Multi-Engine unless explicitly requested.
-            // Or use similar average logic?
-
-        } else {
-            // SINGLE ENGINE LOGIC (Legacy)
-            let currentRevoStr = itemValues[TOTAL_REVO_CODE] || itemValues[STOP_REVO_CODE];
-            if (!currentRevoStr) return; // No current revo entered yet
-            const currentRevo = parseFloat(currentRevoStr.toString());
-
-            let lastReportTotal = 0;
+            // Last Report Value
+            let last = 0;
             if (lastReport) {
-                const lastTotal = lastReport.items?.[TOTAL_REVO_CODE];
-                const lastStop = lastReport.items?.[STOP_REVO_CODE];
-                const lastRevoStr = lastTotal || lastStop;
-                if (lastRevoStr) {
-                    lastReportTotal = parseFloat(lastRevoStr.toString());
+                const lastStr = lastReport.items?.[rhKey] || lastReport.items?.[legacyKey];
+                last = parseFloat(lastStr?.toString() || '0');
+            }
+
+            // Fallback: If no last value from report, use Start Revo Input
+            if (last === 0 && startRevo > 0) {
+                last = startRevo;
+            }
+
+            // Calculate Diff (Allow 0 if properly initialized)
+            // If no last report, diff is current value (Total from 0) - check for validity
+
+            // Only proceed if we have a valid CURRENT value (assuming user must enter Total Revo)
+            // If last is 0 and startRevo is 0, then we might produce a huge number if we just do cur - last.
+            // Safety: If last is 0, and cur > 1000 (arbitrary large number implying not a fresh counter), maybe skip?
+            // Actually, simply ensuring 'last' is determined correctly is key. 
+            // If last is still 0 here, it means no history AND no start revo entered.
+            // In that case, we probably shouldn't calculate a huge mile from 0.
+
+            if (cur > 0 && last > 0 && cur >= last) { // Ensure last is valid (>0) to avoid jumping from 0
+                const diff = cur - last;
+                if (diff >= 0) {
+                    totalDiffSum += diff;
+                    validEngines++;
                 }
-            }
-            if (lastReportTotal > 0) {
-                diffToday = currentRevo - lastReportTotal;
-            }
-
-            // Total Logic
-            let startRevo = 0;
-            const inputStartStr = itemValues[START_REVO_CODE];
-            if (inputStartStr) {
-                startRevo = parseFloat(inputStartStr.toString());
-            }
-            diffTotal = currentRevo - startRevo;
-        }
-
-        // Find Total Eng.Mile code dynamically (looks for "Total Eng.Mile" or "Distance" or "Distance(STBD)" etc)
-        const totalEngMileCode = codes?.rCodes?.find(r =>
-            ['Total Eng.Mile', 'Distance', 'Distance(STBD)'].includes(r.name)
-        )?.code;
-
-        // 5. Calculate "Today Eng.Mile" (Distance from Last Report)
-        // Formula: (Current - LastReportTotal) * Pitch
-
-        if (engMileCode && diffToday >= 0) { // Using calculated diffToday from above
-            const todayMileVal = diffToday * pitch;
-            // Additional check: If One Engine Op, wait, logic handled in diffToday calculation.
-
-            const formattedToday = todayMileVal.toFixed(2);
-            if (itemValues[engMileCode] !== formattedToday) {
-                setItemValues(prev => ({ ...prev, [engMileCode]: formattedToday }));
+            } else if (cur >= 0 && last >= 0 && lastReport && startRevo === 0) {
+                // Legacy path: if valid lastReport exists but had 0 value? 
+                // Or if we really want to allow 0->X? rare.
+                // Sticking to strict (last > 0) is safer for Revo Counters.
             }
         }
 
-        // 6. Calculate "Total Eng.Mile" (Distance from Start Revs)
-        // Formula: (Current - StartRevo) * Pitch
-        if (totalEngMileCode && !isMultiMe && diffTotal >= 0) { // Only for single engine for now
-            // Note: If startRevo is 0 (missing input), this becomes absolute total (Current * Pitch)
-            const totalMileVal = diffTotal * pitch;
-            const formattedTotal = totalMileVal.toFixed(2);
-
-            setItemValues(prev => {
-                if (prev[totalEngMileCode] !== formattedTotal) {
-                    return { ...prev, [totalEngMileCode]: formattedTotal };
+        if (validEngines > 0) {
+            let diffToUse = 0;
+            if (isMultiMe) {
+                if (isOneEngineOp) {
+                    // Sum mode
+                    diffToUse = totalDiffSum;
+                } else {
+                    // Average mode (Standard)
+                    // If both engines running, share the load for distance. 
+                    // Verify if validEngines is actually the number of RUNNING engines or just valid inputs.
+                    // Assuming valid inputs implies running for calculation purposes.
+                    diffToUse = totalDiffSum / validEngines;
                 }
-                return prev;
-            });
+            } else {
+                diffToUse = totalDiffSum;
+            }
+
+            const todayMile = diffToUse * pitch; // Pitch is miles per revolution (usually small, e.g. 0.004)
+            calculatedTodayMile = todayMile;
+
+            // Validation: If > 1000, display "Error" (likely invalid or missing history causing huge jump from 0)
+            // But if users enter correct Start Revo, it should be fine.
+            const formatted = todayMile > 1000 ? "Error" : todayMile.toFixed(2);
+
+            if (itemValues[ENG_MILE_CODE] !== formatted) {
+                setItemValues(prev => ({ ...prev, [ENG_MILE_CODE]: formatted }));
+            }
+        } else if (!isMultiMe && totalDiffSum > 0) {
+            // Fallback for Single Engine if validEngines logic missed it (unlikely but safe)
+            const todayMile = totalDiffSum * pitch;
+            calculatedTodayMile = todayMile;
+            const formatted = todayMile > 1000 ? "Error" : todayMile.toFixed(2);
+            if (itemValues[ENG_MILE_CODE] !== formatted) {
+                setItemValues(prev => ({ ...prev, [ENG_MILE_CODE]: formatted }));
+            }
         }
 
-        // 7. Calculate "Today Slip"
-        // Formula: (TodayEngMile - TodayDistance) / TodayEngMile * 100
-        const todayDistCode = codes?.rCodes?.find(r => r.name === 'Today Distance' || r.code === 'R013')?.code;
-        const todaySlipCode = codes?.rCodes?.find(r => r.name === 'Today Slip' || r.name === 'Slip' || r.code === 'R081')?.code;
+        // 5. Calculate TOTAL Eng.Mile (Last Event + Today)
+        let currentTotalEngMile = 0;
+        {
+            let lastTotalMile = 0;
+            if (lastReport && lastReport.items?.[TOTAL_ENG_MILE_CODE]) {
+                lastTotalMile = parseFloat(lastReport.items[TOTAL_ENG_MILE_CODE] as string) || 0;
+            }
 
-        if (engMileCode && todayDistCode && todaySlipCode) {
-            const todayEngMileStr = itemValues[engMileCode];
-            const todayDistStr = itemValues[todayDistCode];
+            if (calculatedTodayMile > 0 || lastTotalMile > 0) {
+                const newTotal = lastTotalMile + calculatedTodayMile;
+                currentTotalEngMile = newTotal;
+                const formatted = newTotal.toFixed(2);
 
-            // Only calculate if we have values
-            if (todayEngMileStr) {
-                const todayEngMile = parseFloat(todayEngMileStr.toString());
-                const todayDist = todayDistStr ? parseFloat(todayDistStr.toString()) : 0;
-
-                if (todayEngMile > 0) {
-                    const slip = ((todayEngMile - todayDist) / todayEngMile) * 100;
-                    const formattedSlip = slip.toFixed(2);
-
+                if (itemValues[TOTAL_ENG_MILE_CODE] !== formatted) {
                     setItemValues(prev => {
-                        if (prev[todaySlipCode] !== formattedSlip) {
-                            return { ...prev, [todaySlipCode]: formattedSlip };
+                        if (prev[TOTAL_ENG_MILE_CODE] !== formatted) {
+                            return { ...prev, [TOTAL_ENG_MILE_CODE]: formatted };
                         }
                         return prev;
                     });
@@ -446,7 +428,68 @@ const NewReport: React.FC = () => {
             }
         }
 
-    }, [itemValues, activeShip, lastReport, codes, isOneEngineOp]); // Add isOneEngineOp dependency
+        // 6. Calculate TOTAL Distance (Last Event + Today)
+        let currentTotalDist = 0;
+        {
+            let lastTotalDist = 0;
+            if (lastReport && lastReport.items?.[TOTAL_DIST_CODE]) {
+                lastTotalDist = parseFloat(lastReport.items[TOTAL_DIST_CODE] as string) || 0;
+            }
+
+            const todayDistStr = itemValues[TODAY_DIST_CODE];
+            const todayDist = parseFloat(todayDistStr?.toString() || '0');
+
+            if (todayDist > 0 || lastTotalDist > 0) {
+                const newTotal = lastTotalDist + todayDist;
+                currentTotalDist = newTotal;
+                const formatted = newTotal.toFixed(2);
+
+                if (itemValues[TOTAL_DIST_CODE] !== formatted) {
+                    setItemValues(prev => {
+                        if (prev[TOTAL_DIST_CODE] !== formatted) {
+                            return { ...prev, [TOTAL_DIST_CODE]: formatted };
+                        }
+                        return prev;
+                    });
+                }
+            }
+        }
+
+        // 7. Calculate SLIP
+        // Formula: (TodayEngMile - TodayDistance) / TodayEngMile * 100
+        const todayEngMileStr = itemValues[ENG_MILE_CODE];
+
+        if (todayEngMileStr && itemValues[TODAY_DIST_CODE]) {
+            const engMile = parseFloat(todayEngMileStr.toString());
+            const dist = parseFloat(itemValues[TODAY_DIST_CODE].toString());
+
+            if (engMile > 0) {
+                const slip = ((engMile - dist) / engMile) * 100;
+                const fmtSlip = slip.toFixed(2);
+
+                if (itemValues[TODAY_SLIP_CODE] !== fmtSlip) {
+                    setItemValues(prev => ({ ...prev, [TODAY_SLIP_CODE]: fmtSlip }));
+                }
+            }
+        }
+
+        // 8. Calculate TOTAL SLIP
+        // Formula: (TotalEngMile - TotalDistance) / TotalEngMile * 100
+        if (currentTotalEngMile > 0) {
+            const totalSlip = ((currentTotalEngMile - currentTotalDist) / currentTotalEngMile) * 100;
+            const fmtTotalSlip = totalSlip.toFixed(2);
+
+            if (itemValues[TOTAL_SLIP_CODE] !== fmtTotalSlip) {
+                setItemValues(prev => {
+                    if (prev[TOTAL_SLIP_CODE] !== fmtTotalSlip) {
+                        return { ...prev, [TOTAL_SLIP_CODE]: fmtTotalSlip };
+                    }
+                    return prev;
+                });
+            }
+        }
+
+    }, [itemValues, activeShip, lastReport, isOneEngineOp]); // Re-run when inputs change
 
     // OPERATION TIME (R200) Auto-Calculation
     useEffect(() => {
@@ -509,9 +552,12 @@ const NewReport: React.FC = () => {
         const currentDateStr = itemValues['R003'] as string;
 
         // Helper to parse date string (YYYY-MM-DD HH:mm to TS)
+        // Helper to parse date string (YYYY-MM-DD HH:mm or YYYY.MM.DD HH:mm to TS)
         const parseDate = (d: string | undefined) => {
             if (!d) return 0;
-            const date = new Date(d.replace(' ', 'T'));
+            // distinct handling for DOT format which causes Invalid Date in some envs
+            const normalized = d.replace(/\./g, '-').replace(' ', 'T');
+            const date = new Date(normalized);
             return isNaN(date.getTime()) ? 0 : date.getTime();
         };
 
@@ -538,7 +584,65 @@ const NewReport: React.FC = () => {
                 const tB = parseDate(b.items['R003'] as string || b.submittedAt);
                 return tB - tA;
             });
-            setLastReport(candidates[0]);
+
+            // FIND LAST VALID ENGINE REPORT
+            // Iterate to find the first report that has R133 (Total Revo)
+            // This skips reports like "At Sea" updates that might just be position updates without engine data
+            const lastEngineReport = candidates.find(r => {
+                // Check all possible keys for Total Revo (R133)
+                // New Format: RH_R133_E01_1
+                // Legacy Multi: R133_1
+                // Legacy Single: R133
+                const valNew = r.items['RH_R133_E01_1'];
+                if (valNew !== undefined && valNew !== null && valNew !== '') return true;
+
+                const valLegMulti = r.items['R133_1'];
+                if (valLegMulti !== undefined && valLegMulti !== null && valLegMulti !== '') return true;
+
+                const valLegSingle = r.items['R133'];
+                if (valLegSingle !== undefined && valLegSingle !== null && valLegSingle !== '') return true;
+
+                return false;
+            });
+
+            if (lastEngineReport) {
+                setLastReport(lastEngineReport);
+
+                // AUTO-FILL START REVO (R037) from Previous Total Revo (R133)
+                // This ensures the user sees the start value and the calculation uses it.
+                if (activeShip?.equipment) {
+                    const meEq = activeShip.equipment.find(e => e.code === 'E01' && e.installed);
+                    if (meEq) {
+                        const count = meEq.count;
+                        setItemValues(prev => {
+                            const next = { ...prev };
+                            let changed = false;
+
+                            for (let i = 1; i <= count; i++) {
+                                const suffix = count > 1 ? `_${i}` : '';
+                                const targetKey = `R037${suffix}`; // Target Start Revo Key (Legacy Standard)
+
+                                // Don't overwrite if user already entered something
+                                if (!next[targetKey]) {
+                                    // Source Key from Last Report (Total Revo)
+                                    const srcKeyLeg = `R133${suffix}`;
+                                    const srcKeyNew = `RH_R133_E01_${i}`;
+                                    const val = lastEngineReport.items[srcKeyNew] || lastEngineReport.items[srcKeyLeg];
+
+                                    if (val) {
+                                        next[targetKey] = val;
+                                        changed = true;
+                                    }
+                                }
+                            }
+                            return changed ? next : prev;
+                        });
+                    }
+                }
+            } else {
+                // Fallback to immediate previous if no engine report found (e.g. first report or history gap)
+                setLastReport(candidates[0]);
+            }
         } else {
             setLastReport(null);
         }
@@ -565,6 +669,103 @@ const NewReport: React.FC = () => {
             }));
         }
     }, [lastReport]);
+
+    // Effect: Fuel Status Auto-Calculation (ROB = Last ROB + Bunkered - Consumed)
+    useEffect(() => {
+        if (!activeShip?.fuels) return;
+
+        let hasUpdates = false;
+        const newValues = { ...itemValues };
+
+        activeShip.fuels.forEach(fuel => {
+            const fCode = fuel.code;
+            const robKey = `R030_${fCode}`;   // Current ROB
+            const consKey = `R031_${fCode}`;  // Consumed
+            const bunkerKey = `R056_${fCode}`; // Bunkered
+
+            // 1. Get Last ROB
+            let prevRob = 0;
+            if (lastReport && lastReport.items?.[robKey]) {
+                prevRob = parseFloat(lastReport.items[robKey] as string) || 0;
+            } else {
+                prevRob = fuel.initialRob || 0;
+            }
+
+            // 2. Get Current Input Values
+            const bunkered = parseFloat(itemValues[bunkerKey]?.toString() || '0') || 0;
+            const consumed = parseFloat(itemValues[consKey]?.toString() || '0') || 0;
+
+            // 3. Calculate New ROB
+            // Formula: Prev + Bunker - Consumed
+            let calcedRob = prevRob + bunkered - consumed;
+
+            // SPECIAL: Force LNG (F05) and LPG (F06, F07) to 0 as requested by user
+            if (['F05', 'F06', 'F07'].includes(fCode)) {
+                calcedRob = 0;
+            }
+
+            const formattedRob = calcedRob.toFixed(2);
+
+            // 4. Update if different
+            if (itemValues[robKey] !== formattedRob) {
+                newValues[robKey] = formattedRob;
+                hasUpdates = true;
+            }
+        });
+
+        if (hasUpdates) {
+            setItemValues(newValues);
+        }
+    }, [activeShip, lastReport, itemValues]); // Deep dependency on itemValues is okay as we check for diff
+
+    // Effect: Sum Equipment Fuel Consumption (CONS_) -> Total Consumption (R031_)
+    useEffect(() => {
+        if (!activeShip?.equipment?.length) return;
+
+        // Group sums by Fuel Code
+        // Key: F01, F02, ... Value: Sum
+        const sums: Record<string, number> = {};
+
+        // Iterate itemValues to find CONS_ keys
+        Object.keys(itemValues).forEach(key => {
+            if (key.startsWith('CONS_')) {
+                // Key format: CONS_E01_1_F01
+                const parts = key.split('_');
+                // parts[0]="CONS", parts[1]="E01", parts[2]="1", parts[3]="F01"
+                if (parts.length >= 4) {
+                    const fCode = parts[3];
+                    const val = parseFloat(itemValues[key]?.toString() || '0');
+                    if (!isNaN(val)) {
+                        sums[fCode] = (sums[fCode] || 0) + val;
+                    }
+                }
+            }
+        });
+
+        const newValues = { ...itemValues };
+        let hasUpdates = false;
+
+        // Update R031_{fCode}
+        activeShip.fuels?.forEach(fuel => {
+            const fCode = fuel.code;
+            const sum = sums[fCode] || 0;
+            const targetKey = `R031_${fCode}`;
+            const currentValStr = itemValues[targetKey]?.toString() || '0';
+            const currentVal = parseFloat(currentValStr);
+
+            // Allow small epsilon difference to avoid loops
+            if (Math.abs(sum - currentVal) > 0.001) {
+                newValues[targetKey] = sum.toFixed(2);
+                hasUpdates = true;
+            }
+        });
+
+        if (hasUpdates) {
+            setItemValues(newValues);
+        }
+    }, [itemValues, activeShip]); // Runs when inputs change
+
+
 
     useEffect(() => {
         const load = async () => {
@@ -920,6 +1121,83 @@ const NewReport: React.FC = () => {
 
         const renderItems = (items: RCode[]) => {
             return items.map(r => {
+                // SPECIAL: Total Distance (R202) -> Read-Only
+                if (r.code === 'R202') {
+                    return (
+                        <div key={r.code} className="space-y-1 group">
+                            <label className="block text-sm font-medium text-slate-300 group-hover:text-emerald-400 transition-colors truncate" title={r.name}>{r.name}</label>
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    step="any"
+                                    className="w-full bg-ocean-900 border border-ocean-600 rounded-lg pl-3 pr-8 py-3 text-white focus:ring-0 outline-none transition-all placeholder-slate-700 cursor-not-allowed opacity-70 text-sm"
+                                    value={itemValues[r.code] || ''}
+                                    readOnly={true}
+                                    placeholder="0.00"
+                                />
+                                {r.unit && (
+                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-slate-500 pointer-events-none">
+                                        {r.unit}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    );
+                }
+
+                // SPECIAL: Pair Total Eng.Mile (R203) and Total Slip (R204)
+                if (r.code === 'R204' && items.some(i => i.code === 'R203')) return null;
+
+                if (r.code === 'R203') {
+                    const slipItem = items.find(i => i.code === 'R204');
+                    if (slipItem) {
+                        return (
+                            <div key="total_eng_slip_pair" className="col-span-1 space-y-3 bg-ocean-900/20 p-4 rounded-xl border border-ocean-700/50">
+                                {/* Spacer to match Total Revo Header */}
+                                <div className="flex items-center justify-between">
+                                    <label className="block text-sm font-medium text-transparent uppercase tracking-wider select-none">&nbsp;</label>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {/* Left: Total Eng.Mile (R203) */}
+                                    <div className="space-y-1 group">
+                                        <label className="block text-sm font-medium text-slate-300 group-hover:text-emerald-400 transition-colors truncate" title={r.name}>{r.name}</label>
+                                        <div className="relative">
+                                            <input
+                                                type="number"
+                                                step="any"
+                                                className="w-full bg-ocean-900 border border-ocean-600 rounded-lg pl-3 pr-8 py-3 text-white focus:ring-0 outline-none transition-all placeholder-slate-700 cursor-not-allowed opacity-70 text-sm"
+                                                value={itemValues[r.code] || ''}
+                                                readOnly={true}
+                                                placeholder="0.00"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Right: Total Slip (R204) */}
+                                    <div className="space-y-1 group">
+                                        <label className="block text-sm font-medium text-slate-300 group-hover:text-emerald-400 transition-colors truncate" title={slipItem.name}>{slipItem.name}</label>
+                                        <div className="relative">
+                                            <input
+                                                type="number"
+                                                step="any"
+                                                className="w-full bg-ocean-900 border border-ocean-600 rounded-lg pl-3 pr-8 py-3 text-white focus:ring-0 outline-none transition-all placeholder-slate-700 cursor-not-allowed opacity-70 text-sm"
+                                                value={itemValues[slipItem.code] || ''}
+                                                readOnly={true}
+                                                placeholder="0.00"
+                                            />
+                                            {slipItem.unit && (
+                                                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-500 pointer-events-none">
+                                                    {slipItem.unit}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    }
+                }
+
                 // SPECIAL: Pair Today Eng.Mile (R073) and Today Slip (R081) to reduce width (1/2 size)
                 // If this is R081 and R073 exists, skip (handled by R073)
                 if (r.code === 'R081' && items.some(i => i.code === 'R073')) return null;
@@ -928,42 +1206,45 @@ const NewReport: React.FC = () => {
                     const slipItem = items.find(i => i.code === 'R081');
                     if (slipItem) {
                         return (
-                            <div key="eng_slip_pair" className="grid grid-cols-2 gap-4">
-                                {/* Left: Eng.Mile (R073) */}
-                                <div className="space-y-1 group">
-                                    <label className="block text-sm font-medium text-slate-300 group-hover:text-emerald-400 transition-colors truncate" title={r.name}>{r.name}</label>
-                                    <div className="relative">
-                                        <input
-                                            type="number"
-                                            step="any"
-                                            className="w-full bg-ocean-900 border border-ocean-600 rounded-lg pl-3 pr-8 py-3 text-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all hover:border-ocean-500 placeholder-slate-700 text-sm"
-                                            value={itemValues[r.code] || ''}
-                                            onChange={e => {
-                                                const newValues = { ...itemValues, [r.code]: e.target.value };
-                                                setItemValues(newValues);
-                                            }}
-                                            placeholder="0.00"
-                                        />
-                                    </div>
+                            <div key="eng_slip_pair" className="col-span-1 space-y-3 bg-ocean-900/20 p-4 rounded-xl border border-ocean-700/50">
+                                {/* Spacer to match Total Revo Header */}
+                                <div className="flex items-center justify-between">
+                                    <label className="block text-sm font-medium text-transparent uppercase tracking-wider select-none">&nbsp;</label>
                                 </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {/* Left: Eng.Mile (R073) */}
+                                    <div className="space-y-1 group">
+                                        <label className="block text-sm font-medium text-slate-300 group-hover:text-emerald-400 transition-colors truncate" title={r.name}>{r.name}</label>
+                                        <div className="relative">
+                                            <input
+                                                type="number"
+                                                step="any"
+                                                className="w-full bg-ocean-900 border border-ocean-600 rounded-lg pl-3 pr-8 py-3 text-white focus:ring-0 outline-none transition-all placeholder-slate-700 cursor-not-allowed opacity-70 text-sm"
+                                                value={itemValues[r.code] || ''}
+                                                readOnly={true}
+                                                placeholder="0.00"
+                                            />
+                                        </div>
+                                    </div>
 
-                                {/* Right: Slip (R081) */}
-                                <div className="space-y-1 group">
-                                    <label className="block text-sm font-medium text-slate-300 group-hover:text-emerald-400 transition-colors truncate" title={slipItem.name}>{slipItem.name}</label>
-                                    <div className="relative">
-                                        <input
-                                            type="number"
-                                            step="any"
-                                            className="w-full bg-ocean-900 border border-ocean-600 rounded-lg pl-3 pr-8 py-3 text-white focus:ring-0 outline-none transition-all placeholder-slate-700 cursor-not-allowed opacity-70 text-sm"
-                                            value={itemValues[slipItem.code] || ''}
-                                            readOnly={true}
-                                            placeholder="0.00"
-                                        />
-                                        {slipItem.unit && (
-                                            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-500 pointer-events-none">
-                                                {slipItem.unit}
-                                            </span>
-                                        )}
+                                    {/* Right: Slip (R081) */}
+                                    <div className="space-y-1 group">
+                                        <label className="block text-sm font-medium text-slate-300 group-hover:text-emerald-400 transition-colors truncate" title={slipItem.name}>{slipItem.name}</label>
+                                        <div className="relative">
+                                            <input
+                                                type="number"
+                                                step="any"
+                                                className="w-full bg-ocean-900 border border-ocean-600 rounded-lg pl-3 pr-8 py-3 text-white focus:ring-0 outline-none transition-all placeholder-slate-700 cursor-not-allowed opacity-70 text-sm"
+                                                value={itemValues[slipItem.code] || ''}
+                                                readOnly={true}
+                                                placeholder="0.00"
+                                            />
+                                            {slipItem.unit && (
+                                                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-500 pointer-events-none">
+                                                    {slipItem.unit}
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -974,6 +1255,45 @@ const NewReport: React.FC = () => {
                 // FILTER OUT Fuel Status Codes from here (Already rendered)
                 // Exception: R031 is needed ONLY for the Equipment Breakdown Table
                 if (['R030', 'R056'].includes(r.code)) return null;
+
+                // SPECIAL HANDLING: R037 (Start Revo Counter) -> Single or Multiple
+                // Aligning key format with R133 (Legacy: R037_1) to ensure consistency in calculation
+                if (r.code === 'R037') {
+                    const meEq = activeShip?.equipment?.find(e => e.code === 'E01' && e.installed);
+                    if (meEq) {
+                        return (
+                            <div key={r.code} className="col-span-1 md:col-span-2 space-y-3 bg-ocean-900/20 p-4 rounded-xl border border-ocean-700/50">
+                                <label className="block text-sm font-medium text-slate-300 group-hover:text-emerald-400 transition-colors uppercase tracking-wider">{r.name}</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {Array.from({ length: meEq.count }).map((_, i) => {
+                                        const unit = i + 1;
+                                        const fieldKey = `${r.code}_${unit}`;
+                                        return (
+                                            <div key={fieldKey} className="space-y-1">
+                                                <label className="text-xs text-slate-500 font-mono">M/E #{unit} <span className="opacity-50">({fieldKey})</span></label>
+                                                <div className="relative">
+                                                    <input
+                                                        type="number"
+                                                        step="any"
+                                                        className="w-full bg-ocean-900 border border-ocean-600 rounded-lg pl-3 pr-10 py-2.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all hover:border-ocean-500 placeholder-slate-700 text-sm"
+                                                        value={itemValues[fieldKey] || ''}
+                                                        onChange={e => setItemValues(prev => ({ ...prev, [fieldKey]: e.target.value }))}
+                                                        placeholder="0.00"
+                                                    />
+                                                    {r.unit && (
+                                                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-slate-500 pointer-events-none">
+                                                            {r.unit}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        );
+                    }
+                }
 
                 // SPECIAL HANDLING: R133 (Total Revo Counter) -> Single or Multiple
                 if (r.code === 'R133') {
@@ -1042,7 +1362,7 @@ const NewReport: React.FC = () => {
                     'R078': ['E01'], // M/E Power
                     'R070': ['E01'], // Stop.Eng -> M/E
                     'R133': ['E01'], // Total Rev -> M/E
-                    'R037': ['E01'], // Start Counter -> M/E
+                    // 'R037': ['E01'], // REMOVED: Handled by explicit block with Standard Key (R037_X)
                     'R085': ['E02', 'E05'], // BLR R/H -> M/BLR or A/BLR
                     'R113': ['E03'], // Gen R/H -> D/G
                     'R114': ['E03'], // D/G Power
@@ -1053,15 +1373,10 @@ const NewReport: React.FC = () => {
                     'R112': ['E10'], // ALS -> ALS
                 };
 
-                // 2. Define Display Names for Equipment
-                const EQ_NAMES: Record<string, string> = {
-                    'E01': 'M/E',
-                    'E02': 'M/BLR',
-                    'E03': 'D/G',
-                    'E04': 'T/G',
-                    'E05': 'A/BLR',
-                    'E06': 'IGG',
-                    'E08': 'GCU',
+                // 2. Define Display Names from Config
+                const getEqName = (code: string) => {
+                    const e = codes?.eCodes?.find(ec => ec.code === code);
+                    return e ? `${e.code} - ${e.name}` : code;
                 };
 
                 // SPECIAL HANDLING: Running Hours & Stop Expansion
@@ -1076,8 +1391,9 @@ const NewReport: React.FC = () => {
                                 const fieldKey = `RH_${r.code}_${eq.code}_${unitNum}`;
                                 return (
                                     <div key={fieldKey} className="space-y-1 group">
+
                                         <label className="block text-sm font-medium text-slate-300 group-hover:text-emerald-400 transition-colors">
-                                            {EQ_NAMES[eq.code] || eq.code} No.{unitNum} {r.name}
+                                            {getEqName(eq.code)} No.{unitNum} {r.name}
                                         </label>
                                         <div className="relative">
                                             <input
@@ -1189,7 +1505,7 @@ const NewReport: React.FC = () => {
                                                         return (
                                                             <tr key={`${eq.code}_${unitNum}`} className="hover:bg-ocean-800/50 transition-colors group">
                                                                 <td className="px-6 py-4 font-medium text-slate-300">
-                                                                    {EQ_NAMES[eq.code] || eq.code} <span className="text-slate-500">#{unitNum}</span>
+                                                                    <span className="font-bold text-white">{getEqName(eq.code)}</span> <span className="text-slate-500">#{unitNum}</span>
                                                                 </td>
                                                                 {allFuels.map(fCode => {
                                                                     // Check if this fuel is valid for this equipment

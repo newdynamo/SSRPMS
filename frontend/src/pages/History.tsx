@@ -194,7 +194,7 @@ const History: React.FC = () => {
                         onChange={handleImport}
                     />
                     <button
-                        onClick={() => codes && generateExcelTemplate(codes)}
+                        onClick={() => codes && generateExcelTemplate(codes, ships)}
                         className="flex items-center gap-2 px-4 py-2 bg-ocean-700 hover:bg-ocean-600 text-slate-300 hover:text-white rounded-lg transition-colors font-medium text-sm border border-ocean-600"
                         title="Download blank Excel template"
                     >

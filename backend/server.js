@@ -48,6 +48,28 @@ app.post('/api/ships', async (req, res) => {
     }
 });
 
+// Get all Ports
+app.get('/api/ports', async (req, res) => {
+    try {
+        const data = await fs.promises.readFile(path.join(__dirname, 'data', 'ports.json'), 'utf8');
+        res.json(JSON.parse(data));
+    } catch (err) {
+        res.json([]);
+    }
+});
+
+// Update Ports
+app.post('/api/ports', async (req, res) => {
+    try {
+        const ports = req.body;
+        await fs.promises.writeFile(path.join(__dirname, 'data', 'ports.json'), JSON.stringify(ports, null, 2));
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Error saving ports:', err);
+        res.status(500).json({ error: 'Failed to save ports' });
+    }
+});
+
 // Get all Codes
 app.get('/api/codes', async (req, res) => {
     const readSafe = async (filename) => {
@@ -233,7 +255,7 @@ app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
-app.get('*', (req, res) => {
+app.get(/(.*)/, (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 

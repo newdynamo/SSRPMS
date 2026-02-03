@@ -84,6 +84,7 @@ export interface CodeData {
 export interface Ship {
     yard: string;
     hullNo: string;
+    imoNo?: string; // Added IMO No
     name: string;
     code: string;
     class: string;
@@ -93,7 +94,7 @@ export interface Ship {
     dwt: number;
     // Configuration
     equipment?: { code: string; installed: boolean; count: number; validFuels?: string[] }[];
-    fuels?: { code: string; initialRob?: number }[]; // Array of FCode codes
+    fuels?: { code: string; initialRob?: number; lcv?: number /* Unit: MJ/Ton */ }[]; // Array of FCode codes
     lubeOils?: { code: string; initialRob?: number }[]; // Array of LCode codes
     waters?: { code: string; initialRob?: number }[]; // Array of WCode codes
     tankCounts?: {
@@ -102,4 +103,11 @@ export interface Ship {
     };
     configSourceShipId?: string; // If set, use configuration (equipment, fuels, etc.) from this ship ID (code)
     customValues?: Record<string, string>; // Custom field values (Key = Label from global list)
+}
+
+export interface Port {
+    id?: string;
+    code: string;
+    name: string;
+    country: string;
 }
