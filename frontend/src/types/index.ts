@@ -94,7 +94,7 @@ export interface Ship {
     dwt: number;
     // Configuration
     equipment?: { code: string; installed: boolean; count: number; validFuels?: string[] }[];
-    fuels?: { code: string; initialRob?: number; lcv?: number /* Unit: MJ/Ton */ }[]; // Array of FCode codes
+    fuels?: { code: string; initialRob?: number; lcv?: number /* Unit: TJ/Ton */ }[]; // Array of FCode codes
     lubeOils?: { code: string; initialRob?: number }[]; // Array of LCode codes
     waters?: { code: string; initialRob?: number }[]; // Array of WCode codes
     tankCounts?: {
@@ -103,6 +103,14 @@ export interface Ship {
     };
     configSourceShipId?: string; // If set, use configuration (equipment, fuels, etc.) from this ship ID (code)
     customValues?: Record<string, string>; // Custom field values (Key = Label from global list)
+    mePerformance?: { load: number; power: number; rpm: number; sfoc: number; gfoc: number }[]; // M/E Performance Curve Data
+    gePerformance?: { load: number; power: number; sfoc: number; gfoc: number }[]; // Generator Performance Curve Data
+    focManagement?: {
+        id: string;
+        mode: 'laden' | 'ballast';
+        type: string;
+        data: { speed: number; foc: number; rpm: number }[];
+    }[]; // FOC Management Data
 }
 
 export interface Port {

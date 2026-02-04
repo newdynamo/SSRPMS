@@ -4,7 +4,7 @@ import { fetchShips, saveShips } from '../api/ships';
 import { fetchPorts, savePorts } from '../api/ports';
 // import { FixedSizeList as List } from 'react-window';
 import type { CodeData, Ship, Port } from '../types/index';
-import { Database, Server, Ship as ShipIcon, Trash2, Plus, CheckCircle, Search, ChevronUp, ChevronDown, Filter, Box, Anchor } from 'lucide-react';
+import { Database, Server, Ship as ShipIcon, Trash2, Plus, CheckCircle, Search, ChevronUp, ChevronDown, Filter, Box, Anchor, Activity, Zap, Droplet } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const TabButton = ({ active, onClick, icon, label }: any) => (
@@ -98,7 +98,7 @@ const Settings: React.FC = () => {
     const [codes, setCodes] = useState<CodeData | null>(null);
     const [ships, setShips] = useState<Ship[]>([]);
     const [customFields, setCustomFields] = useState<string[]>([]);
-    const [activeTab, setActiveTab] = useState<'general' | 'events' | 'codes' | 'ships' | 'ports'>('general');
+    const [activeTab, setActiveTab] = useState<'general' | 'events' | 'codes' | 'ships' | 'ports' | 'mePerformance' | 'gePerformance' | 'focManagement'>('general');
     const [activeCodeTab, setActiveCodeTab] = useState<'m' | 't' | 'r'>('m');
     const [selectedShip, setSelectedShip] = useState<Ship | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -623,7 +623,7 @@ const Settings: React.FC = () => {
                                 </div>
                                 {updateLcv && (
                                     <div className="flex flex-col items-end gap-1">
-                                        <label className="text-[10px] uppercase font-bold text-emerald-400">LCV (MJ/Ton)</label>
+                                        <label className="text-[10px] uppercase font-bold text-emerald-400">LCV (TJ/Ton)</label>
                                         <input
                                             type="number"
                                             className="w-24 bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-right text-white text-sm focus:border-emerald-500 outline-none"
@@ -708,6 +708,24 @@ const Settings: React.FC = () => {
                     onClick={() => setActiveTab('ports')}
                     icon={<Anchor size={18} />}
                     label="Port Management"
+                />
+                <TabButton
+                    active={activeTab === 'mePerformance'}
+                    onClick={() => setActiveTab('mePerformance')}
+                    icon={<Activity size={18} />}
+                    label="M/E Performance"
+                />
+                <TabButton
+                    active={activeTab === 'gePerformance'}
+                    onClick={() => setActiveTab('gePerformance')}
+                    icon={<Zap size={18} />}
+                    label="Generator Performance"
+                />
+                <TabButton
+                    active={activeTab === 'focManagement'}
+                    onClick={() => setActiveTab('focManagement')}
+                    icon={<Droplet size={18} />}
+                    label="FOC Management"
                 />
             </div>
 
@@ -1654,10 +1672,564 @@ const Settings: React.FC = () => {
                     )}
                 </div>
             )}
+            {/* M/E Performance Tab */}
+            {activeTab === 'mePerformance' && (
+                <div className="bg-ocean-800 rounded-2xl p-8 border border-ocean-700 max-w-4xl">
+                    <div className="flex items-center gap-4 mb-6 text-emerald-400">
+                        <Activity size={32} />
+                        <h2 className="text-2xl font-bold text-white">M/E Performance Curves</h2>
+                    </div>
+
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-400 mb-1">Select Vessel</label>
+                            <select
+                                className="w-full bg-ocean-900 border border-ocean-600 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-primary-500"
+                                onChange={handleShipSelect}
+                                value={selectedShip?.code || ''}
+                            >
+                                <option value="">-- Select a Ship --</option>
+                                {ships.map(ship => (
+                                    <option key={ship.code} value={ship.code}>
+                                        {ship.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {selectedShip && (
+                            <div className="animate-in fade-in slide-in-from-top-2">
+                                <div className="bg-ocean-900/30 rounded-xl border border-ocean-700/50 overflow-hidden">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-ocean-900/50 text-slate-400 text-xs uppercase tracking-wider">
+                                            <tr>
+                                                <th className="px-6 py-4">Load (%)</th>
+                                                <th className="px-6 py-4">Power (kW)</th>
+                                                <th className="px-6 py-4">RPM</th>
+                                                <th className="px-6 py-4">SFOC (g/kWh)</th>
+                                                <th className="px-6 py-4">GFOC (g/kWh)</th>
+                                                <th className="px-6 py-4 text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-ocean-700">
+                                            {(selectedShip.mePerformance || []).map((row, idx) => (
+                                                <tr key={idx} className="hover:bg-ocean-700/30 transition-colors">
+                                                    <td className="px-6 py-3">
+                                                        <input
+                                                            type="number"
+                                                            className="w-full bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-white text-sm outline-none focus:border-emerald-500"
+                                                            value={row.load}
+                                                            onChange={(e) => {
+                                                                const newVal = parseFloat(e.target.value) || 0;
+                                                                const updated = [...(selectedShip.mePerformance || [])];
+                                                                updated[idx] = { ...updated[idx], load: newVal };
+                                                                const updatedShip = { ...selectedShip, mePerformance: updated };
+                                                                setSelectedShip(updatedShip);
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td className="px-6 py-3">
+                                                        <input
+                                                            type="number"
+                                                            className="w-full bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-white text-sm outline-none focus:border-emerald-500"
+                                                            value={row.power}
+                                                            onChange={(e) => {
+                                                                const newVal = parseFloat(e.target.value) || 0;
+                                                                const updated = [...(selectedShip.mePerformance || [])];
+                                                                updated[idx] = { ...updated[idx], power: newVal };
+                                                                const updatedShip = { ...selectedShip, mePerformance: updated };
+                                                                setSelectedShip(updatedShip);
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td className="px-6 py-3">
+                                                        <input
+                                                            type="number"
+                                                            className="w-full bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-white text-sm outline-none focus:border-emerald-500"
+                                                            value={row.rpm}
+                                                            onChange={(e) => {
+                                                                const newVal = parseFloat(e.target.value) || 0;
+                                                                const updated = [...(selectedShip.mePerformance || [])];
+                                                                updated[idx] = { ...updated[idx], rpm: newVal };
+                                                                const updatedShip = { ...selectedShip, mePerformance: updated };
+                                                                setSelectedShip(updatedShip);
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td className="px-6 py-3">
+                                                        <input
+                                                            type="number"
+                                                            className="w-full bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-white text-sm outline-none focus:border-emerald-500"
+                                                            value={row.sfoc}
+                                                            onChange={(e) => {
+                                                                const newVal = parseFloat(e.target.value) || 0;
+                                                                const updated = [...(selectedShip.mePerformance || [])];
+                                                                updated[idx] = { ...updated[idx], sfoc: newVal };
+                                                                const updatedShip = { ...selectedShip, mePerformance: updated };
+                                                                setSelectedShip(updatedShip);
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td className="px-6 py-3">
+                                                        <input
+                                                            type="number"
+                                                            className="w-full bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-white text-sm outline-none focus:border-emerald-500"
+                                                            value={row.gfoc}
+                                                            onChange={(e) => {
+                                                                const newVal = parseFloat(e.target.value) || 0;
+                                                                const updated = [...(selectedShip.mePerformance || [])];
+                                                                updated[idx] = { ...updated[idx], gfoc: newVal };
+                                                                const updatedShip = { ...selectedShip, mePerformance: updated };
+                                                                setSelectedShip(updatedShip);
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td className="px-6 py-3 text-right">
+                                                        <button
+                                                            onClick={() => {
+                                                                const updated = (selectedShip.mePerformance || []).filter((_, i) => i !== idx);
+                                                                const updatedShip = { ...selectedShip, mePerformance: updated };
+                                                                setSelectedShip(updatedShip);
+                                                            }}
+                                                            className="text-red-400 hover:text-red-300 p-1"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            {(!selectedShip.mePerformance || selectedShip.mePerformance.length === 0) && (
+                                                <tr>
+                                                    <td colSpan={6} className="px-6 py-8 text-center text-slate-500 italic">
+                                                        No performance data defined. Add a row to start.
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                    <div className="p-4 border-t border-ocean-700 bg-ocean-900/50 flex justify-between">
+                                        <button
+                                            onClick={() => {
+                                                const updated = [...(selectedShip.mePerformance || []), { load: 0, power: 0, rpm: 0, sfoc: 0, gfoc: 0 }];
+                                                const updatedShip = { ...selectedShip, mePerformance: updated };
+                                                setSelectedShip(updatedShip);
+                                            }}
+                                            className="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-medium px-3 py-1.5 rounded hover:bg-emerald-500/10 transition-colors"
+                                        >
+                                            <Plus size={16} /> Add Row
+                                        </button>
+                                        <button
+                                            onClick={async () => {
+                                                if (!selectedShip) return;
+                                                const updatedShips = ships.map(s => s.code === selectedShip.code ? selectedShip : s);
+                                                try {
+                                                    await saveShips(updatedShips);
+                                                    setShips(updatedShips);
+                                                    alert("M/E Performance data saved successfully!");
+                                                } catch (err) {
+                                                    console.error("Failed to save ship", err);
+                                                    alert("Failed to save configuration");
+                                                }
+                                            }}
+                                            className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold transition-colors shadow-lg shadow-emerald-500/20"
+                                        >
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="mt-4 p-4 bg-ocean-900/30 rounded-xl border border-ocean-700/50 text-sm text-slate-400">
+                                    <p className="font-semibold text-emerald-400 mb-2">Instructions</p>
+                                    <ul className="list-disc pl-5 space-y-1">
+                                        <li>Enter performance data points from the shop test or sea trial report.</li>
+                                        <li>Typically includes points at 25%, 50%, 75%, 85%, and 100% Load.</li>
+                                        <li>Used for performance analysis and calculations.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Generator Performance Tab */}
+            {activeTab === 'gePerformance' && (
+                <div className="bg-ocean-800 rounded-2xl p-8 border border-ocean-700 max-w-4xl">
+                    <div className="flex items-center gap-4 mb-6 text-emerald-400">
+                        <Zap size={32} />
+                        <h2 className="text-2xl font-bold text-white">Generator Performance Curves</h2>
+                    </div>
+
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-400 mb-1">Select Vessel</label>
+                            <select
+                                className="w-full bg-ocean-900 border border-ocean-600 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-primary-500"
+                                onChange={handleShipSelect}
+                                value={selectedShip?.code || ''}
+                            >
+                                <option value="">-- Select a Ship --</option>
+                                {ships.map(ship => (
+                                    <option key={ship.code} value={ship.code}>
+                                        {ship.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {selectedShip && (
+                            <div className="animate-in fade-in slide-in-from-top-2">
+                                <div className="bg-ocean-900/30 rounded-xl border border-ocean-700/50 overflow-hidden">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-ocean-900/50 text-slate-400 text-xs uppercase tracking-wider">
+                                            <tr>
+                                                <th className="px-6 py-4">Load (%)</th>
+                                                <th className="px-6 py-4">Power (kW)</th>
+                                                <th className="px-6 py-4">SFOC (g/kWh)</th>
+                                                <th className="px-6 py-4">GFOC (g/kWh)</th>
+                                                <th className="px-6 py-4 text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-ocean-700">
+                                            {(selectedShip.gePerformance || []).map((row, idx) => (
+                                                <tr key={idx} className="hover:bg-ocean-700/30 transition-colors">
+                                                    <td className="px-6 py-3">
+                                                        <input
+                                                            type="number"
+                                                            className="w-full bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-white text-sm outline-none focus:border-emerald-500"
+                                                            value={row.load}
+                                                            onChange={(e) => {
+                                                                const newVal = parseFloat(e.target.value) || 0;
+                                                                const updated = [...(selectedShip.gePerformance || [])];
+                                                                updated[idx] = { ...updated[idx], load: newVal };
+                                                                const updatedShip = { ...selectedShip, gePerformance: updated };
+                                                                setSelectedShip(updatedShip);
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td className="px-6 py-3">
+                                                        <input
+                                                            type="number"
+                                                            className="w-full bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-white text-sm outline-none focus:border-emerald-500"
+                                                            value={row.power}
+                                                            onChange={(e) => {
+                                                                const newVal = parseFloat(e.target.value) || 0;
+                                                                const updated = [...(selectedShip.gePerformance || [])];
+                                                                updated[idx] = { ...updated[idx], power: newVal };
+                                                                const updatedShip = { ...selectedShip, gePerformance: updated };
+                                                                setSelectedShip(updatedShip);
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td className="px-6 py-3">
+                                                        <input
+                                                            type="number"
+                                                            className="w-full bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-white text-sm outline-none focus:border-emerald-500"
+                                                            value={row.sfoc}
+                                                            onChange={(e) => {
+                                                                const newVal = parseFloat(e.target.value) || 0;
+                                                                const updated = [...(selectedShip.gePerformance || [])];
+                                                                updated[idx] = { ...updated[idx], sfoc: newVal };
+                                                                const updatedShip = { ...selectedShip, gePerformance: updated };
+                                                                setSelectedShip(updatedShip);
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td className="px-6 py-3">
+                                                        <input
+                                                            type="number"
+                                                            className="w-full bg-ocean-900 border border-ocean-600 rounded px-2 py-1 text-white text-sm outline-none focus:border-emerald-500"
+                                                            value={row.gfoc}
+                                                            onChange={(e) => {
+                                                                const newVal = parseFloat(e.target.value) || 0;
+                                                                const updated = [...(selectedShip.gePerformance || [])];
+                                                                updated[idx] = { ...updated[idx], gfoc: newVal };
+                                                                const updatedShip = { ...selectedShip, gePerformance: updated };
+                                                                setSelectedShip(updatedShip);
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td className="px-6 py-3 text-right">
+                                                        <button
+                                                            onClick={() => {
+                                                                const updated = (selectedShip.gePerformance || []).filter((_, i) => i !== idx);
+                                                                const updatedShip = { ...selectedShip, gePerformance: updated };
+                                                                setSelectedShip(updatedShip);
+                                                            }}
+                                                            className="text-red-400 hover:text-red-300 p-1"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            {(!selectedShip.gePerformance || selectedShip.gePerformance.length === 0) && (
+                                                <tr>
+                                                    <td colSpan={5} className="px-6 py-8 text-center text-slate-500 italic">
+                                                        No performance data defined. Add a row to start.
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                    <div className="p-4 border-t border-ocean-700 bg-ocean-900/50 flex justify-between">
+                                        <button
+                                            onClick={() => {
+                                                const updated = [...(selectedShip.gePerformance || []), { load: 0, power: 0, sfoc: 0, gfoc: 0 }];
+                                                const updatedShip = { ...selectedShip, gePerformance: updated };
+                                                setSelectedShip(updatedShip);
+                                            }}
+                                            className="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-medium px-3 py-1.5 rounded hover:bg-emerald-500/10 transition-colors"
+                                        >
+                                            <Plus size={16} /> Add Row
+                                        </button>
+                                        <button
+                                            onClick={async () => {
+                                                if (!selectedShip) return;
+                                                const updatedShips = ships.map(s => s.code === selectedShip.code ? selectedShip : s);
+                                                try {
+                                                    await saveShips(updatedShips);
+                                                    setShips(updatedShips);
+                                                    alert("Generator Performance data saved successfully!");
+                                                } catch (err) {
+                                                    console.error("Failed to save ship", err);
+                                                    alert("Failed to save configuration");
+                                                }
+                                            }}
+                                            className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold transition-colors shadow-lg shadow-emerald-500/20"
+                                        >
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* FOC Management Tab */}
+            {activeTab === 'focManagement' && (
+                <div className="bg-ocean-800 rounded-2xl p-8 border border-ocean-700 max-w-full overflow-x-auto">
+                    <div className="flex items-center gap-4 mb-6 text-emerald-400">
+                        <Droplet size={32} />
+                        <h2 className="text-2xl font-bold text-white">FOC Matrix Management</h2>
+                    </div>
+
+                    <div className="space-y-6">
+                        <div className="flex gap-8 items-end">
+                            <div className="w-64">
+                                <label className="block text-sm font-medium text-slate-400 mb-1">Select Vessel</label>
+                                <select
+                                    className="w-full bg-ocean-900 border border-ocean-600 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-primary-500"
+                                    onChange={handleShipSelect}
+                                    value={selectedShip?.code || ''}
+                                >
+                                    <option value="">-- Select a Ship --</option>
+                                    {ships.map(ship => (
+                                        <option key={ship.code} value={ship.code}>
+                                            {ship.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+
+                        </div>
+
+                        {selectedShip && (() => {
+                            // Helper logic for Matrix View
+                            const FocMatrix = () => {
+                                const [mode, setMode] = useState<'laden' | 'ballast'>('laden');
+                                const profiles = (selectedShip.focManagement || []).filter(p => p.mode === mode);
+
+                                // Deriving unique speeds to build rows. 
+                                // We assume all columns should be synced, but if they differ, we union them.
+                                // For a "Matrix" feel, it's best to enforce same speeds.
+                                // Let's collect all unique speeds from all profiles and sort them descending (high speed to low).
+                                const allSpeeds = Array.from(new Set(
+                                    profiles.flatMap(p => p.data.map(d => d.speed))
+                                )).sort((a, b) => b - a);
+
+                                const updateProfileData = (profileId: string, speed: number, field: 'foc', value: number) => {
+                                    const updatedProfiles = [...(selectedShip.focManagement || [])];
+                                    const pIndex = updatedProfiles.findIndex(p => p.id === profileId);
+                                    if (pIndex === -1) return;
+
+                                    const existingDataIdx = updatedProfiles[pIndex].data.findIndex(d => d.speed === speed);
+                                    if (existingDataIdx >= 0) {
+                                        updatedProfiles[pIndex].data[existingDataIdx][field] = value;
+                                    } else {
+                                        // Add new data point if specific speed missing in this profile
+                                        updatedProfiles[pIndex].data.push({ speed, foc: value, rpm: 0 });
+                                        updatedProfiles[pIndex].data.sort((a, b) => b.speed - a.speed);
+                                    }
+                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                };
+
+                                const addColumn = () => {
+                                    const name = prompt("Enter Type Name (e.g. A-GL-Type):");
+                                    if (!name) return;
+
+                                    // Initialize with current rows (speeds) with 0 values
+                                    const initialData = allSpeeds.map(s => ({ speed: s, foc: 0, rpm: 0 }));
+
+                                    const newProfile = {
+                                        id: Date.now().toString(),
+                                        mode,
+                                        type: name,
+                                        data: initialData
+                                    };
+                                    const updatedProfiles = [...(selectedShip.focManagement || []), newProfile];
+                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                };
+
+                                const deleteColumn = (id: string) => {
+                                    if (!confirm("Delete this column?")) return;
+                                    const updatedProfiles = (selectedShip.focManagement || []).filter(p => p.id !== id);
+                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                };
+
+                                const addRow = () => {
+                                    const newSpeed = parseFloat(prompt("Enter Speed (kts):") || "0");
+                                    if (!newSpeed) return;
+                                    if (allSpeeds.includes(newSpeed)) {
+                                        alert("Speed already exists!");
+                                        return;
+                                    }
+
+                                    // Add this speed to ALL profiles in current mode
+                                    const updatedProfiles = [...(selectedShip.focManagement || [])];
+                                    updatedProfiles.forEach(p => {
+                                        if (p.mode === mode) {
+                                            p.data.push({ speed: newSpeed, foc: 0, rpm: 0 });
+                                            p.data.sort((a, b) => b.speed - a.speed);
+                                        }
+                                    });
+                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                };
+
+                                const deleteRow = (speed: number) => {
+                                    if (!confirm(`Delete row for ${speed} kts?`)) return;
+                                    const updatedProfiles = [...(selectedShip.focManagement || [])];
+                                    updatedProfiles.forEach(p => {
+                                        if (p.mode === mode) {
+                                            p.data = p.data.filter(d => d.speed !== speed);
+                                        }
+                                    });
+                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                };
+
+                                return (
+                                    <div className="animate-in fade-in slide-in-from-top-2">
+                                        <div className="flex gap-2 mb-4">
+                                            {(['laden', 'ballast'] as const).map(m => (
+                                                <button
+                                                    key={m}
+                                                    onClick={() => setMode(m)}
+                                                    className={cn(
+                                                        "px-6 py-2 rounded-lg font-bold uppercase transition-all border",
+                                                        mode === m
+                                                            ? "bg-emerald-500 text-white border-emerald-500 shadow-lg shadow-emerald-500/20"
+                                                            : "bg-ocean-900 text-slate-400 border-ocean-600 hover:border-emerald-500/50 hover:text-emerald-400"
+                                                    )}
+                                                >
+                                                    {m}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        <div className="bg-ocean-900/30 rounded-xl border border-ocean-700/50 overflow-x-auto">
+                                            <table className="w-full text-center border-collapse">
+                                                <thead>
+                                                    <tr className="bg-ocean-900 text-slate-300 text-xs uppercase tracking-wider">
+                                                        <th className="px-4 py-3 border-r border-b border-ocean-700 font-bold text-emerald-400 sticky left-0 bg-ocean-900 z-10">
+                                                            Speed (kts)
+                                                        </th>
+                                                        {profiles.map(p => (
+                                                            <th key={p.id} className="px-2 py-3 border-r border-b border-ocean-700 min-w-[100px] group relative">
+                                                                <div className="flex items-center justify-center gap-2">
+                                                                    {p.type}
+                                                                    <button onClick={() => deleteColumn(p.id)} className="text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                        <Trash2 size={14} />
+                                                                    </button>
+                                                                </div>
+                                                            </th>
+                                                        ))}
+                                                        <th className="px-4 py-3 border-b border-ocean-700 bg-ocean-800/50">
+                                                            <button onClick={addColumn} className="flex items-center gap-1 text-emerald-400 hover:text-white transition-colors mx-auto">
+                                                                <Plus size={16} /> Type
+                                                            </button>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-ocean-700/50">
+                                                    {allSpeeds.map(speed => (
+                                                        <tr key={speed} className="hover:bg-ocean-800/30 transition-colors group">
+                                                            <td className="px-4 py-2 border-r border-ocean-700 font-bold text-white bg-ocean-900/10 sticky left-0 group-hover:bg-ocean-800/30">
+                                                                <div className="flex items-center justify-between">
+                                                                    {speed}
+                                                                    <button onClick={() => deleteRow(speed)} className="text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+                                                                        <Trash2 size={12} />
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                            {profiles.map(p => {
+                                                                const cell = p.data.find(d => d.speed === speed);
+                                                                return (
+                                                                    <td key={p.id} className="px-2 py-1 border-r border-ocean-700/50 p-0">
+                                                                        <input
+                                                                            type="number"
+                                                                            className="w-full h-full bg-transparent text-center text-white text-sm outline-none focus:bg-emerald-500/10 py-2"
+                                                                            value={cell?.foc ?? ''}
+                                                                            placeholder="-"
+                                                                            onChange={(e) => updateProfileData(p.id, speed, 'foc', parseFloat(e.target.value))}
+                                                                        />
+                                                                    </td>
+                                                                );
+                                                            })}
+                                                            <td className="px-4 py-2 bg-ocean-900/10"></td>
+                                                        </tr>
+                                                    ))}
+                                                    <tr>
+                                                        <td className="px-4 py-3 font-bold text-center border-r border-ocean-700 sticky left-0 bg-ocean-900">
+                                                            <button onClick={addRow} className="flex items-center gap-1 text-emerald-400 hover:text-white transition-colors mx-auto text-xs">
+                                                                <Plus size={14} /> Row
+                                                            </button>
+                                                        </td>
+                                                        <td colSpan={profiles.length + 1}></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <div className="flex justify-end pt-6 border-t border-ocean-700 mt-6">
+                                            <button
+                                                onClick={async () => {
+                                                    const updatedShips = ships.map(s => s.code === selectedShip.code ? selectedShip : s);
+                                                    try {
+                                                        await saveShips(updatedShips);
+                                                        setShips(updatedShips);
+                                                        alert("FOC Matrix saved successfully!");
+                                                    } catch (err) {
+                                                        console.error("Failed to save ship", err);
+                                                        alert("Failed to save configuration");
+                                                    }
+                                                }}
+                                                className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold transition-colors shadow-lg shadow-emerald-500/20"
+                                            >
+                                                Save All Changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            };
+                            return <FocMatrix />;
+                        })()}
+                    </div>
+                </div>
+            )}
         </div >
     );
 };
-
-
 
 export default Settings;

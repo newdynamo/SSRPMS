@@ -222,20 +222,35 @@ const Monitoring = () => {
         const fDef = codes?.fCodes?.find(f => f.code === fuel.code);
         const name = fDef?.name || fuel.code;
 
-        // Priority: Ship Config LCV > Global Code LCV > Default
-        // Note: Ship Config might use a different scale (e.g. 0.406) vs Global (0.0405)
-        let lcv = fuel.lcv || fDef?.lcv || 0.0405;
+        // Priority: Target Ship LC Override > Source Ship LCV > Global Code LCV > Default
+        // We check 'activeShip' (Target) first, then 'fuel' (from configShip/Source), then Global
+        const targetFuel = activeShip?.fuels?.find(f => f.code === fuel.code);
+        const rawLcv = (targetFuel?.lcv !== undefined && targetFuel?.lcv !== 0)
+            ? targetFuel.lcv
+            : (fuel.lcv || fDef?.lcv || 0.0405);
+
+        const lcv = rawLcv;
 
         // Unit Normalization Heuristic
-        // Target: MJ/Ton (approx 40,000 - 50,000)
-        // Global (0.0405 GJ/kg) -> * 1,000,000 = 40,500 MJ/Ton
-        // Config (0.406 ?) -> * 100,000 = 40,600 MJ/Ton
-        let factor = 1_000_000;
-        if (lcv > 0.1 && lcv < 100) {
-            factor = 100_000;
-        } else if (lcv >= 100) {
-            // If user enters actual MJ/kg (e.g. 40.5) -> * 1000
+        // Target: MJ/Ton (Standard HFO: ~40,500, LNG: ~50,000)
+
+        let factor = 1;
+
+        if (lcv < 0.1) {
+            // TJ/Ton (e.g. 0.0405) -> 40,500 MJ/Ton
+            factor = 1_000_000;
+        } else if (lcv >= 0.1 && lcv < 100) {
+            // MJ/kg or GJ/Ton (e.g. 40.5) -> 40,500 MJ/Ton
             factor = 1000;
+        } else if (lcv >= 2000 && lcv < 30000) {
+            // kcal/kg (e.g. 10,000 HFO, 11,900 LNG) -> Convert to MJ/Ton
+            // 1 kcal = 4.184 kJ = 0.004184 MJ
+            // 1 kcal/kg = 4.184 kJ/kg = 4.184 MJ/Ton
+            factor = 4.184;
+        } else {
+            // MJ/Ton directly (e.g. 40500) -> 1
+            // Also handles edge cases like hydrogen (120,000) if passed as 120000
+            factor = 1;
         }
 
         const r031Key = `R031_${fuel.code}`;
@@ -532,15 +547,17 @@ const Monitoring = () => {
                         </div>
 
                         {/* Weather Row */}
-                        <div className="bg-white/5 rounded-lg p-3 flex justify-between items-center text-sm border border-white/10 overflow-x-auto">
-                            <WeatherItem label="Weather State" value={weather.state} />
-                            <WeatherItem label="Weather B/F" value={weather.bf} />
-                            <WeatherItem label="Wind-DIR" value={weather.windDir} />
-                            <WeatherItem label="Wind-Force" value={weather.windForce} />
-                            <WeatherItem label="Wave-DIR" value={weather.waveDir} />
-                            <WeatherItem label="Wave-Force" value={weather.waveForce} />
-                            <WeatherItem label="ATMOS-Temp" value={`${weather.atmosTemp || 0}°C`} />
-                            <WeatherItem label="SEA-Temp" value={`${weather.seaTemp || 0}°C`} />
+                        <div className="bg-ocean-800 p-4 rounded-xl border border-ocean-700 shadow-xl">
+                            <div className="grid grid-cols-4 gap-y-4 gap-x-2">
+                                <WeatherItem label="Weather State" value={weather.state} />
+                                <WeatherItem label="Weather B/F" value={weather.bf} />
+                                <WeatherItem label="Wind-DIR" value={weather.windDir} />
+                                <WeatherItem label="Wind-Force" value={weather.windForce} />
+                                <WeatherItem label="Wave-DIR" value={weather.waveDir} />
+                                <WeatherItem label="Wave-Force" value={weather.waveForce} />
+                                <WeatherItem label="ATMOS-Temp" value={`${weather.atmosTemp || 0}°C`} />
+                                <WeatherItem label="SEA-Temp" value={`${weather.seaTemp || 0}°C`} />
+                            </div>
                         </div>
                     </div>
 
@@ -645,9 +662,9 @@ const SmallMetricBox = ({ label, value, unit, icon }: any) => (
 );
 
 const WeatherItem = ({ label, value }: any) => (
-    <div className="flex flex-col items-center gap-1 min-w-[70px]">
-        <span className="text-[10px] text-slate-400 whitespace-nowrap">{label}</span>
-        <span className="font-bold text-white text-sm">{value || '-'}</span>
+    <div className="flex flex-col items-center justify-center gap-1 p-2 bg-ocean-900/30 rounded-lg border border-ocean-700/30">
+        <span className="text-xs text-slate-400 uppercase tracking-wider">{label}</span>
+        <span className="font-bold text-white text-xl">{value || '-'}</span>
     </div>
 );
 
