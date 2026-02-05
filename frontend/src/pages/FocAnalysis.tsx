@@ -14,7 +14,7 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    PieChart, Pie, Cell, Legend
+    PieChart, Pie, Cell, Legend, ReferenceDot
 } from 'recharts';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
@@ -110,10 +110,16 @@ const FocAnalysis = () => {
         setSelectedReportId('');
     }, [selectedShipCode]);
 
-    // Calculate Fuel Metrics
+
+    // Calculate Fuel Metrics (Normalized to 24h)
     const fuelMetrics = useMemo(() => {
         const ship = ships.find(s => s.code === selectedShipCode);
         if (!ship || !selectedReport) return [];
+
+        // Operation Time (R200) - Default to 24 if missing or 0 to avoid division by zero
+        const opTimeStr = selectedReport.items['R200'] as string || selectedReport.items['R011'] as string;
+        const opTime = parseFloat(opTimeStr) || 24;
+        const normalizationFactor = opTime > 0 ? (24 / opTime) : 1;
 
         const configShip = ship.configSourceShipId
             ? ships.find(s => s.code === ship.configSourceShipId) || ship
@@ -146,50 +152,41 @@ const FocAnalysis = () => {
                 });
             }
 
-            return { name, val, energy: val * lcv * factor };
+            // Normalize Value and Energy
+            const normalizedVal = val * normalizationFactor;
+            const energy = normalizedVal * lcv * factor;
+
+            return { name, val: normalizedVal, rawVal: val, energy };
         }).filter(f => f.energy > 0 || f.val > 0) || [];
     }, [ships, selectedShipCode, selectedReport, codes]);
 
-    // Calculate Equipment Metrics
+    // Calculate Equipment Metrics (Normalized)
     const equipmentMetrics = useMemo(() => {
         if (!selectedReport || !codes?.eCodes || !selectedShip) return [];
+
+        // Operation Time (Reusable)
+        const opTimeStr = selectedReport.items['R200'] as string || selectedReport.items['R011'] as string;
+        const opTime = parseFloat(opTimeStr) || 24;
+        const normalizationFactor = opTime > 0 ? (24 / opTime) : 1;
 
         const eqMap = new Map<string, { name: string, val: number, energy: number, fuels: Map<string, { val: number, name: string }> }>();
 
         Object.entries(selectedReport.items).forEach(([key, value]) => {
             if (!key.startsWith('CONS_')) return;
             const parts = key.split('_');
-            // Expected format: CONS_{EqCode}_{Unit}_{FuelCode} or CONS_{EqCode}_{Unit}_{FuelCode}_{Index}?
-            // Standardizing on: CONS_{EqCode}_{Unit}_{FuelCode}
-            // But we need to be careful about splitting.
-            // Let's assume standard 4 parts for now, or handle dynamic length.
-            // Actually, usually it is CONS_E01_MT_HFO etc.
-
-            // Basic parsing strategy:
-            // 1. Prefix 'CONS'
-            // 2. EqCode (variable length?)
-            // 3. Unit (MT?)
-            // 4. FuelCode (Suffix)
-
-            // Better strategy: iterate configShip fuels and check suffix?
-            // Or just split.
             if (parts.length < 4) return;
 
-            const fuelCode = parts[parts.length - 1]; // Last part is Fuel Code
-            // Unit is likely 2nd to last partial (MT, M3 etc)
-            // EqCode is parts[1] ... parts[length-2] joined?
-            const eqCode = parts[1]; // Simple assumption for now: E01, E02...
+            const fuelCode = parts[parts.length - 1];
+            const eqCode = parts[1];
 
-            const val = parseFloat(value as string) || 0;
-            if (val === 0) return;
+            const rawVal = parseFloat(value as string) || 0;
+            if (rawVal === 0) return;
+
+            // Normalize
+            const val = rawVal * normalizationFactor;
 
             const eqDef = codes.eCodes.find(e => e.code === eqCode);
             const eqName = eqDef?.name || eqCode;
-
-            // Get Energy Factor for Fuel
-            // We need to look up LCV etc for this fuel.
-            // We can reuse logic or look up from fuelMetrics if available/simple.
-            // Let's re-derive factor quickly to be safe/consistent.
 
             const configShip = selectedShip.configSourceShipId
                 ? ships.find(s => s.code === selectedShip.configSourceShipId) || selectedShip
@@ -198,7 +195,6 @@ const FocAnalysis = () => {
             const fuel = configShip.fuels?.find(f => f.code === fuelCode);
             const fDef = codes.fCodes?.find(f => f.code === fuelCode);
 
-            // LCV Calculation
             const targetFuel = selectedShip.fuels?.find(f => f.code === fuelCode);
             const rawLcv = (targetFuel?.lcv !== undefined && targetFuel?.lcv !== 0)
                 ? targetFuel.lcv
@@ -219,18 +215,12 @@ const FocAnalysis = () => {
             record.energy += energy;
 
             const fName = fDef?.name || fuel?.code || fuelCode;
-            /* 
-               We store { val, name } in the fuels map. 
-               Since fuelCode is the key, we can retrieve/update the value object.
-               But map.get returns reference? No, we need to be careful with primitives vs objects.
-               Better to check if key exists.
-            */
+
             if (!record.fuels.has(fuelCode)) {
                 record.fuels.set(fuelCode, { val: 0, name: fName });
             }
             const fRecord = record.fuels.get(fuelCode)!;
             fRecord.val += val;
-            // Ensure name is set if not already (logic above covers init)
 
         });
 
@@ -238,6 +228,12 @@ const FocAnalysis = () => {
     }, [selectedReport, codes, selectedShip, ships]);
 
     const totalEnergy = fuelMetrics.reduce((sum, item) => sum + item.energy, 0);
+    const totalEnergyTJ = totalEnergy / 1_000_000;
+
+    const currentSpeed = useMemo(() => {
+        if (!selectedReport) return 0;
+        return parseFloat(selectedReport.items['R026'] as string || selectedReport.items['R034'] as string || selectedReport.items['R077'] as string || '0');
+    }, [selectedReport]);
 
     const availableProfiles = useMemo(() => {
         if (!selectedShip?.focManagement) return [];
@@ -289,7 +285,7 @@ const FocAnalysis = () => {
             </div>
 
             {/* Controls */}
-            <div className="bg-ocean-800 rounded-2xl p-6 border border-ocean-700 shadow-xl">
+            <div className="bg-ocean-800 rounded-2xl p-6 border border-ocean-700 shadow-xl relative z-20">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                     {/* Ship Selector */}
                     <div className="space-y-2">
@@ -360,7 +356,7 @@ const FocAnalysis = () => {
             </div>
 
             {/* Chart Area */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
                 <div className="lg:col-span-3 bg-ocean-800 rounded-2xl p-6 border border-ocean-700 shadow-xl min-h-[500px] flex flex-col">
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -431,6 +427,19 @@ const FocAnalysis = () => {
                                         activeDot={{ r: 6, fill: '#cbd5e1' }}
                                         name="Standard FOC"
                                     />
+
+                                    {/* Current Report Point */}
+                                    {selectedReport && totalEnergyTJ > 0 && currentSpeed > 0 && (
+                                        <ReferenceDot
+                                            x={currentSpeed}
+                                            y={totalEnergyTJ}
+                                            r={6}
+                                            fill="#ef4444"
+                                            stroke="#fff"
+                                            strokeWidth={2}
+                                            label={{ position: 'top', value: 'Current', fill: '#ef4444', fontSize: 12 }}
+                                        />
+                                    )}
                                 </ComposedChart>
                             </ResponsiveContainer>
                         ) : (
@@ -501,17 +510,43 @@ const FocAnalysis = () => {
                         </div>
 
                         {selectedReport && (
-                            <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-4">
-                                <h3 className="text-indigo-300 font-bold mb-2 flex items-center gap-2">
-                                    <Zap size={16} /> Total Energy
-                                </h3>
-                                <div className="text-3xl font-bold text-white tracking-tight">
-                                    {(totalEnergy / 1000).toFixed(1)} <span className="text-lg text-slate-400 font-normal">GJ</span>
+                            <>
+                                <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-4">
+                                    <h3 className="text-indigo-300 font-bold mb-2 flex items-center gap-2">
+                                        <Zap size={16} /> Total Energy
+                                    </h3>
+                                    <div className="text-3xl font-bold text-white tracking-tight">
+                                        {(totalEnergy / 1000).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span className="text-lg text-slate-400 font-normal">GJ</span>
+                                    </div>
+                                    <div className="text-xs text-indigo-400/70 mt-1">
+                                        Aggregated from {fuelMetrics.length} fuel sources
+                                    </div>
                                 </div>
-                                <div className="text-xs text-indigo-400/70 mt-1">
-                                    Aggregated from {fuelMetrics.length} fuel sources
+
+                                <div className="bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-4">
+                                    <h3 className="text-emerald-300 font-bold mb-2 flex items-center gap-2">
+                                        <Activity size={16} /> Speed
+                                    </h3>
+                                    <div className="text-3xl font-bold text-white tracking-tight">
+                                        {currentSpeed.toFixed(1)} <span className="text-lg text-slate-400 font-normal">kts</span>
+                                    </div>
+                                    <div className="text-xs text-emerald-400/70 mt-1">
+                                        {selectedReport.items['R004'] as string || 'Noon Report'}
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-4">
+                                    <h3 className="text-blue-300 font-bold mb-2 flex items-center gap-2">
+                                        <History size={16} /> Operation Time
+                                    </h3>
+                                    <div className="text-3xl font-bold text-white tracking-tight">
+                                        {parseFloat(selectedReport.items['R200'] as string || selectedReport.items['R011'] as string || '24').toFixed(2)}
+                                    </div>
+                                    <div className="text-xs text-blue-400/70 mt-1">
+                                        Hours (Normalized to 24h)
+                                    </div>
+                                </div>
+                            </>
                         )}
                     </div>
 
@@ -561,7 +596,7 @@ const renderMetricsContent = (hasData: boolean, fuelMetrics: any[], equipmentMet
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#f8fafc' }}
                                     itemStyle={{ color: '#f8fafc' }}
-                                    formatter={(val: any) => [Number(val).toFixed(1) + ' MT', 'Consumption']}
+                                    formatter={(val: any) => [Number(val).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' MT (24h)', 'Consumption']}
                                 />
                                 <Legend />
                             </PieChart>
@@ -577,8 +612,8 @@ const renderMetricsContent = (hasData: boolean, fuelMetrics: any[], equipmentMet
                                 <span className="font-medium text-slate-200">{f.name}</span>
                             </div>
                             <div className="text-right">
-                                <div className="font-bold text-white">{f.val.toFixed(2)} <span className="text-xs text-slate-500">MT</span></div>
-                                <div className="text-xs text-emerald-400">{(f.energy / 1000).toFixed(2)} GJ</div>
+                                <div className="font-bold text-white">{f.val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-slate-500">MT (24h)</span></div>
+                                <div className="text-xs text-emerald-400">{(f.energy / 1000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} GJ</div>
                             </div>
                         </div>
                     ))}
@@ -597,15 +632,15 @@ const renderMetricsContent = (hasData: boolean, fuelMetrics: any[], equipmentMet
                                 <div className="flex justify-between items-start mb-2">
                                     <span className="font-bold text-slate-200">{eq.name}</span>
                                     <div className="text-right">
-                                        <div className="font-bold text-white">{eq.val.toFixed(2)} <span className="text-xs text-slate-500">MT</span></div>
-                                        <div className="text-xs text-emerald-400">{(eq.energy / 1000).toFixed(2)} GJ</div>
+                                        <div className="font-bold text-white">{eq.val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-slate-500">MT (24h)</span></div>
+                                        <div className="text-xs text-emerald-400">{(eq.energy / 1000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} GJ</div>
                                     </div>
                                 </div>
                                 <div className="space-y-1">
                                     {Array.from(eq.fuels.values()).map((f: any) => (
                                         <div key={f.name} className="flex justify-between text-xs text-slate-400">
                                             <span>{f.name}</span>
-                                            <span>{f.val.toFixed(2)} MT</span>
+                                            <span>{f.val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MT</span>
                                         </div>
                                     ))}
                                 </div>
