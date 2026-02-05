@@ -79,7 +79,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
 const NavItem = ({ to, icon, label, onClick }: { to: string; icon: React.ReactNode; label: string; onClick?: () => void }) => (
     <NavLink
-        to={to}
         onClick={onClick}
         to={to}
         className={({ isActive }) => cn(
