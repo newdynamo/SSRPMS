@@ -22,6 +22,125 @@
   @apply bg-slate-700 rounded-full;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-sky-500;
+
+@media print {
+  @page {
+    margin: 0.5cm;
+    size: auto;
+  }
+
+  /* Reset layout constraints to ensure full content prints */
+  html,
+  body,
+  #root,
+  main,
+  .page-container {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    width: 100% !important;
+    position: static !important;
+    display: block !important;
+  }
+
+  /* Hide sidebar and navbar */
+  nav,
+  aside,
+  .sidebar-container,
+  .navbar-container {
+    display: none !important;
+  }
+
+  /* Reset background and text colors for print */
+  body {
+    background-color: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Ensure the main content takes full width */
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* Avoid breaking cards across pages */
+  .bg-ocean-800,
+  .bg-ocean-900,
+  .rounded-xl,
+  .card,
+  .grid>div {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Improve chart visibility */
+  .recharts-wrapper {
+    margin: 0 auto;
+  }
+
+  /* Force background colors to print for cards */
+  .bg-ocean-900,
+  .bg-slate-800,
+  .bg-slate-900,
+  .bg-ocean-800 {
+    background-color: #f8fafc !important;
+    /* slate-50 */
+    border: 1px solid #cbd5e1 !important;
+    /* slate-300 */
+    color: #0f172a !important;
+    /* slate-900 */
+    box-shadow: none !important;
+  }
+
+  /* Make sure purple bg vs curve card prints clearly */
+  .bg-purple-900\/20 {
+    background-color: #f3e8ff !important;
+    /* purple-100 */
+    border-color: #d8b4fe !important;
+    /* purple-300 */
+  }
+
+  /* Text adjustments for light background */
+  .text-white,
+  .text-slate-200,
+  .text-slate-300,
+  .text-slate-400 {
+    color: #334155 !important;
+    /* slate-700 */
+  }
+
+  /* Keep semantic colors but make them readable on light bg */
+  .text-emerald-400 {
+    color: #059669 !important;
+  }
+
+  .text-red-400 {
+    color: #dc2626 !important;
+  }
+
+  .text-blue-400 {
+    color: #2563eb !important;
+  }
+
+  .text-amber-400 {
+    color: #d97706 !important;
+  }
+
+  .text-purple-300 {
+    color: #7e22ce !important;
+  }
+
+  .text-purple-400\/70 {
+    color: #9333ea !important;
+  }
+
+  /* Hide the print button itself */
+  .print-hidden,
+  button {
+    display: none !important;
+  }
 }

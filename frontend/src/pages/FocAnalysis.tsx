@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Activity, Ship as ShipIcon, Droplet, Zap, AlertCircle, History, Map as MapIcon, Fuel, Calendar } from 'lucide-react';
+import { Activity, Ship as ShipIcon, Droplet, Zap, AlertCircle, History, Map as MapIcon, Fuel, Calendar, ArrowUp, ArrowDown, Printer } from 'lucide-react';
 import { fetchShips } from '../api/ships';
 import { fetchReports } from '../api/reports';
 import { fetchCodes } from '../api/codes';
@@ -14,7 +14,7 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    PieChart, Pie, Cell, Legend, ReferenceDot
+    PieChart, Pie, Cell, Legend, ReferenceDot, Scatter
 } from 'recharts';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
@@ -39,6 +39,9 @@ const FocAnalysis = () => {
     const [selectedReportId, setSelectedReportId] = useState<string>('');
     const [focMode, setFocMode] = useState<'laden' | 'ballast'>('laden');
     const [selectedType, setSelectedType] = useState<string>('');
+    const [lngPrice, setLngPrice] = useState<number>(600);
+    const [lsmgoPrice, setLsmgoPrice] = useState<number>(850);
+    const [analysisMode, setAnalysisMode] = useState<'standard' | 'correction'>('standard');
 
     useEffect(() => {
         const load = async () => {
@@ -270,6 +273,172 @@ const FocAnalysis = () => {
         }));
     }, [availableProfiles, selectedType]);
 
+    // Helper to calculate total normalized energy for any report
+    const getNormalizedEnergy = (r: Report) => {
+        if (!selectedShip || !codes) return 0;
+
+        const opTimeStr = r.items['R200'] as string || r.items['R011'] as string;
+        const opTime = parseFloat(opTimeStr) || 24;
+        const normFactor = opTime > 0 ? (24 / opTime) : 1;
+
+        const configShip = selectedShip.configSourceShipId
+            ? ships.find(s => s.code === selectedShip.configSourceShipId) || selectedShip
+            : selectedShip;
+
+        let totalE = 0;
+
+        configShip.fuels?.forEach(fuel => {
+            const fDef = codes?.fCodes?.find(f => f.code === fuel.code);
+            const targetFuel = selectedShip.fuels?.find(f => f.code === fuel.code);
+            const rawLcv = (targetFuel?.lcv !== undefined && targetFuel?.lcv !== 0)
+                ? targetFuel.lcv
+                : (fuel.lcv || fDef?.lcv || 0.0405);
+
+            let factor = 1;
+            if (rawLcv < 0.1) factor = 1_000_000;
+            else if (rawLcv >= 0.1 && rawLcv < 100) factor = 1000;
+            else if (rawLcv >= 2000 && rawLcv < 30000) factor = 4.184;
+
+            const r031Key = `R031_${fuel.code}`;
+            let val = parseFloat(r.items[r031Key] as string) || 0;
+
+            if (val === 0) {
+                Object.keys(r.items).forEach(k => {
+                    if (k.startsWith('CONS_') && k.endsWith(`_${fuel.code}`)) {
+                        val += parseFloat(r.items[k] as string) || 0;
+                    }
+                });
+            }
+
+            totalE += (val * normFactor * rawLcv * factor);
+        });
+
+        return totalE;
+    };
+
+    // Helper to interpolate expected FOC from curve for any speed (TJ/24h)
+    const calculateExpectedCurveFoc = (speed: number) => {
+        if (chartData.length < 2 || speed <= 0) return 0;
+
+        // Ensure sorted - chartData is already sorted by speed
+        const sorted = chartData;
+
+        if (speed <= sorted[0].speed) return sorted[0].foc;
+        if (speed >= sorted[sorted.length - 1].speed) return sorted[sorted.length - 1].foc;
+
+        for (let i = 0; i < sorted.length - 1; i++) {
+            if (sorted[i].speed <= speed && sorted[i + 1].speed >= speed) {
+                const p1 = sorted[i];
+                const p2 = sorted[i + 1];
+                const ratio = (speed - p1.speed) / (p2.speed - p1.speed);
+                return p1.foc + ratio * (p2.foc - p1.foc);
+            }
+        }
+        return 0;
+    };
+
+    const voyageStats = useMemo(() => {
+        if (!displayedReports.length || chartData.length === 0) return null;
+
+        let totalActualTJ = 0;
+        let totalExpectedTJ = 0;
+        let totalExcessTJ = 0;
+
+        displayedReports.forEach(r => {
+            // Only consider sea-going/noon reports for fair comparison if needed, 
+            // or all reports where speed > 0
+            const speed = parseFloat(r.items['R026'] as string || r.items['R034'] as string || '0');
+            if (speed <= 0) return;
+
+            const opTimeStr = r.items['R200'] as string || r.items['R011'] as string;
+            const opTime = parseFloat(opTimeStr) || 24;
+
+            // getNormalizedEnergy returns TJ normalized to 24h * 1M (MJ) -> No, check getNormalizedEnergy
+            // getNormalizedEnergy returns MJ normalized to 24h
+
+            // Actual TJ for this report's duration
+            // Normalized (MJ/24h) -> Actual (MJ) = Normalized * (opTime/24)
+            const normMJ = getNormalizedEnergy(r);
+            const actualMJ = normMJ * (opTime / 24);
+
+            // Expected TJ for this report's duration
+            // Curve provides TJ/24h
+            const expectedDailyTJ = calculateExpectedCurveFoc(speed);
+            const expectedRealTJ = expectedDailyTJ * (opTime / 24);
+
+            const reportActualTJ = actualMJ / 1_000_000;
+            const reportExpectedTJ = expectedRealTJ;
+            const diff = reportActualTJ - reportExpectedTJ;
+
+            totalActualTJ += reportActualTJ;
+            totalExpectedTJ += reportExpectedTJ;
+
+            if (diff > 0) {
+                totalExcessTJ += diff;
+            }
+        });
+
+        let diffTJ = 0;
+        if (analysisMode === 'standard') {
+            diffTJ = totalActualTJ - totalExpectedTJ;
+        } else {
+            // Correction mode: Sum of ONLY positive differences (Penalty)
+            diffTJ = totalExcessTJ;
+        }
+
+        // For Standard: diffTJ can be negative (Savings) or positive (Excess)
+        // For Correction: diffTJ is always positive (Total Penalty) or 0
+
+        // Remove 'const diffTJ = ...' as it is now calculated above
+        const isSavings = diffTJ < 0;
+        const absDiffGJ = Math.abs(diffTJ) * 1000;
+
+        const lngLCV = 50.0;
+        const lsmgoLCV = 42.7;
+
+        const lngEq = (lngLCV > 0) ? absDiffGJ / lngLCV : 0;
+        const lsmgoEq = (lsmgoLCV > 0) ? absDiffGJ / lsmgoLCV : 0;
+
+        const lngCost = lngEq * lngPrice;
+        const lsmgoCost = lsmgoEq * lsmgoPrice;
+
+        return {
+            diffTJ, isSavings, absDiffGJ, lngEq, lsmgoEq, lngCost, lsmgoCost
+        };
+
+    }, [displayedReports, chartData, getNormalizedEnergy, lngPrice, lsmgoPrice, analysisMode]);
+
+    const voyageNoonData = useMemo(() => {
+        if (!displayedReports.length) return [];
+        return displayedReports
+            .filter(r => {
+                const evName = (codes?.evCodes.find(e => e.code === r.evCode)?.name || '').toLowerCase();
+                const r004 = (r.items['R004'] as string || '').toLowerCase();
+                // Filter for Noon Reports
+                return r.evCode === 'N' || evName.includes('noon') || r004.includes('noon');
+            })
+            .map(r => {
+                let dateStr = r.items['R003'] as string || r.submittedAt;
+                // Handle Excel Serial Date (e.g., 45805.5) which is number of days since 1900-01-01
+                if (dateStr && !isNaN(Number(dateStr)) && !dateStr.includes('-')) {
+                    const serial = Number(dateStr);
+                    // Excel base date (Dec 30 1899) to Unix epoch (Jan 1 1970) is 25569 days
+                    const dateObj = new Date(Math.round((serial - 25569) * 86400 * 1000));
+                    dateStr = dateObj.toISOString().split('T')[0];
+                } else if (dateStr) {
+                    dateStr = dateStr.split('T')[0];
+                }
+
+                return {
+                    speed: parseFloat(r.items['R026'] as string || r.items['R034'] as string || '0'),
+                    foc: getNormalizedEnergy(r) / 1_000_000, // Convert MJ to TJ
+                    date: dateStr,
+                    name: r.items['R004'] as string || 'Noon Report'
+                };
+            })
+            .filter(d => d.speed > 0 && d.foc > 0);
+    }, [displayedReports, selectedShip, codes, ships]);
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center px-1">
@@ -282,6 +451,13 @@ const FocAnalysis = () => {
                         Analyze Fuel Oil Consumption trends with standard tolerance bands (+/- 5%).
                     </p>
                 </div>
+                <button
+                    onClick={() => window.print()}
+                    className="flex items-center gap-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-lg transition-colors print:hidden"
+                >
+                    <Printer size={20} />
+                    <span className="font-bold">Print PDF</span>
+                </button>
             </div>
 
             {/* Controls */}
@@ -379,29 +555,36 @@ const FocAnalysis = () => {
                         {chartData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <ComposedChart
-                                    data={chartData}
                                     margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
                                 >
                                     <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                                     <XAxis
                                         dataKey="speed"
                                         type="number"
-                                        domain={['dataMin', 'dataMax']}
-                                        ticks={chartData.map(d => d.speed)}
-                                        interval={0}
+                                        domain={['auto', 'auto']}
+                                        allowDataOverflow={false}
                                         tick={{ fill: '#94a3b8' }}
                                         label={{ value: 'Speed (kts)', position: 'insideBottom', offset: -10, fill: '#cbd5e1' }}
                                     />
                                     <YAxis
+                                        dataKey="foc"
                                         tick={{ fill: '#94a3b8' }}
                                         label={{ value: 'Daily FOC (TJ)', angle: -90, position: 'insideLeft', offset: 0, fill: '#cbd5e1' }}
                                         domain={['auto', 'auto']}
                                     />
                                     <Tooltip
+                                        shared={false}
+                                        cursor={{ strokeDasharray: '3 3' }}
                                         contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#f8fafc' }}
                                         itemStyle={{ color: '#f8fafc' }}
-                                        formatter={(value: any, name: any) => {
+                                        formatter={(value: any, name: any, props: any) => {
                                             if (name === 'focRange') return [`${value[0].toFixed(2)} - ${value[1].toFixed(2)}`, 'Tolerance Range'];
+
+                                            // Show date for Noon Reports
+                                            if (props && props.payload && props.payload.date) {
+                                                return [Number(value).toFixed(2), `Daily FOC (${props.payload.date})`];
+                                            }
+
                                             return [Number(value).toFixed(2), name === 'foc' ? 'Daily FOC' : name];
                                         }}
                                         labelFormatter={(label) => `Speed: ${label} kts`}
@@ -410,6 +593,7 @@ const FocAnalysis = () => {
                                     {/* Tolerance Band Area */}
                                     <Area
                                         type="monotone"
+                                        data={chartData}
                                         dataKey="focRange"
                                         stroke="none"
                                         fill="#ef4444"
@@ -420,6 +604,7 @@ const FocAnalysis = () => {
                                     {/* Main Line */}
                                     <Line
                                         type="monotone"
+                                        data={chartData}
                                         dataKey="foc"
                                         stroke="#3b82f6"
                                         strokeWidth={3}
@@ -440,6 +625,18 @@ const FocAnalysis = () => {
                                             label={{ position: 'top', value: 'Current', fill: '#ef4444', fontSize: 12 }}
                                         />
                                     )}
+
+                                    <Scatter
+                                        data={voyageNoonData}
+                                        fill="#fdba74"
+                                        line={false}
+                                        shape="circle"
+                                        name="Voyage Noon Reports"
+                                    >
+                                        {voyageNoonData.map((_, index) => (
+                                            <Cell key={`cell-${index}`} fill="#fdba74" />
+                                        ))}
+                                    </Scatter>
                                 </ComposedChart>
                             </ResponsiveContainer>
                         ) : (
@@ -460,6 +657,7 @@ const FocAnalysis = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
                     {/* Controls Side */}
                     <div className="lg:col-span-4 space-y-4">
                         <div className="bg-ocean-900/50 p-4 rounded-xl border border-ocean-700/50 space-y-4">
@@ -509,6 +707,33 @@ const FocAnalysis = () => {
                             </div>
                         </div>
 
+                        {/* Fuel Price Settings */}
+                        <div className="bg-ocean-900/50 p-4 rounded-xl border border-ocean-700/50 space-y-4">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2 mb-2">
+                                <span className="text-emerald-400">$</span> Fuel Prices (USD/MT)
+                            </label>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] text-slate-400 font-medium ml-1">LNG</label>
+                                    <input
+                                        type="number"
+                                        className="w-full bg-ocean-900 border border-ocean-600 rounded-lg px-3 py-2 text-white text-sm outline-none focus:ring-2 focus:ring-emerald-500/50 text-right"
+                                        value={lngPrice}
+                                        onChange={(e) => setLngPrice(Math.max(0, Number(e.target.value)))}
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] text-slate-400 font-medium ml-1">LSMGO</label>
+                                    <input
+                                        type="number"
+                                        className="w-full bg-ocean-900 border border-ocean-600 rounded-lg px-3 py-2 text-white text-sm outline-none focus:ring-2 focus:ring-emerald-500/50 text-right"
+                                        value={lsmgoPrice}
+                                        onChange={(e) => setLsmgoPrice(Math.max(0, Number(e.target.value)))}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
                         {selectedReport && (
                             <>
                                 <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-4">
@@ -546,6 +771,8 @@ const FocAnalysis = () => {
                                         Hours (Normalized to 24h)
                                     </div>
                                 </div>
+
+
                             </>
                         )}
                     </div>
@@ -554,9 +781,279 @@ const FocAnalysis = () => {
                     <div className="lg:col-span-8">
                         {renderMetricsContent(fuelMetrics.length > 0, fuelMetrics, equipmentMetrics)}
                     </div>
+
+                    {/* Analysis Cards (Moved to Bottom) */}
+                    {selectedReport && (() => {
+                        // Calculate Expected Energy at Current Speed
+                        if (chartData.length < 2 || currentSpeed <= 0) return null;
+
+                        let expectedTJ = 0;
+                        const sorted = chartData; // already sorted by speed
+
+                        if (currentSpeed <= sorted[0].speed) {
+                            expectedTJ = sorted[0].foc;
+                        } else if (currentSpeed >= sorted[sorted.length - 1].speed) {
+                            expectedTJ = sorted[sorted.length - 1].foc;
+                        } else {
+                            // Interpolate
+                            for (let i = 0; i < sorted.length - 1; i++) {
+                                if (sorted[i].speed <= currentSpeed && sorted[i + 1].speed >= currentSpeed) {
+                                    const p1 = sorted[i];
+                                    const p2 = sorted[i + 1];
+                                    const ratio = (currentSpeed - p1.speed) / (p2.speed - p1.speed);
+                                    expectedTJ = p1.foc + ratio * (p2.foc - p1.foc);
+                                    break;
+                                }
+                            }
+                        }
+
+                        const actualGJ = totalEnergy / 1000;
+                        const expectedGJ = expectedTJ * 1000;
+                        const diffGJ = actualGJ - expectedGJ;
+                        const isSavings = diffGJ < 0;
+                        const absDiff = Math.abs(diffGJ);
+
+                        // Actual diff based on Op Time
+                        const opTimeVal = parseFloat(selectedReport.items['R200'] as string || selectedReport.items['R011'] as string || '24');
+                        const diffActual = diffGJ * (opTimeVal / 24);
+                        const absDiffActual = Math.abs(diffActual);
+                        const showActual = Math.abs(opTimeVal - 24) > 0.1;
+
+                        // Fuel Equivalents (LCV Based)
+                        const lngLCV = 50.0; // GJ/MT default
+                        const lsmgoLCV = 42.7; // GJ/MT default
+
+                        const lngEq = (lngLCV > 0 && !isNaN(absDiffActual)) ? absDiffActual / lngLCV : 0;
+                        const lsmgoEq = (lsmgoLCV > 0 && !isNaN(absDiffActual)) ? absDiffActual / lsmgoLCV : 0;
+
+
+                        // Cost Estimation
+                        // Prices are now from state: lngPrice, lsmgoPrice
+                        const lngCost = lngEq * lngPrice;
+                        const lsmgoCost = lsmgoEq * lsmgoPrice;
+
+                        // Helper for safe display
+                        const safeVal = (v: number) => isNaN(v) || !isFinite(v) ? '0.00' : v.toFixed(2);
+
+                        return (
+                            <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-6 lg:col-span-12 mt-6">
+                                {/* vs Curve Card */}
+                                <div className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-6">
+                                    <h3 className="text-purple-300 font-bold mb-3 flex items-center gap-2 text-sm uppercase">
+                                        <Activity size={16} /> vs Curve ({selectedType})
+                                    </h3>
+                                    <div className="flex items-baseline gap-2 flex-wrap">
+                                        <div className={cn(
+                                            "text-3xl font-bold tracking-tight flex items-center gap-2",
+                                            isSavings ? "text-emerald-400" : "text-red-400"
+                                        )}>
+                                            {isSavings ? <ArrowDown size={24} /> : <ArrowUp size={24} />}
+                                            {safeVal(absDiff)} <span className="text-lg text-slate-400 font-normal">GJ</span>
+                                        </div>
+
+                                        {showActual && (
+                                            <div className="text-sm font-medium text-slate-400">
+                                                ({safeVal(absDiffActual)} GJ act.)
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="text-xs text-purple-400/70 mt-2">
+                                        {isSavings ? 'Savings' : 'Excess'} @ {currentSpeed.toFixed(1)} kts
+                                    </div>
+                                </div>
+
+                                {/* LNG Equivalent */}
+                                <div className="bg-ocean-900 border border-ocean-700 rounded-xl p-6 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <Fuel size={56} className="text-blue-400" />
+                                    </div>
+                                    <h3 className="text-slate-400 font-bold mb-2 text-xs uppercase tracking-wider">LNG Equiv.</h3>
+                                    <div className={cn(
+                                        "text-3xl font-bold tracking-tight",
+                                        isSavings ? "text-emerald-400" : "text-red-400"
+                                    )}>
+                                        {safeVal(lngEq)} <span className="text-lg text-slate-500 font-medium">MT</span>
+                                    </div>
+                                    <div className="text-xs text-slate-500 mt-2">Based on LCV {lngLCV} GJ/MT</div>
+                                </div>
+
+                                {/* LSMGO Equivalent */}
+                                <div className="bg-ocean-900 border border-ocean-700 rounded-xl p-6 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <Droplet size={56} className="text-amber-400" />
+                                    </div>
+                                    <h3 className="text-slate-400 font-bold mb-2 text-xs uppercase tracking-wider">LSMGO Equiv.</h3>
+                                    <div className={cn(
+                                        "text-3xl font-bold tracking-tight",
+                                        isSavings ? "text-emerald-400" : "text-red-400"
+                                    )}>
+                                        {safeVal(lsmgoEq)} <span className="text-lg text-slate-500 font-medium">MT</span>
+                                    </div>
+                                    <div className="text-xs text-slate-500 mt-2">Based on LCV {lsmgoLCV} GJ/MT</div>
+                                </div>
+
+                                {/* Cost Estimation */}
+                                <div className="bg-ocean-900 border border-ocean-700 rounded-xl p-6 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <span className="text-5xl font-bold text-emerald-400">$</span>
+                                    </div>
+                                    <h3 className="text-slate-400 font-bold mb-3 text-xs uppercase tracking-wider">Est. Cost</h3>
+
+                                    <div className="space-y-3">
+                                        <div>
+                                            <div className="flex justify-between items-baseline mb-1">
+                                                <span className="text-xs text-slate-500 font-bold">LNG</span>
+                                                <span className="text-[10px] text-slate-600">(@ ${lngPrice}/MT)</span>
+                                            </div>
+                                            <div className={cn(
+                                                "text-2xl font-bold tracking-tight",
+                                                isSavings ? "text-emerald-400" : "text-red-400"
+                                            )}>
+                                                $ {safeVal(lngCost)}
+                                            </div>
+                                        </div>
+
+                                        <div className="border-t border-ocean-800 pt-2">
+                                            <div className="flex justify-between items-baseline mb-1">
+                                                <span className="text-xs text-slate-500 font-bold">LSMGO</span>
+                                                <span className="text-[10px] text-slate-600">(@ ${lsmgoPrice}/MT)</span>
+                                            </div>
+                                            <div className={cn(
+                                                "text-2xl font-bold tracking-tight",
+                                                isSavings ? "text-emerald-400" : "text-red-400"
+                                            )}>
+                                                $ {safeVal(lsmgoCost)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })()}
                 </div>
             </div>
 
+            {/* Voyage Cumulative Analysis */}
+            {
+                voyageStats && (
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between gap-3 mb-4">
+                            <div className="flex items-center gap-3">
+                                <History size={24} className="text-emerald-400" />
+                                <h2 className="text-xl font-bold text-white">Voyage Cumulative Analysis (Voyage {selectedVoyage || 'All'})</h2>
+                            </div>
+                            <div className="flex bg-ocean-900 p-1 rounded-lg border border-ocean-600">
+                                <button
+                                    onClick={() => setAnalysisMode('standard')}
+                                    className={cn(
+                                        "px-3 py-1.5 rounded-md text-xs font-bold uppercase transition-all",
+                                        analysisMode === 'standard'
+                                            ? "bg-blue-500 text-white shadow-lg"
+                                            : "text-slate-400 hover:text-blue-300 hover:bg-ocean-800"
+                                    )}
+                                >
+                                    Standard
+                                </button>
+                                <button
+                                    onClick={() => setAnalysisMode('correction')}
+                                    className={cn(
+                                        "px-3 py-1.5 rounded-md text-xs font-bold uppercase transition-all",
+                                        analysisMode === 'correction'
+                                            ? "bg-red-500 text-white shadow-lg"
+                                            : "text-slate-400 hover:text-red-300 hover:bg-ocean-800"
+                                    )}
+                                >
+                                    Correction
+                                </button>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            {/* Voyage vs Curve */}
+                            <div className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-6">
+                                <h3 className="text-purple-300 font-bold mb-3 flex items-center gap-2 text-sm uppercase">
+                                    <Activity size={16} /> Voyage vs Curve
+                                </h3>
+                                <div className="flex items-center gap-2">
+                                    <div className={cn(
+                                        "text-3xl font-bold tracking-tight flex items-center gap-2",
+                                        voyageStats!.isSavings ? "text-emerald-400" : "text-red-400"
+                                    )}>
+                                        {voyageStats!.isSavings ? <ArrowDown size={24} /> : <ArrowUp size={24} />}
+                                        {voyageStats!.absDiffGJ.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-lg text-slate-400 font-normal">GJ</span>
+                                    </div>
+                                </div>
+                                <div className="text-xs text-purple-400/70 mt-2">
+                                    Total {voyageStats!.isSavings ? 'Savings' : 'Excess'} for Voyage
+                                </div>
+                            </div>
+
+                            {/* Voyage LNG Equiv */}
+                            <div className="bg-ocean-900 border border-ocean-700 rounded-xl p-6 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <Fuel size={56} className="text-blue-400" />
+                                </div>
+                                <h3 className="text-slate-400 font-bold mb-2 text-xs uppercase tracking-wider">Voyage LNG Equiv.</h3>
+                                <div className={cn(
+                                    "text-3xl font-bold tracking-tight",
+                                    voyageStats!.isSavings ? "text-emerald-400" : "text-red-400"
+                                )}>
+                                    {voyageStats!.lngEq.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-lg text-slate-500 font-medium">MT</span>
+                                </div>
+                                <div className="text-xs text-slate-500 mt-2">Cumulative</div>
+                            </div>
+
+                            {/* Voyage LSMGO Equiv */}
+                            <div className="bg-ocean-900 border border-ocean-700 rounded-xl p-6 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <Droplet size={56} className="text-amber-400" />
+                                </div>
+                                <h3 className="text-slate-400 font-bold mb-2 text-xs uppercase tracking-wider">Voyage LSMGO Equiv.</h3>
+                                <div className={cn(
+                                    "text-3xl font-bold tracking-tight",
+                                    voyageStats!.isSavings ? "text-emerald-400" : "text-red-400"
+                                )}>
+                                    {voyageStats!.lsmgoEq.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-lg text-slate-500 font-medium">MT</span>
+                                </div>
+                                <div className="text-xs text-slate-500 mt-2">Cumulative</div>
+                            </div>
+
+                            {/* Voyage Est. Cost */}
+                            <div className="bg-ocean-900 border border-ocean-700 rounded-xl p-6 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <span className="text-5xl font-bold text-emerald-400">$</span>
+                                </div>
+                                <h3 className="text-slate-400 font-bold mb-3 text-xs uppercase tracking-wider">Voyage Est. Cost</h3>
+
+                                <div className="space-y-3">
+                                    <div>
+                                        <div className="flex justify-between items-baseline mb-1">
+                                            <span className="text-xs text-slate-500 font-bold">LNG</span>
+                                        </div>
+                                        <div className={cn(
+                                            "text-2xl font-bold tracking-tight",
+                                            voyageStats!.isSavings ? "text-emerald-400" : "text-red-400"
+                                        )}>
+                                            $ {voyageStats!.lngCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </div>
+                                    </div>
+
+                                    <div className="border-t border-ocean-800 pt-2">
+                                        <div className="flex justify-between items-baseline mb-1">
+                                            <span className="text-xs text-slate-500 font-bold">LSMGO</span>
+                                        </div>
+                                        <div className={cn(
+                                            "text-2xl font-bold tracking-tight",
+                                            voyageStats!.isSavings ? "text-emerald-400" : "text-red-400"
+                                        )}>
+                                            $ {voyageStats!.lsmgoCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
         </div>
     );
 };
