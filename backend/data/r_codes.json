@@ -1242,5 +1242,21 @@
     "unit": "%",
     "priority": 10,
     "group": "Engine"
+  },
+  {
+    "code": "R206",
+    "name": "Remark",
+    "type": "number",
+    "unit": "Text",
+    "priority": 11,
+    "group": "Common"
+  },
+  {
+    "code": "R207",
+    "name": "Remark(Eng.)",
+    "type": "number",
+    "unit": "Text",
+    "priority": 11,
+    "group": "Engine"
   }
 ]

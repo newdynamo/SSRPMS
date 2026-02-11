@@ -115,97 +115,92 @@ const NewReport: React.FC = () => {
     // State for One Engine Operation Mode (Calculation Toggle)
     const [isOneEngineOp, setIsOneEngineOp] = useState(false);
 
-    // Aggregation Effect: Sum Per-Equipment Consumption -> Total Consumption (R031)
+
+
+    // Consolidated Auto-Calculation Effect (Summation & ROB)
     useEffect(() => {
-        if (!activeShip || !activeShip.fuels) return;
+        if (!activeShip || !lastReport) return;
 
         const newItemValues = { ...itemValues };
         let hasChanges = false;
 
-        // Auto-fill Vessel Name (R001) if empty or different
-        // Using 'name' from ship config
+        // 1. Auto-fill Vessel Name (R001)
         const targetVesselName = activeShip.name;
         if (newItemValues['R001'] !== targetVesselName) {
             newItemValues['R001'] = targetVesselName;
             hasChanges = true;
         }
 
-        // Initialize totals map
-        const fuelTotals: Record<string, number> = {};
-        activeShip.fuels.forEach(f => fuelTotals[f.code] = 0);
+        // 2. FUEL LOGIC (Summation & ROB)
+        if (activeShip.fuels) {
+            const ROB_CODE = 'R030';
+            const CONS_CODE = 'R031';
+            const BUNKER_CODE = 'R056';
 
-        // Sum up CONS keys
-        Object.keys(itemValues).forEach(key => {
-            if (key.startsWith('CONS_')) {
-                // Key format: CONS_{eqCode}_{unitNum}_{fCode}
-                const parts = key.split('_');
-                const fCode = parts[parts.length - 1]; // fCode is last
-                const val = parseFloat(itemValues[key] as string || '0');
+            // 2a. Sum per-equipment consumption (CONS_)
+            const fuelTotals: Record<string, number> = {};
+            activeShip.fuels.forEach(f => fuelTotals[f.code] = 0);
 
-                if (fuelTotals[fCode] !== undefined) {
-                    fuelTotals[fCode] += val;
+            Object.keys(itemValues).forEach(key => {
+                if (key.startsWith('CONS_')) {
+                    const parts = key.split('_');
+                    const fCode = parts[parts.length - 1];
+                    const val = parseFloat(itemValues[key] as string || '0');
+                    if (fuelTotals[fCode] !== undefined) {
+                        fuelTotals[fCode] += val;
+                    }
                 }
-            }
-        });
+            });
 
-        // Update R031_Fxx fields
-        Object.entries(fuelTotals).forEach(([fCode, total]) => {
-            const r031Key = `R031_${fCode}`;
-            const formatted = total.toFixed(2);
+            // 2b. Calculate & Update R031 (Required for ROB calc) & R030
+            activeShip.fuels.forEach(fuel => {
+                const fCode = fuel.code;
+                const robKey = `${ROB_CODE}_${fCode}`;
+                const consKey = `${CONS_CODE}_${fCode}`;
+                const bunkerKey = `${BUNKER_CODE}_${fCode}`;
 
-            if (newItemValues[r031Key] !== formatted) {
-                newItemValues[r031Key] = formatted;
-                hasChanges = true;
-            }
-        });
+                // Update Total Consumption (R031) from Sums
+                const totalCons = fuelTotals[fCode] || 0;
+                const formattedCons = totalCons.toFixed(2);
 
-        if (hasChanges) {
-            setItemValues(newItemValues);
+                if (newItemValues[consKey] !== formattedCons) {
+                    newItemValues[consKey] = formattedCons;
+                    hasChanges = true;
+                }
+
+                // Get Previous ROB
+                let prevRob = 0;
+                if (lastReport && lastReport.items?.[robKey]) {
+                    prevRob = parseFloat(lastReport.items[robKey] as string);
+                } else {
+                    prevRob = fuel.initialRob || 0;
+                }
+
+                // Use the calculated total consumption for ROB calc
+                const consumption = totalCons;
+                // Alternatively use current input value if we allow manual override, 
+                // but here we are forcing the sum.
+
+                const bunker = parseFloat(newItemValues[bunkerKey] as string || '0');
+
+                // Calculate New ROB
+                let newRob = Math.max(0, prevRob - consumption + bunker);
+
+                // SPECIAL: Force LNG (F05) and LPG (F06, F07) to 0
+                if (['F05', 'F06', 'F07'].includes(fCode)) {
+                    newRob = 0;
+                }
+
+                const formattedRob = newRob.toFixed(2);
+
+                if (newItemValues[robKey] !== formattedRob) {
+                    newItemValues[robKey] = formattedRob;
+                    hasChanges = true;
+                }
+            });
         }
-    }, [itemValues, activeShip]);
 
-    // Auto-Calculation Effect (ROB)
-    useEffect(() => {
-        if (!activeShip || !lastReport) return;
-
-        const ROB_CODE = 'R030';
-        const CONS_CODE = 'R031';
-        const BUNKER_CODE = 'R056';
-
-        const newItemValues = { ...itemValues };
-        let hasChanges = false;
-
-        activeShip.fuels?.forEach(fuel => {
-            const fCode = fuel.code;
-            const robKey = `${ROB_CODE}_${fCode}`;
-            const consKey = `${CONS_CODE}_${fCode}`;
-            const bunkerKey = `${BUNKER_CODE}_${fCode}`;
-
-            // Get Previous ROB: From Last Report OR Initial Config
-            let prevRob = 0;
-            if (lastReport && lastReport.items?.[robKey]) {
-                prevRob = parseFloat(lastReport.items[robKey] as string);
-            } else {
-                // Fallback to Initial ROB from Ship Config
-                prevRob = fuel.initialRob || 0;
-            }
-
-            // Get Current Values
-            const consumption = parseFloat(newItemValues[consKey] as string || '0');
-            const bunker = parseFloat(newItemValues[bunkerKey] as string || '0');
-
-            // Calculate New ROB
-            const newRob = Math.max(0, prevRob - consumption + bunker);
-            const formattedRob = newRob.toFixed(2); // Keep 2 decimals
-
-            // Only update if value is different
-            if (newItemValues[robKey] !== formattedRob) {
-                newItemValues[robKey] = formattedRob;
-                hasChanges = true;
-            }
-        });
-
-        // WATER CALCULATION
+        // 3. WATER CALCULATION
         if (activeShip.waters) {
             const WATER_ROB_CONFIG: Record<string, { rob: string, minus: string[], plus: string[] }> = {
                 'W01': { rob: 'R127', minus: ['R123'], plus: ['R032', 'R033', 'R138'] },
@@ -240,19 +235,15 @@ const NewReport: React.FC = () => {
             });
         }
 
-        // L.O CALCULATION
+        // 4. L.O CALCULATION
         if (activeShip.lubeOils) {
-            // Mapping: LCode -> { rob: R126_Lxx, cons: R124_Lxx, sup: R122_Lxx }
-            // Note: R-Codes in r_codes.json are generic (R126, R124, R122). 
-            // We use suffixes specific to the L-Code (e.g., _L01).
-
             activeShip.lubeOils.forEach(lo => {
                 const lCode = lo.code;
                 const robKey = `R126_${lCode}`;
                 const consKey = `R124_${lCode}`;
                 const supKey = `R122_${lCode}`;
 
-                // Get Previous ROB: From Last Report OR Initial Config
+                // Get Previous ROB
                 let prevRob = 0;
                 if (lastReport && lastReport.items?.[robKey]) {
                     prevRob = parseFloat(lastReport.items[robKey] as string);
@@ -268,7 +259,6 @@ const NewReport: React.FC = () => {
                 const newRob = Math.max(0, prevRob - consumption + supplied);
                 const formattedRob = newRob.toFixed(2);
 
-                // Only update if value is different
                 if (newItemValues[robKey] !== formattedRob) {
                     newItemValues[robKey] = formattedRob;
                     hasChanges = true;
@@ -670,100 +660,9 @@ const NewReport: React.FC = () => {
         }
     }, [lastReport]);
 
-    // Effect: Fuel Status Auto-Calculation (ROB = Last ROB + Bunkered - Consumed)
-    useEffect(() => {
-        if (!activeShip?.fuels) return;
 
-        let hasUpdates = false;
-        const newValues = { ...itemValues };
 
-        activeShip.fuels.forEach(fuel => {
-            const fCode = fuel.code;
-            const robKey = `R030_${fCode}`;   // Current ROB
-            const consKey = `R031_${fCode}`;  // Consumed
-            const bunkerKey = `R056_${fCode}`; // Bunkered
 
-            // 1. Get Last ROB
-            let prevRob = 0;
-            if (lastReport && lastReport.items?.[robKey]) {
-                prevRob = parseFloat(lastReport.items[robKey] as string) || 0;
-            } else {
-                prevRob = fuel.initialRob || 0;
-            }
-
-            // 2. Get Current Input Values
-            const bunkered = parseFloat(itemValues[bunkerKey]?.toString() || '0') || 0;
-            const consumed = parseFloat(itemValues[consKey]?.toString() || '0') || 0;
-
-            // 3. Calculate New ROB
-            // Formula: Prev + Bunker - Consumed
-            let calcedRob = prevRob + bunkered - consumed;
-
-            // SPECIAL: Force LNG (F05) and LPG (F06, F07) to 0 as requested by user
-            if (['F05', 'F06', 'F07'].includes(fCode)) {
-                calcedRob = 0;
-            }
-
-            const formattedRob = calcedRob.toFixed(2);
-
-            // 4. Update if different
-            if (itemValues[robKey] !== formattedRob) {
-                newValues[robKey] = formattedRob;
-                hasUpdates = true;
-            }
-        });
-
-        if (hasUpdates) {
-            setItemValues(newValues);
-        }
-    }, [activeShip, lastReport, itemValues]); // Deep dependency on itemValues is okay as we check for diff
-
-    // Effect: Sum Equipment Fuel Consumption (CONS_) -> Total Consumption (R031_)
-    useEffect(() => {
-        if (!activeShip?.equipment?.length) return;
-
-        // Group sums by Fuel Code
-        // Key: F01, F02, ... Value: Sum
-        const sums: Record<string, number> = {};
-
-        // Iterate itemValues to find CONS_ keys
-        Object.keys(itemValues).forEach(key => {
-            if (key.startsWith('CONS_')) {
-                // Key format: CONS_E01_1_F01
-                const parts = key.split('_');
-                // parts[0]="CONS", parts[1]="E01", parts[2]="1", parts[3]="F01"
-                if (parts.length >= 4) {
-                    const fCode = parts[3];
-                    const val = parseFloat(itemValues[key]?.toString() || '0');
-                    if (!isNaN(val)) {
-                        sums[fCode] = (sums[fCode] || 0) + val;
-                    }
-                }
-            }
-        });
-
-        const newValues = { ...itemValues };
-        let hasUpdates = false;
-
-        // Update R031_{fCode}
-        activeShip.fuels?.forEach(fuel => {
-            const fCode = fuel.code;
-            const sum = sums[fCode] || 0;
-            const targetKey = `R031_${fCode}`;
-            const currentValStr = itemValues[targetKey]?.toString() || '0';
-            const currentVal = parseFloat(currentValStr);
-
-            // Allow small epsilon difference to avoid loops
-            if (Math.abs(sum - currentVal) > 0.001) {
-                newValues[targetKey] = sum.toFixed(2);
-                hasUpdates = true;
-            }
-        });
-
-        if (hasUpdates) {
-            setItemValues(newValues);
-        }
-    }, [itemValues, activeShip]); // Runs when inputs change
 
 
 
@@ -1738,6 +1637,27 @@ const NewReport: React.FC = () => {
                                             <option value="W">W</option>
                                         </select>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+
+                // SPECIAL: Remark (R206, R207) - Textarea 500 chars
+                if (['R206', 'R207'].includes(r.code)) {
+                    return (
+                        <div key={r.code} className="space-y-1 group col-span-1 md:col-span-2 lg:col-span-4">
+                            <label className="block text-sm font-medium text-slate-300 group-hover:text-emerald-400 transition-colors">{r.name}</label>
+                            <div className="relative">
+                                <textarea
+                                    className="w-full bg-ocean-900 border border-ocean-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all hover:border-ocean-500 placeholder-slate-700 min-h-[120px] resize-y font-mono text-sm leading-relaxed"
+                                    value={itemValues[r.code] || ''}
+                                    onChange={e => setItemValues({ ...itemValues, [r.code]: e.target.value })}
+                                    maxLength={500}
+                                    placeholder="Enter remarks (max 500 characters)..."
+                                />
+                                <div className="absolute right-3 bottom-3 text-xs text-slate-500 bg-ocean-900/80 px-2 py-1 rounded backdrop-blur-sm border border-ocean-700 pointer-events-none">
+                                    {String(itemValues[r.code] || '').length} / 500
                                 </div>
                             </div>
                         </div>

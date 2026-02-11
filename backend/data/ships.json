@@ -701,6 +701,1759 @@
     }
   },
   {
+    "yard": "HHI",
+    "hullNo": "3297",
+    "imoNo": "9947598",
+    "name": "PUTERI LEDANG",
+    "code": "GPLD",
+    "class": "DNV+KR",
+    "flag": "MARSHALL ISLAND",
+    "deliveryDate": "2024-05-01",
+    "cargo": "LNG",
+    "dwt": 93414,
+    "configSourceShipId": "GPSD",
+    "customValues": {
+      "Propeller Pitch": "0.004515"
+    },
+    "fuels": [
+      {
+        "code": "F01",
+        "initialRob": 100,
+        "lcv": 0.0406
+      },
+      {
+        "code": "F03",
+        "initialRob": 482.6,
+        "lcv": 0.0427
+      },
+      {
+        "code": "F05",
+        "initialRob": 0,
+        "lcv": 0.05
+      }
+    ],
+    "waters": [
+      {
+        "code": "W01",
+        "initialRob": 500
+      }
+    ],
+    "focManagement": [
+      {
+        "id": "foc-laden-a-gl-piai-type",
+        "mode": "laden",
+        "type": "A-GL-PIAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.9,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.63,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.39,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 3.13,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.93,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.75,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.6,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.53,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.38,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 2.25,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 2.12,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.99,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.87,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.77,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.67,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.69,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.61,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.54,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.47,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.41,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-laden-b-gl-piaa-type",
+        "mode": "laden",
+        "type": "B-GL-PIAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.74,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.49,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.28,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 3.07,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.88,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.71,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.54,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.61,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.47,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 2.34,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 2.22,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 2.09,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.98,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.87,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.78,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.68,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.62,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.53,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.46,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.4,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-laden-c-gl-paai-type",
+        "mode": "laden",
+        "type": "C-GL-PAAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.98,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.71,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.46,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 3.19,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.98,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.78,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.58,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.4,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.49,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 2.34,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 2.2,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 2.08,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.95,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.83,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.74,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.64,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.55,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.53,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.46,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.4,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-laden-d-gl-paaa-type",
+        "mode": "laden",
+        "type": "D-GL-PAAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.74,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.26,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 3.03,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.84,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.66,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.48,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.54,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.41,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 2.27,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 2.14,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 2.02,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.9,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.8,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.72,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.63,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.55,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.53,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.46,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.4,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-laden-a-fl-piai-type",
+        "mode": "laden",
+        "type": "A-FL-PIAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 4.06,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.73,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.47,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 3.22,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 3.01,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.81,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.61,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.43,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.26,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 2.09,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 1.93,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.79,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.65,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.55,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.46,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.38,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.29,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.2,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.12,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.05,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-laden-b-fl-piaa-type",
+        "mode": "laden",
+        "type": "B-FL-PIAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.78,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.51,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.28,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 3.06,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.87,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.68,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.33,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.17,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 2.02,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 1.87,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.73,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.62,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.53,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.45,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.37,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.29,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.2,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.12,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.05,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-laden-c-fl-paai-type",
+        "mode": "laden",
+        "type": "C-FL-PAAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 4.07,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.74,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.47,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 3.22,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 3,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.79,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.59,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.41,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.24,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 2.08,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 1.93,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.78,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.65,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.52,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.39,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.28,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.2,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.2,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.12,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.05,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-laden-d-fl-paaa-type",
+        "mode": "laden",
+        "type": "D-FL-PAAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.79,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.52,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.29,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 3.06,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.86,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.67,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.49,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.31,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.16,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 2.01,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 1.87,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.73,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.61,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.48,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.37,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.26,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.2,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.2,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.12,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.05,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-ballast-a-gb-piai-type",
+        "mode": "ballast",
+        "type": "A-GB-PIAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.69,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.43,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.21,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 2.97,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.78,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.61,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.47,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.32,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.18,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 2.04,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 1.91,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.78,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.67,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.57,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.47,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.37,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.28,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.2,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.13,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.07,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-ballast-b-gb-piaa-type",
+        "mode": "ballast",
+        "type": "B-GB-PIAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.51,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.29,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.08,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 2.9,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.72,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.56,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.41,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.26,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.13,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 2,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 1.87,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.75,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.64,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.53,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.43,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.33,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.27,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.19,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.11,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.04,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-ballast-c-gb-paai-type",
+        "mode": "ballast",
+        "type": "C-GB-PAAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.79,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.52,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.24,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 3.01,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.81,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.63,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.45,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.29,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.13,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 1.99,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 1.86,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.73,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.62,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.51,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.41,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.3,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.33,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.18,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.1,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.04,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-ballast-d-gb-paaa-type",
+        "mode": "ballast",
+        "type": "D-GB-PAAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.54,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.28,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.04,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 2.84,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.66,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.49,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.33,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.18,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.04,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 1.91,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 1.78,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.67,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.56,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.46,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.47,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.37,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.33,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.18,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.1,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.04,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-ballast-a-fb-piai-type",
+        "mode": "ballast",
+        "type": "A-FB-PIAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.88,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.6,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.35,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 3.13,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.93,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.75,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.56,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.39,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.22,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 2.07,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 1.92,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.78,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.64,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.55,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.46,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.37,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.3,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.21,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.13,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.06,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-ballast-b-fb-piaa-type",
+        "mode": "ballast",
+        "type": "B-FB-PIAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.6,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.37,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.16,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 2.95,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.77,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.6,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.43,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.27,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.12,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 1.97,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 1.83,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.7,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.61,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.51,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.43,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.35,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.3,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.21,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.13,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.06,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-ballast-c-fb-paai-type",
+        "mode": "ballast",
+        "type": "C-FB-PAAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.88,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.6,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.36,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 3.13,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.92,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.73,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.54,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.37,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.21,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 2.06,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 1.91,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.78,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.64,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.52,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.4,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.29,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.21,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.21,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.13,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.06,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "foc-ballast-d-fb-paaa-type",
+        "mode": "ballast",
+        "type": "D-FB-PAAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "foc": 3.61,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "foc": 3.38,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "foc": 3.15,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "foc": 2.95,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "foc": 2.75,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "foc": 2.58,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "foc": 2.42,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "foc": 2.26,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "foc": 2.11,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "foc": 1.96,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "foc": 1.83,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "foc": 1.7,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "foc": 1.58,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "foc": 1.46,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "foc": 1.35,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "foc": 1.26,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "foc": 1.21,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "foc": 1.21,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "foc": 1.13,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "foc": 1.06,
+            "rpm": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
     "yard": "HANWHA",
     "hullNo": "2522",
     "name": "HLS CARTAGENA",
@@ -2775,17 +4528,17 @@
     "fuels": [
       {
         "code": "F01",
-        "initialRob": 0,
+        "initialRob": 1000,
         "lcv": 0.0406
       },
       {
         "code": "F03",
-        "initialRob": 0,
+        "initialRob": 2000,
         "lcv": 0.0427
       },
       {
         "code": "F05",
-        "initialRob": 0,
+        "initialRob": 1000,
         "lcv": 0.05
       }
     ],
@@ -2866,1759 +4619,6 @@
         "installed": true,
         "count": 2,
         "validFuels": []
-      }
-    ]
-  },
-  {
-    "yard": "HHI",
-    "hullNo": "3297",
-    "imoNo": "9947598",
-    "name": "PUTERI LEDANG",
-    "code": "GPLD",
-    "class": "DNV+KR",
-    "flag": "MARSHALL ISLAND",
-    "deliveryDate": "2024-05-01",
-    "cargo": "LNG",
-    "dwt": 93414,
-    "configSourceShipId": "GPSD",
-    "customValues": {
-      "Propeller Pitch": "0.004515"
-    },
-    "fuels": [
-      {
-        "code": "F01",
-        "initialRob": 100,
-        "lcv": 0.0406
-      },
-      {
-        "code": "F03",
-        "initialRob": 482.6,
-        "lcv": 0.0427
-      },
-      {
-        "code": "F05",
-        "initialRob": 0,
-        "lcv": 0.05
-      }
-    ],
-    "waters": [
-      {
-        "code": "W01",
-        "initialRob": 500
-      }
-    ],
-    "focManagement": [
-      {
-        "id": "foc-laden-a-gl-piai-type",
-        "mode": "laden",
-        "type": "A-GL-PIAI-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.9,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.63,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.39,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 3.13,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.93,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.75,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.6,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.53,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.38,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 2.25,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 2.12,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.99,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.87,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.77,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.67,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.69,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.61,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.54,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.47,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.41,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-laden-b-gl-piaa-type",
-        "mode": "laden",
-        "type": "B-GL-PIAA-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.74,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.49,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.28,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 3.07,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.88,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.71,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.54,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.61,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.47,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 2.34,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 2.22,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 2.09,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.98,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.87,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.78,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.68,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.62,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.53,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.46,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.4,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-laden-c-gl-paai-type",
-        "mode": "laden",
-        "type": "C-GL-PAAI-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.98,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.71,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.46,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 3.19,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.98,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.78,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.58,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.4,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.49,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 2.34,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 2.2,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 2.08,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.95,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.83,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.74,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.64,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.55,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.53,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.46,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.4,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-laden-d-gl-paaa-type",
-        "mode": "laden",
-        "type": "D-GL-PAAA-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.74,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.5,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.26,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 3.03,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.84,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.66,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.48,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.54,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.41,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 2.27,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 2.14,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 2.02,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.9,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.8,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.72,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.63,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.55,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.53,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.46,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.4,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-laden-a-fl-piai-type",
-        "mode": "laden",
-        "type": "A-FL-PIAI-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 4.06,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.73,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.47,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 3.22,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 3.01,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.81,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.61,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.43,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.26,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 2.09,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 1.93,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.79,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.65,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.55,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.46,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.38,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.29,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.2,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.12,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.05,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-laden-b-fl-piaa-type",
-        "mode": "laden",
-        "type": "B-FL-PIAA-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.78,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.51,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.28,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 3.06,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.87,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.68,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.5,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.33,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.17,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 2.02,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 1.87,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.73,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.62,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.53,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.45,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.37,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.29,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.2,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.12,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.05,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-laden-c-fl-paai-type",
-        "mode": "laden",
-        "type": "C-FL-PAAI-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 4.07,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.74,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.47,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 3.22,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 3,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.79,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.59,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.41,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.24,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 2.08,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 1.93,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.78,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.65,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.52,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.39,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.28,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.2,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.2,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.12,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.05,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-laden-d-fl-paaa-type",
-        "mode": "laden",
-        "type": "D-FL-PAAA-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.79,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.52,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.29,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 3.06,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.86,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.67,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.49,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.31,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.16,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 2.01,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 1.87,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.73,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.61,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.48,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.37,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.26,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.2,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.2,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.12,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.05,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-ballast-a-gb-piai-type",
-        "mode": "ballast",
-        "type": "A-GB-PIAI-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.69,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.43,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.21,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 2.97,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.78,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.61,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.47,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.32,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.18,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 2.04,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 1.91,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.78,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.67,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.57,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.47,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.37,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.28,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.2,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.13,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.07,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-ballast-b-gb-piaa-type",
-        "mode": "ballast",
-        "type": "B-GB-PIAA-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.51,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.29,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.08,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 2.9,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.72,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.56,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.41,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.26,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.13,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 2,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 1.87,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.75,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.64,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.53,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.43,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.33,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.27,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.19,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.11,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.04,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-ballast-c-gb-paai-type",
-        "mode": "ballast",
-        "type": "C-GB-PAAI-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.79,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.52,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.24,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 3.01,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.81,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.63,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.45,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.29,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.13,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 1.99,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 1.86,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.73,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.62,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.51,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.41,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.3,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.33,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.18,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.1,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.04,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-ballast-d-gb-paaa-type",
-        "mode": "ballast",
-        "type": "D-GB-PAAA-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.54,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.28,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.04,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 2.84,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.66,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.49,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.33,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.18,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.04,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 1.91,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 1.78,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.67,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.56,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.46,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.47,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.37,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.33,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.18,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.1,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.04,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-ballast-a-fb-piai-type",
-        "mode": "ballast",
-        "type": "A-FB-PIAI-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.88,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.6,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.35,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 3.13,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.93,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.75,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.56,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.39,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.22,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 2.07,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 1.92,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.78,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.64,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.55,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.46,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.37,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.3,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.21,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.13,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.06,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-ballast-b-fb-piaa-type",
-        "mode": "ballast",
-        "type": "B-FB-PIAA-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.6,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.37,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.16,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 2.95,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.77,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.6,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.43,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.27,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.12,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 1.97,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 1.83,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.7,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.61,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.51,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.43,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.35,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.3,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.21,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.13,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.06,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-ballast-c-fb-paai-type",
-        "mode": "ballast",
-        "type": "C-FB-PAAI-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.88,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.6,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.36,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 3.13,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.92,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.73,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.54,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.37,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.21,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 2.06,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 1.91,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.78,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.64,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.52,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.4,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.29,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.21,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.21,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.13,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.06,
-            "rpm": 0
-          }
-        ]
-      },
-      {
-        "id": "foc-ballast-d-fb-paaa-type",
-        "mode": "ballast",
-        "type": "D-FB-PAAA-Type",
-        "data": [
-          {
-            "speed": 19.5,
-            "foc": 3.61,
-            "rpm": 0
-          },
-          {
-            "speed": 19,
-            "foc": 3.38,
-            "rpm": 0
-          },
-          {
-            "speed": 18.5,
-            "foc": 3.15,
-            "rpm": 0
-          },
-          {
-            "speed": 18,
-            "foc": 2.95,
-            "rpm": 0
-          },
-          {
-            "speed": 17.5,
-            "foc": 2.75,
-            "rpm": 0
-          },
-          {
-            "speed": 17,
-            "foc": 2.58,
-            "rpm": 0
-          },
-          {
-            "speed": 16.5,
-            "foc": 2.42,
-            "rpm": 0
-          },
-          {
-            "speed": 16,
-            "foc": 2.26,
-            "rpm": 0
-          },
-          {
-            "speed": 15.5,
-            "foc": 2.11,
-            "rpm": 0
-          },
-          {
-            "speed": 15,
-            "foc": 1.96,
-            "rpm": 0
-          },
-          {
-            "speed": 14.5,
-            "foc": 1.83,
-            "rpm": 0
-          },
-          {
-            "speed": 14,
-            "foc": 1.7,
-            "rpm": 0
-          },
-          {
-            "speed": 13.5,
-            "foc": 1.58,
-            "rpm": 0
-          },
-          {
-            "speed": 13,
-            "foc": 1.46,
-            "rpm": 0
-          },
-          {
-            "speed": 12.5,
-            "foc": 1.35,
-            "rpm": 0
-          },
-          {
-            "speed": 12,
-            "foc": 1.26,
-            "rpm": 0
-          },
-          {
-            "speed": 11.5,
-            "foc": 1.21,
-            "rpm": 0
-          },
-          {
-            "speed": 11,
-            "foc": 1.21,
-            "rpm": 0
-          },
-          {
-            "speed": 10.5,
-            "foc": 1.13,
-            "rpm": 0
-          },
-          {
-            "speed": 10,
-            "foc": 1.06,
-            "rpm": 0
-          }
-        ]
       }
     ]
   }
