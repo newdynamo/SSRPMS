@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Activity, Ship as ShipIcon, Droplet, Zap, AlertCircle, History, Map as MapIcon, Fuel, Calendar, ArrowUp, ArrowDown, Printer } from 'lucide-react';
 import { fetchShips } from '../api/ships';
-import { fetchReports } from '../api/reports';
+import { fetchReports, updateReport } from '../api/reports';
 import { fetchCodes } from '../api/codes';
 import type { Ship, Report, CodeData } from '../types/index';
 import { cn } from '../utils/cn';
@@ -42,6 +42,11 @@ const FocAnalysis = () => {
     const [lngPrice, setLngPrice] = useState<number>(600);
     const [lsmgoPrice, setLsmgoPrice] = useState<number>(850);
     const [analysisMode, setAnalysisMode] = useState<'standard' | 'correction'>('standard');
+    const [remark, setRemark] = useState<string>('');
+    const [excludedApps, setExcludedApps] = useState<string[]>([]);
+    const [weatherFilter, setWeatherFilter] = useState<number | null>(null);
+
+
 
     useEffect(() => {
         const load = async () => {
@@ -111,7 +116,42 @@ const FocAnalysis = () => {
     useEffect(() => {
         setSelectedVoyage('');
         setSelectedReportId('');
+        setExcludedApps([]); // Reset excluded apps
+        setWeatherFilter(null); // Reset weather filter
     }, [selectedShipCode]);
+
+    // Update local remark state when report changes
+    useEffect(() => {
+        if (selectedReport) {
+            setRemark(selectedReport.items['R207'] as string || '');
+        } else {
+            setRemark('');
+        }
+    }, [selectedReport]);
+
+    const handleRemarkSave = async () => {
+        if (!selectedReport) return;
+        try {
+            // Update local state first for immediate feedback
+            const updatedReport = {
+                ...selectedReport,
+                items: {
+                    ...selectedReport.items,
+                    'R207': remark
+                }
+            };
+
+            setReports(prev => prev.map(r => r.id === selectedReport.id ? updatedReport : r));
+
+            await updateReport(selectedReport.id as string, {
+                items: updatedReport.items
+            });
+        } catch (err) {
+            console.error("Failed to save remark", err);
+            // Revert on failure (optional, but good practice)
+            alert("Failed to save remark. Please try again.");
+        }
+    };
 
 
     // Calculate Fuel Metrics (Normalized to 24h)
@@ -150,9 +190,45 @@ const FocAnalysis = () => {
             if (val === 0) {
                 Object.keys(selectedReport.items).forEach(k => {
                     if (k.startsWith('CONS_') && k.endsWith(`_${fuel.code}`)) {
-                        val += parseFloat(selectedReport.items[k] as string) || 0;
+                        // Check for exclusion
+                        const parts = k.split('_');
+                        const eqCode = parts[1]; // CONS_E01_1_F01 -> E01
+                        if (!excludedApps.includes(eqCode)) {
+                            val += parseFloat(selectedReport.items[k] as string) || 0;
+                        }
                     }
                 });
+            } else {
+                // If using Total R031, we can't easily exclude specific equipment unless we have breakdown.
+                // But typically if breakdown exists, we use it. 
+                // If only total exists, we can't subtract unknown portions.
+                // However, we can try to subtract known components if they exist in valid keys?
+                // For now, simpler logic: If we rely on breakdown aggregation (val===0 initially), exclusion works.
+                // If val comes from R031 direct, we might not be able to exclude.
+                // OPTION: If exclusions are active, we FORCE calculation from breakdown if possible?
+
+                // Enhanced Logic:
+                // If excludedApps is not empty, we MUST try to rebuild total from Non-Excluded components.
+                if (excludedApps.length > 0) {
+                    let breakdownSum = 0;
+                    let hasBreakdown = false;
+                    Object.keys(selectedReport.items).forEach(k => {
+                        if (k.startsWith('CONS_') && k.endsWith(`_${fuel.code}`)) {
+                            hasBreakdown = true;
+                            const parts = k.split('_');
+                            const eqCode = parts[1];
+                            if (!excludedApps.includes(eqCode)) {
+                                breakdownSum += parseFloat(selectedReport.items[k] as string) || 0;
+                            }
+                        }
+                    });
+
+                    if (hasBreakdown) {
+                        val = breakdownSum;
+                    }
+                    // If no breakdown found, we can't exclude, so we keep original R031 val (or specific logic?)
+                    // User request implies capability to exclude.
+                }
             }
 
             // Normalize Value and Energy
@@ -184,6 +260,9 @@ const FocAnalysis = () => {
 
             const rawVal = parseFloat(value as string) || 0;
             if (rawVal === 0) return;
+
+            // Check for exclusion
+            if (excludedApps.includes(eqCode)) return;
 
             // Normalize
             const val = rawVal * normalizationFactor;
@@ -302,12 +381,29 @@ const FocAnalysis = () => {
             const r031Key = `R031_${fuel.code}`;
             let val = parseFloat(r.items[r031Key] as string) || 0;
 
-            if (val === 0) {
+            // Check if we need to exclude components
+            if (val === 0 || excludedApps.length > 0) {
+                let breakdownSum = 0;
+                let hasBreakdown = false;
+
                 Object.keys(r.items).forEach(k => {
                     if (k.startsWith('CONS_') && k.endsWith(`_${fuel.code}`)) {
-                        val += parseFloat(r.items[k] as string) || 0;
+                        const parts = k.split('_');
+                        const eqCode = parts[1];
+                        // Only add if NOT excluded
+                        if (!excludedApps.includes(eqCode)) {
+                            hasBreakdown = true;
+                            breakdownSum += parseFloat(r.items[k] as string) || 0;
+                        } else {
+                            // Mark as having breakdown so we use the sum (which excludes this item)
+                            hasBreakdown = true;
+                        }
                     }
                 });
+
+                if (hasBreakdown) {
+                    val = breakdownSum;
+                }
             }
 
             totalE += (val * normFactor * rawLcv * factor);
@@ -344,7 +440,27 @@ const FocAnalysis = () => {
         let totalExpectedTJ = 0;
         let totalExcessTJ = 0;
 
-        displayedReports.forEach(r => {
+        if (weatherFilter) {
+            displayedReports.forEach(r => {
+                const bf = parseFloat(r.items['R137'] as string) || 0;
+                if (bf >= weatherFilter) return;
+
+                // ... copy of calculation logic for filtered dataset ...
+                // Duplicate logic is messy. Better to filter 'displayedReports' first?
+                // But displayedReports is used for Table selection too.
+                // Let's create a 'filteredStatsReports' list inside here.
+            });
+        }
+
+        // Better Approach: Filter list first, then reduce
+        const statsReports = displayedReports.filter(r => {
+            if (!weatherFilter) return true;
+            // R137 is Weather B/F
+            const bf = parseFloat(r.items['R137'] as string) || 0;
+            return bf < weatherFilter; // Exclude if >= filter
+        });
+
+        statsReports.forEach(r => {
             // Only consider sea-going/noon reports for fair comparison if needed, 
             // or all reports where speed > 0
             const speed = parseFloat(r.items['R026'] as string || r.items['R034'] as string || '0');
@@ -406,7 +522,7 @@ const FocAnalysis = () => {
             diffTJ, isSavings, absDiffGJ, lngEq, lsmgoEq, lngCost, lsmgoCost
         };
 
-    }, [displayedReports, chartData, getNormalizedEnergy, lngPrice, lsmgoPrice, analysisMode]);
+    }, [displayedReports, chartData, getNormalizedEnergy, lngPrice, lsmgoPrice, analysisMode, weatherFilter]);
 
     const voyageNoonData = useMemo(() => {
         if (!displayedReports.length) return [];
@@ -414,6 +530,13 @@ const FocAnalysis = () => {
             .filter(r => {
                 const evName = (codes?.evCodes.find(e => e.code === r.evCode)?.name || '').toLowerCase();
                 const r004 = (r.items['R004'] as string || '').toLowerCase();
+
+                // Weather Filter
+                if (weatherFilter) {
+                    const bf = parseFloat(r.items['R137'] as string) || 0;
+                    if (bf >= weatherFilter) return false;
+                }
+
                 // Filter for Noon Reports
                 return r.evCode === 'N' || evName.includes('noon') || r004.includes('noon');
             })
@@ -437,7 +560,33 @@ const FocAnalysis = () => {
                 };
             })
             .filter(d => d.speed > 0 && d.foc > 0);
-    }, [displayedReports, selectedShip, codes, ships]);
+    }, [displayedReports, selectedShip, codes, ships, weatherFilter]); // Add weatherFilter dependency
+
+    // Derived: Available Equipment for Toggles (from current report)
+    const availableEquipment = useMemo(() => {
+        if (!selectedReport || !codes?.eCodes) return [];
+        const eqs = new Set<string>();
+        Object.keys(selectedReport.items).forEach(k => {
+            if (k.startsWith('CONS_')) {
+                const parts = k.split('_');
+                if (parts.length >= 2) {
+                    eqs.add(parts[1]);
+                }
+            }
+        });
+        return Array.from(eqs).map(code => ({
+            code,
+            name: codes.eCodes.find(e => e.code === code)?.name || code
+        })).sort((a, b) => a.code.localeCompare(b.code));
+    }, [selectedReport, codes]);
+
+    const toggleAppExclusion = (code: string) => {
+        setExcludedApps(prev =>
+            prev.includes(code)
+                ? prev.filter(c => c !== code)
+                : [...prev, code]
+        );
+    };
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -734,51 +883,137 @@ const FocAnalysis = () => {
                             </div>
                         </div>
 
-                        {selectedReport && (
-                            <>
-                                <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-4">
-                                    <h3 className="text-indigo-300 font-bold mb-2 flex items-center gap-2">
-                                        <Zap size={16} /> Total Energy
-                                    </h3>
-                                    <div className="text-3xl font-bold text-white tracking-tight">
-                                        {(totalEnergy / 1000).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span className="text-lg text-slate-400 font-normal">GJ</span>
-                                    </div>
-                                    <div className="text-xs text-indigo-400/70 mt-1">
-                                        Aggregated from {fuelMetrics.length} fuel sources
-                                    </div>
+                        {/* Analysis Condition */}
+                        <div className="bg-ocean-900/50 p-4 rounded-xl border border-ocean-700/50 space-y-4">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2 mb-2">
+                                <span className="text-purple-400">⚡</span> Analysis Condition
+                            </label>
+
+                            {/* Equipment Toggles */}
+                            <div className="space-y-2">
+                                <div className="text-[10px] text-slate-400 font-medium">Excluded Equipment</div>
+                                <div className="flex flex-wrap gap-2">
+                                    {availableEquipment.length > 0 ? (
+                                        availableEquipment.map(eq => {
+                                            const isExcluded = excludedApps.includes(eq.code);
+                                            return (
+                                                <button
+                                                    key={eq.code}
+                                                    onClick={() => toggleAppExclusion(eq.code)}
+                                                    className={cn(
+                                                        "px-2 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                                                        isExcluded
+                                                            ? "bg-slate-800/50 text-slate-500 border-slate-700 line-through decoration-2 decoration-slate-500/50"
+                                                            : "bg-purple-500/10 text-purple-300 border-purple-500/30 hover:bg-purple-500/20"
+                                                    )}
+                                                >
+                                                    {eq.name}
+                                                </button>
+                                            );
+                                        })
+                                    ) : (
+                                        <div className="text-xs text-slate-500 italic px-2">No breakdown data available</div>
+                                    )}
                                 </div>
+                            </div>
 
-                                <div className="bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-4">
-                                    <h3 className="text-emerald-300 font-bold mb-2 flex items-center gap-2">
-                                        <Activity size={16} /> Speed
-                                    </h3>
-                                    <div className="text-3xl font-bold text-white tracking-tight">
-                                        {currentSpeed.toFixed(1)} <span className="text-lg text-slate-400 font-normal">kts</span>
-                                    </div>
-                                    <div className="text-xs text-emerald-400/70 mt-1">
-                                        {selectedReport.items['R004'] as string || 'Noon Report'}
-                                    </div>
+                            {/* Weather Filter */}
+                            <div className="space-y-2 pt-2 border-t border-ocean-700/30">
+                                <div className="text-[10px] text-slate-400 font-medium">Weather Filter (B/F)</div>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setWeatherFilter(prev => prev === 5 ? null : 5)}
+                                        className={cn(
+                                            "flex-1 px-2 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                                            weatherFilter === 5
+                                                ? "bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/20"
+                                                : "bg-ocean-800 text-slate-400 border-ocean-600 hover:border-slate-500"
+                                        )}
+                                    >
+                                        ≥ 5
+                                    </button>
+                                    <button
+                                        onClick={() => setWeatherFilter(prev => prev === 6 ? null : 6)}
+                                        className={cn(
+                                            "flex-1 px-2 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                                            weatherFilter === 6
+                                                ? "bg-red-600 text-white border-red-600 shadow-lg shadow-red-600/20"
+                                                : "bg-ocean-800 text-slate-400 border-ocean-600 hover:border-slate-500"
+                                        )}
+                                    >
+                                        ≥ 6
+                                    </button>
                                 </div>
+                            </div>
+                        </div>
 
-                                <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-4">
-                                    <h3 className="text-blue-300 font-bold mb-2 flex items-center gap-2">
-                                        <History size={16} /> Operation Time
-                                    </h3>
-                                    <div className="text-3xl font-bold text-white tracking-tight">
-                                        {parseFloat(selectedReport.items['R200'] as string || selectedReport.items['R011'] as string || '24').toFixed(2)}
-                                    </div>
-                                    <div className="text-xs text-blue-400/70 mt-1">
-                                        Hours (Normalized to 24h)
-                                    </div>
-                                </div>
-
-
-                            </>
-                        )}
                     </div>
 
                     {/* Breakdown Side */}
                     <div className="lg:col-span-8">
+                        {selectedReport && (
+                            <div className="grid grid-cols-4 gap-6 mb-6">
+                                <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-6 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <Zap size={56} className="text-indigo-400" />
+                                    </div>
+                                    <h3 className="text-indigo-300 font-bold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                                        Energy
+                                    </h3>
+                                    <div className="text-3xl font-bold text-white tracking-tight">
+                                        {(totalEnergy / 1000).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span className="text-lg text-slate-400 font-normal">GJ</span>
+                                    </div>
+                                    <div className="text-xs text-indigo-400/70 mt-1 truncate">
+                                        {fuelMetrics.length} sources
+                                    </div>
+                                </div>
+
+                                <div className="bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-6 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <Activity size={56} className="text-emerald-400" />
+                                    </div>
+                                    <h3 className="text-emerald-300 font-bold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                                        Speed
+                                    </h3>
+                                    <div className="text-3xl font-bold text-white tracking-tight">
+                                        {currentSpeed.toFixed(1)} <span className="text-lg text-slate-400 font-normal">kts</span>
+                                    </div>
+                                    <div className="text-xs text-emerald-400/70 mt-1 truncate">
+                                        {selectedReport.items['R004'] as string || 'Noon'}
+                                    </div>
+                                </div>
+
+                                <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-6 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <History size={56} className="text-blue-400" />
+                                    </div>
+                                    <h3 className="text-blue-300 font-bold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                                        Time
+                                    </h3>
+                                    <div className="text-3xl font-bold text-white tracking-tight">
+                                        {parseFloat(selectedReport.items['R200'] as string || selectedReport.items['R011'] as string || '24').toFixed(2)} <span className="text-lg text-slate-400 font-normal">h</span>
+                                    </div>
+                                    <div className="text-xs text-blue-400/70 mt-1 truncate">
+                                        Normalized
+                                    </div>
+                                </div>
+
+                                <div className="bg-amber-900/20 border border-amber-500/30 rounded-xl p-6 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <AlertCircle size={56} className="text-amber-400" />
+                                    </div>
+                                    <h3 className="text-amber-300 font-bold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                                        Weather
+                                    </h3>
+                                    <div className="text-3xl font-bold text-white tracking-tight">
+                                        {selectedReport.items['R137'] as string || '-'} <span className="text-lg text-slate-400 font-normal">B/F</span>
+                                    </div>
+                                    <div className="text-xs text-amber-400/70 mt-1 truncate">
+                                        Sea State
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         {renderMetricsContent(fuelMetrics.length > 0, fuelMetrics, equipmentMetrics)}
                     </div>
 
@@ -837,6 +1072,24 @@ const FocAnalysis = () => {
 
                         return (
                             <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-6 lg:col-span-12 mt-6">
+                                {/* Remark Section */}
+                                <div className="col-span-1 md:col-span-4 bg-ocean-900/40 border border-ocean-700/50 rounded-xl p-6 relative group focus-within:ring-2 focus-within:ring-blue-500/50 transition-all">
+                                    <h3 className="text-blue-300 font-bold mb-3 flex items-center gap-2 text-sm uppercase">
+                                        Remark(Eng.)
+                                    </h3>
+                                    <textarea
+                                        className="w-full h-32 bg-transparent text-slate-300 placeholder-slate-600 resize-none outline-none font-mono text-sm leading-relaxed"
+                                        placeholder="Enter remarks here..."
+                                        value={remark}
+                                        onChange={(e) => setRemark(e.target.value)}
+                                        onBlur={handleRemarkSave}
+                                    />
+                                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-slate-500">
+                                        Auto-saved on blur
+                                    </div>
+                                    <div className="absolute left-0 top-10 bottom-4 w-1 bg-ocean-800 rounded-r-full group-focus-within:bg-blue-500/50 transition-colors"></div>
+                                </div>
+
                                 {/* vs Curve Card */}
                                 <div className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-6">
                                     <h3 className="text-purple-300 font-bold mb-3 flex items-center gap-2 text-sm uppercase">

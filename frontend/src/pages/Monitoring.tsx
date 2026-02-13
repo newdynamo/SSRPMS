@@ -206,7 +206,7 @@ const Monitoring = () => {
     // Weather
     const weather = {
         state: getStr('R014'),
-        bf: getStr('R019'), // Wind Force (BF?) - R019 is Wind Force
+        bf: getStr('R137'), // Weather B/F - Updated from R019 to R137
         windDir: getStr('R020'), // Wind Dir
         windForce: getStr('R019'), // Wind Force
         waveDir: getStr('R023'), // Sea/Wave Dir
