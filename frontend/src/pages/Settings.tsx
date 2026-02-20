@@ -4,7 +4,7 @@ import { fetchShips, saveShips } from '../api/ships';
 import { fetchPorts, savePorts } from '../api/ports';
 // import { FixedSizeList as List } from 'react-window';
 import type { CodeData, Ship, Port } from '../types/index';
-import { Database, Server, Ship as ShipIcon, Trash2, Plus, CheckCircle, Search, ChevronUp, ChevronDown, Filter, Box, Anchor, Activity, Zap, Droplet } from 'lucide-react';
+import { Database, Server, Ship as ShipIcon, Trash2, Plus, CheckCircle, Search, ChevronUp, ChevronDown, Filter, Box, Anchor, Activity, Zap, Droplet, Gauge } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const TabButton = ({ active, onClick, icon, label }: any) => (
@@ -98,7 +98,7 @@ const Settings: React.FC = () => {
     const [codes, setCodes] = useState<CodeData | null>(null);
     const [ships, setShips] = useState<Ship[]>([]);
     const [customFields, setCustomFields] = useState<string[]>([]);
-    const [activeTab, setActiveTab] = useState<'general' | 'events' | 'codes' | 'ships' | 'ports' | 'mePerformance' | 'gePerformance' | 'focManagement'>('general');
+    const [activeTab, setActiveTab] = useState<'general' | 'events' | 'codes' | 'ships' | 'ports' | 'mePerformance' | 'gePerformance' | 'focManagement' | 'meRpmSpeed'>('general');
     const [activeCodeTab, setActiveCodeTab] = useState<'m' | 't' | 'r'>('m');
     const [selectedShip, setSelectedShip] = useState<Ship | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -678,7 +678,7 @@ const Settings: React.FC = () => {
             </header>
 
             {/* Main Tabs */}
-            <div className="flex gap-4 border-b border-ocean-700">
+            <div className="flex gap-4 border-b border-ocean-700 flex-wrap">
                 <TabButton
                     active={activeTab === 'general'}
                     onClick={() => setActiveTab('general')}
@@ -726,6 +726,12 @@ const Settings: React.FC = () => {
                     onClick={() => setActiveTab('focManagement')}
                     icon={<Droplet size={18} />}
                     label="FOC Management"
+                />
+                <TabButton
+                    active={activeTab === 'meRpmSpeed'}
+                    onClick={() => setActiveTab('meRpmSpeed')}
+                    icon={<Gauge size={18} />}
+                    label="M/E RPM-Speed"
                 />
             </div>
 
@@ -2224,6 +2230,216 @@ const Settings: React.FC = () => {
                                 );
                             };
                             return <FocMatrix />;
+                        })()}
+                    </div>
+                </div>
+            )}
+
+            {/* M/E RPM-Speed Tab */}
+            {activeTab === 'meRpmSpeed' && (
+                <div className="bg-ocean-800 rounded-2xl p-8 border border-ocean-700 max-w-full overflow-x-auto">
+                    <div className="flex items-center gap-4 mb-6 text-emerald-400">
+                        <Gauge size={32} />
+                        <h2 className="text-2xl font-bold text-white">M/E RPM-Speed Management</h2>
+                    </div>
+
+                    <div className="space-y-6">
+                        <div className="flex gap-8 items-end">
+                            <div className="w-64">
+                                <label className="block text-sm font-medium text-slate-400 mb-1">Select Vessel</label>
+                                <select
+                                    className="w-full bg-ocean-900 border border-ocean-600 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-primary-500"
+                                    onChange={handleShipSelect}
+                                    value={selectedShip?.code || ''}
+                                >
+                                    <option value="">-- Select a Ship --</option>
+                                    {ships.map(ship => (
+                                        <option key={ship.code} value={ship.code}>
+                                            {ship.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        {selectedShip && (() => {
+                            // Helper logic for RPM Speed Matrix View
+                            const RpmSpeedMatrix = () => {
+                                const [mode, setMode] = useState<'laden' | 'ballast'>('laden');
+                                const profiles = (selectedShip.focManagement || []).filter(p => p.mode === mode);
+
+                                const allSpeeds = Array.from(new Set(
+                                    profiles.flatMap(p => p.data.map(d => d.speed))
+                                )).sort((a, b) => b - a);
+
+                                const updateProfileData = (profileId: string, speed: number, value: number) => {
+                                    const updatedProfiles = [...(selectedShip.focManagement || [])];
+                                    const pIndex = updatedProfiles.findIndex(p => p.id === profileId);
+                                    if (pIndex === -1) return;
+
+                                    const existingDataIdx = updatedProfiles[pIndex].data.findIndex(d => d.speed === speed);
+                                    if (existingDataIdx >= 0) {
+                                        updatedProfiles[pIndex].data[existingDataIdx].rpm = value;
+                                    } else {
+                                        updatedProfiles[pIndex].data.push({ speed, foc: 0, rpm: value });
+                                        updatedProfiles[pIndex].data.sort((a, b) => b.speed - a.speed);
+                                    }
+                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                };
+
+                                const addColumn = () => {
+                                    const name = prompt("Enter Type Name (e.g. A-GL-Type):");
+                                    if (!name) return;
+                                    const initialData = allSpeeds.map(s => ({ speed: s, foc: 0, rpm: 0 }));
+                                    const newProfile = {
+                                        id: Date.now().toString(),
+                                        mode,
+                                        type: name,
+                                        data: initialData
+                                    };
+                                    const updatedProfiles = [...(selectedShip.focManagement || []), newProfile];
+                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                };
+
+                                const deleteColumn = (id: string) => {
+                                    if (!confirm("Delete this column?")) return;
+                                    const updatedProfiles = (selectedShip.focManagement || []).filter(p => p.id !== id);
+                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                };
+
+                                const addRow = () => {
+                                    const newSpeed = parseFloat(prompt("Enter Speed (kts):") || "0");
+                                    if (!newSpeed) return;
+                                    if (allSpeeds.includes(newSpeed)) {
+                                        alert("Speed already exists!");
+                                        return;
+                                    }
+                                    const updatedProfiles = [...(selectedShip.focManagement || [])];
+                                    updatedProfiles.forEach(p => {
+                                        if (p.mode === mode) {
+                                            p.data.push({ speed: newSpeed, foc: 0, rpm: 0 });
+                                            p.data.sort((a, b) => b.speed - a.speed);
+                                        }
+                                    });
+                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                };
+
+                                const deleteRow = (speed: number) => {
+                                    if (!confirm(`Delete row for ${speed} kts?`)) return;
+                                    const updatedProfiles = [...(selectedShip.focManagement || [])];
+                                    updatedProfiles.forEach(p => {
+                                        if (p.mode === mode) {
+                                            p.data = p.data.filter(d => d.speed !== speed);
+                                        }
+                                    });
+                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                };
+
+                                return (
+                                    <div className="animate-in fade-in slide-in-from-top-2">
+                                        <div className="flex gap-2 mb-4">
+                                            {(['laden', 'ballast'] as const).map(m => (
+                                                <button
+                                                    key={m}
+                                                    onClick={() => setMode(m)}
+                                                    className={cn(
+                                                        "px-6 py-2 rounded-lg font-bold uppercase transition-all border",
+                                                        mode === m
+                                                            ? "bg-emerald-500 text-white border-emerald-500 shadow-lg shadow-emerald-500/20"
+                                                            : "bg-ocean-900 text-slate-400 border-ocean-600 hover:border-emerald-500/50 hover:text-emerald-400"
+                                                    )}
+                                                >
+                                                    {m}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        <div className="bg-ocean-900/30 rounded-xl border border-ocean-700/50 overflow-x-auto">
+                                            <table className="w-full text-center border-collapse">
+                                                <thead>
+                                                    <tr className="bg-ocean-900 text-slate-300 text-xs uppercase tracking-wider">
+                                                        <th className="px-4 py-3 border-r border-b border-ocean-700 font-bold text-emerald-400 sticky left-0 bg-ocean-900 z-10">
+                                                            Speed (kts)
+                                                        </th>
+                                                        {profiles.map(p => (
+                                                            <th key={p.id} className="px-2 py-3 border-r border-b border-ocean-700 min-w-[100px] group relative">
+                                                                <div className="flex items-center justify-center gap-2">
+                                                                    {p.type}
+                                                                    <button onClick={() => deleteColumn(p.id)} className="text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                        <Trash2 size={14} />
+                                                                    </button>
+                                                                </div>
+                                                            </th>
+                                                        ))}
+                                                        <th className="px-4 py-3 border-b border-ocean-700 bg-ocean-800/50">
+                                                            <button onClick={addColumn} className="flex items-center gap-1 text-emerald-400 hover:text-white transition-colors mx-auto">
+                                                                <Plus size={16} /> Type
+                                                            </button>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-ocean-700/50">
+                                                    {allSpeeds.map(speed => (
+                                                        <tr key={speed} className="hover:bg-ocean-800/30 transition-colors group">
+                                                            <td className="px-4 py-2 border-r border-ocean-700 font-bold text-white bg-ocean-900/10 sticky left-0 group-hover:bg-ocean-800/30">
+                                                                <div className="flex items-center justify-between">
+                                                                    {speed}
+                                                                    <button onClick={() => deleteRow(speed)} className="text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+                                                                        <Trash2 size={12} />
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                            {profiles.map(p => {
+                                                                const cell = p.data.find(d => d.speed === speed);
+                                                                return (
+                                                                    <td key={p.id} className="px-2 py-1 border-r border-ocean-700/50 p-0">
+                                                                        <input
+                                                                            type="number"
+                                                                            className="w-full h-full bg-transparent text-center text-white text-sm outline-none focus:bg-emerald-500/10 py-2"
+                                                                            value={cell?.rpm ?? ''}
+                                                                            placeholder="-"
+                                                                            onChange={(e) => updateProfileData(p.id, speed, parseFloat(e.target.value))}
+                                                                        />
+                                                                    </td>
+                                                                );
+                                                            })}
+                                                            <td className="px-4 py-2 bg-ocean-900/10"></td>
+                                                        </tr>
+                                                    ))}
+                                                    <tr>
+                                                        <td className="px-4 py-3 font-bold text-center border-r border-ocean-700 sticky left-0 bg-ocean-900">
+                                                            <button onClick={addRow} className="flex items-center gap-1 text-emerald-400 hover:text-white transition-colors mx-auto text-xs">
+                                                                <Plus size={14} /> Row
+                                                            </button>
+                                                        </td>
+                                                        <td colSpan={profiles.length + 1}></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <div className="flex justify-end pt-6 border-t border-ocean-700 mt-6">
+                                            <button
+                                                onClick={async () => {
+                                                    const updatedShips = ships.map(s => s.code === selectedShip.code ? selectedShip : s);
+                                                    try {
+                                                        await saveShips(updatedShips);
+                                                        setShips(updatedShips);
+                                                        alert("RPM-Speed Matrix saved successfully!");
+                                                    } catch (err) {
+                                                        console.error("Failed to save ship", err);
+                                                        alert("Failed to save configuration");
+                                                    }
+                                                }}
+                                                className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold transition-colors shadow-lg shadow-emerald-500/20"
+                                            >
+                                                Save All Changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            };
+                            return <RpmSpeedMatrix />;
                         })()}
                     </div>
                 </div>

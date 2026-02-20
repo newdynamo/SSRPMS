@@ -19,6 +19,10 @@ export const deleteReport = async (id: string): Promise<void> => {
     await client.delete(`/reports/${id}`);
 };
 
+export const deleteReportsByShip = async (ship: string): Promise<void> => {
+    await client.delete(`/reports`, { params: { ship } });
+};
+
 export const updateReport = async (id: string, report: Partial<Report>): Promise<void> => {
     await client.put(`/reports/${id}`, report);
 };

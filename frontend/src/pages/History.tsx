@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchReports, deleteReport, submitReport, updateReport } from '../api/reports';
+import { fetchReports, deleteReport, submitReport, updateReport, deleteReportsByShip } from '../api/reports';
 import { fetchShips } from '../api/ships';
 import { fetchCodes } from '../api/codes';
 import type { Report, Ship, CodeData } from '../types';
@@ -80,6 +80,22 @@ const History: React.FC = () => {
         } catch (err) {
             alert('Failed to delete report');
             loadData();
+        }
+    };
+
+    const handleDeleteAll = async (shipName: string) => {
+        if (!confirm(`Are you sure you want to delete ALL reports for ${shipName}? This action cannot be undone and will remove all history for this vessel.`)) return;
+
+        // Double confirmation for safety
+        if (!confirm(`Please confirm again: Delete EVERY report for ${shipName}?`)) return;
+
+        try {
+            await deleteReportsByShip(shipName);
+            alert(`All reports for ${shipName} have been deleted.`);
+            loadData(); // Reload to reflect changes
+        } catch (err) {
+            console.error("Failed to delete ship reports", err);
+            alert('Failed to delete reports. Please try again.');
         }
     };
 
@@ -200,6 +216,15 @@ const History: React.FC = () => {
                     >
                         <FileSpreadsheet size={16} /> Template
                     </button>
+                    {selectedShip !== 'All' && (
+                        <button
+                            onClick={() => handleDeleteAll(selectedShip)}
+                            className="flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg transition-colors font-medium text-sm shadow-lg shadow-rose-900/20"
+                            title={`Delete all reports for ${selectedShip}`}
+                        >
+                            <Trash2 size={16} /> Delete All
+                        </button>
+                    )}
                 </div>
             </div>
 

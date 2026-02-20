@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Activity, Ship as ShipIcon, Droplet, Zap, AlertCircle, History, Map as MapIcon, Fuel, Calendar, ArrowUp, ArrowDown, Printer } from 'lucide-react';
 import { fetchShips } from '../api/ships';
 import { fetchReports, updateReport } from '../api/reports';
@@ -45,6 +45,7 @@ const FocAnalysis = () => {
     const [remark, setRemark] = useState<string>('');
     const [excludedApps, setExcludedApps] = useState<string[]>([]);
     const [weatherFilter, setWeatherFilter] = useState<number | null>(null);
+    const [speedFilter, setSpeedFilter] = useState<number | null>(null);
 
 
 
@@ -81,17 +82,50 @@ const FocAnalysis = () => {
         [ships, selectedShipCode]);
 
     // Report Analysis Logic
+    // Helper to resolve Event Time (prioritizing T-Codes)
+    const resolveEventTime = (r: Report) => {
+        if (!r.tasks) return r.items['R003'] as string || r.submittedAt;
+
+        // Priority T-Codes for Event Time
+        const timeCodes = ['T01', 'T02', 'T03', 'T04', 'T05', 'T06', 'T07', 'T08', 'T09', 'T10'];
+
+        for (const code of timeCodes) {
+            if (r.tasks[code]) return r.tasks[code];
+        }
+
+        // Check any other T-code that looks like time (simple check: value holds date format)
+        // Or just fallback
+        return r.items['R003'] as string || r.submittedAt;
+    };
+
     const activeReports = useMemo(() => {
         const ship = ships.find(s => s.code === selectedShipCode);
         if (!ship) return [];
         return reports
-            .filter(r => r.items['R001'] === ship.name)
+            .filter(r => {
+                // Must match ship
+                if (r.items['R001'] !== ship.name) return false;
+
+                // Mode Filtering Logic
+                const r005 = (r.items['R005'] as string || '').trim();
+                const lastChar = r005.slice(-1).toUpperCase();
+
+                if (focMode === 'laden') {
+                    // Show only if ends with L
+                    return lastChar === 'L';
+                } else if (focMode === 'ballast') {
+                    // Show only if ends with B
+                    return lastChar === 'B';
+                }
+
+                return false;
+            })
             .sort((a, b) => {
-                const tA = new Date(a.items['R003'] as string || a.submittedAt || 0).getTime();
-                const tB = new Date(b.items['R003'] as string || b.submittedAt || 0).getTime();
+                const tA = new Date(resolveEventTime(a) || 0).getTime();
+                const tB = new Date(resolveEventTime(b) || 0).getTime();
                 return tB - tA;
             });
-    }, [ships, selectedShipCode, reports]);
+    }, [ships, selectedShipCode, reports, focMode]);
 
     const uniqueVoyages = useMemo(() =>
         Array.from(new Set(activeReports.map(r => r.items['R005'] as string).filter(Boolean))).sort().reverse(),
@@ -118,6 +152,7 @@ const FocAnalysis = () => {
         setSelectedReportId('');
         setExcludedApps([]); // Reset excluded apps
         setWeatherFilter(null); // Reset weather filter
+        setSpeedFilter(null); // Reset speed filter
     }, [selectedShipCode]);
 
     // Update local remark state when report changes
@@ -213,9 +248,15 @@ const FocAnalysis = () => {
                     let breakdownSum = 0;
                     let hasBreakdown = false;
                     Object.keys(selectedReport.items).forEach(k => {
-                        if (k.startsWith('CONS_') && k.endsWith(`_${fuel.code}`)) {
+                        if (!k.startsWith('CONS_')) return;
+
+                        const parts = k.split('_');
+                        // CONS_E01_1_F01 -> F01 is at end
+                        const itemFuelCode = parts[parts.length - 1];
+
+                        // Match fuel code
+                        if (itemFuelCode === fuel.code) {
                             hasBreakdown = true;
-                            const parts = k.split('_');
                             const eqCode = parts[1];
                             if (!excludedApps.includes(eqCode)) {
                                 breakdownSum += parseFloat(selectedReport.items[k] as string) || 0;
@@ -237,7 +278,7 @@ const FocAnalysis = () => {
 
             return { name, val: normalizedVal, rawVal: val, energy };
         }).filter(f => f.energy > 0 || f.val > 0) || [];
-    }, [ships, selectedShipCode, selectedReport, codes]);
+    }, [ships, selectedShipCode, selectedReport, codes, excludedApps]);
 
     // Calculate Equipment Metrics (Normalized)
     const equipmentMetrics = useMemo(() => {
@@ -248,7 +289,7 @@ const FocAnalysis = () => {
         const opTime = parseFloat(opTimeStr) || 24;
         const normalizationFactor = opTime > 0 ? (24 / opTime) : 1;
 
-        const eqMap = new Map<string, { name: string, val: number, energy: number, fuels: Map<string, { val: number, name: string }> }>();
+        const eqMap = new Map<string, { code: string, name: string, val: number, energy: number, fuels: Map<string, { val: number, name: string }> }>();
 
         Object.entries(selectedReport.items).forEach(([key, value]) => {
             if (!key.startsWith('CONS_')) return;
@@ -261,8 +302,8 @@ const FocAnalysis = () => {
             const rawVal = parseFloat(value as string) || 0;
             if (rawVal === 0) return;
 
-            // Check for exclusion
-            if (excludedApps.includes(eqCode)) return;
+            // Check for exclusion - REMOVED to show all
+            // if (excludedApps.includes(eqCode)) return;
 
             // Normalize
             const val = rawVal * normalizationFactor;
@@ -290,7 +331,7 @@ const FocAnalysis = () => {
             const energy = val * rawLcv * factor;
 
             if (!eqMap.has(eqCode)) {
-                eqMap.set(eqCode, { name: eqName, val: 0, energy: 0, fuels: new Map() });
+                eqMap.set(eqCode, { code: eqCode, name: eqName, val: 0, energy: 0, fuels: new Map() });
             }
             const record = eqMap.get(eqCode)!;
             record.val += val;
@@ -312,10 +353,30 @@ const FocAnalysis = () => {
     const totalEnergy = fuelMetrics.reduce((sum, item) => sum + item.energy, 0);
     const totalEnergyTJ = totalEnergy / 1_000_000;
 
+    // Helper to resolve Speed (Prioritizing Spot > Average > Calculated)
+    const resolveSpeed = useCallback((r: Report) => {
+        // Priority 1: R026 (Current/Spot Speed) - Requested by User
+        const spottingSpeed = parseFloat(r.items['R026'] as string);
+        if (!isNaN(spottingSpeed) && spottingSpeed > 0) return { value: spottingSpeed, source: 'Spot' };
+
+        // Priority 2: R077 (Average Speed)
+        const avgSpeed = parseFloat(r.items['R077'] as string);
+        if (!isNaN(avgSpeed) && avgSpeed > 0) return { value: avgSpeed, source: 'Avg' };
+
+        // Priority 3: Calculated (Distance / Time)
+        const dist = parseFloat(r.items['R013'] as string);
+        const time = parseFloat(r.items['R200'] as string || r.items['R011'] as string);
+        if (!isNaN(dist) && !isNaN(time) && dist > 0 && time > 0) return { value: dist / time, source: 'Calc' };
+
+        // Fallback: R034
+        const r034 = parseFloat(r.items['R034'] as string || '0');
+        return { value: r034, source: 'R034' };
+    }, []);
+
     const currentSpeed = useMemo(() => {
         if (!selectedReport) return 0;
-        return parseFloat(selectedReport.items['R026'] as string || selectedReport.items['R034'] as string || selectedReport.items['R077'] as string || '0');
-    }, [selectedReport]);
+        return resolveSpeed(selectedReport).value;
+    }, [selectedReport, resolveSpeed]);
 
     const availableProfiles = useMemo(() => {
         if (!selectedShip?.focManagement) return [];
@@ -353,7 +414,7 @@ const FocAnalysis = () => {
     }, [availableProfiles, selectedType]);
 
     // Helper to calculate total normalized energy for any report
-    const getNormalizedEnergy = (r: Report) => {
+    const getNormalizedEnergy = useCallback((r: Report) => {
         if (!selectedShip || !codes) return 0;
 
         const opTimeStr = r.items['R200'] as string || r.items['R011'] as string;
@@ -387,8 +448,12 @@ const FocAnalysis = () => {
                 let hasBreakdown = false;
 
                 Object.keys(r.items).forEach(k => {
-                    if (k.startsWith('CONS_') && k.endsWith(`_${fuel.code}`)) {
-                        const parts = k.split('_');
+                    if (!k.startsWith('CONS_')) return;
+
+                    const parts = k.split('_');
+                    const itemFuelCode = parts[parts.length - 1];
+
+                    if (itemFuelCode === fuel.code) {
                         const eqCode = parts[1];
                         // Only add if NOT excluded
                         if (!excludedApps.includes(eqCode)) {
@@ -410,7 +475,7 @@ const FocAnalysis = () => {
         });
 
         return totalE;
-    };
+    }, [selectedShip, ships, codes, excludedApps]);
 
     // Helper to interpolate expected FOC from curve for any speed (TJ/24h)
     const calculateExpectedCurveFoc = (speed: number) => {
@@ -440,45 +505,32 @@ const FocAnalysis = () => {
         let totalExpectedTJ = 0;
         let totalExcessTJ = 0;
 
-        if (weatherFilter) {
-            displayedReports.forEach(r => {
-                const bf = parseFloat(r.items['R137'] as string) || 0;
-                if (bf >= weatherFilter) return;
-
-                // ... copy of calculation logic for filtered dataset ...
-                // Duplicate logic is messy. Better to filter 'displayedReports' first?
-                // But displayedReports is used for Table selection too.
-                // Let's create a 'filteredStatsReports' list inside here.
-            });
-        }
-
-        // Better Approach: Filter list first, then reduce
+        // Filter Reports first
         const statsReports = displayedReports.filter(r => {
-            if (!weatherFilter) return true;
             // R137 is Weather B/F
             const bf = parseFloat(r.items['R137'] as string) || 0;
-            return bf < weatherFilter; // Exclude if >= filter
+            if (weatherFilter && bf >= weatherFilter) return false;
+
+            // Speed Filter
+            const speed = resolveSpeed(r).value;
+            if (speedFilter && speed < speedFilter) return false;
+
+            return true;
         });
 
         statsReports.forEach(r => {
-            // Only consider sea-going/noon reports for fair comparison if needed, 
-            // or all reports where speed > 0
-            const speed = parseFloat(r.items['R026'] as string || r.items['R034'] as string || '0');
+            // Use resolveSpeed here as well
+            const speed = resolveSpeed(r).value;
             if (speed <= 0) return;
 
             const opTimeStr = r.items['R200'] as string || r.items['R011'] as string;
             const opTime = parseFloat(opTimeStr) || 24;
 
-            // getNormalizedEnergy returns TJ normalized to 24h * 1M (MJ) -> No, check getNormalizedEnergy
-            // getNormalizedEnergy returns MJ normalized to 24h
-
-            // Actual TJ for this report's duration
-            // Normalized (MJ/24h) -> Actual (MJ) = Normalized * (opTime/24)
+            // Actual MJ
             const normMJ = getNormalizedEnergy(r);
             const actualMJ = normMJ * (opTime / 24);
 
-            // Expected TJ for this report's duration
-            // Curve provides TJ/24h
+            // Expected TJ
             const expectedDailyTJ = calculateExpectedCurveFoc(speed);
             const expectedRealTJ = expectedDailyTJ * (opTime / 24);
 
@@ -502,10 +554,6 @@ const FocAnalysis = () => {
             diffTJ = totalExcessTJ;
         }
 
-        // For Standard: diffTJ can be negative (Savings) or positive (Excess)
-        // For Correction: diffTJ is always positive (Total Penalty) or 0
-
-        // Remove 'const diffTJ = ...' as it is now calculated above
         const isSavings = diffTJ < 0;
         const absDiffGJ = Math.abs(diffTJ) * 1000;
 
@@ -522,7 +570,7 @@ const FocAnalysis = () => {
             diffTJ, isSavings, absDiffGJ, lngEq, lsmgoEq, lngCost, lsmgoCost
         };
 
-    }, [displayedReports, chartData, getNormalizedEnergy, lngPrice, lsmgoPrice, analysisMode, weatherFilter]);
+    }, [displayedReports, chartData, getNormalizedEnergy, lngPrice, lsmgoPrice, analysisMode, weatherFilter, speedFilter, resolveSpeed]);
 
     const voyageNoonData = useMemo(() => {
         if (!displayedReports.length) return [];
@@ -537,30 +585,39 @@ const FocAnalysis = () => {
                     if (bf >= weatherFilter) return false;
                 }
 
+                // Speed Filter (Use Correct Logic)
+                const speed = resolveSpeed(r).value;
+                if (speedFilter && speed < speedFilter) return false;
+
                 // Filter for Noon Reports
                 return r.evCode === 'N' || evName.includes('noon') || r004.includes('noon');
             })
             .map(r => {
-                let dateStr = r.items['R003'] as string || r.submittedAt;
-                // Handle Excel Serial Date (e.g., 45805.5) which is number of days since 1900-01-01
+                let dateStr = resolveEventTime(r);
+                // Handle Excel Serial Date
                 if (dateStr && !isNaN(Number(dateStr)) && !dateStr.includes('-')) {
                     const serial = Number(dateStr);
-                    // Excel base date (Dec 30 1899) to Unix epoch (Jan 1 1970) is 25569 days
                     const dateObj = new Date(Math.round((serial - 25569) * 86400 * 1000));
                     dateStr = dateObj.toISOString().split('T')[0];
                 } else if (dateStr) {
                     dateStr = dateStr.split('T')[0];
                 }
 
+                const resolved = resolveSpeed(r);
+                const evDef = codes?.evCodes?.find(e => e.code === r.evCode);
+
                 return {
-                    speed: parseFloat(r.items['R026'] as string || r.items['R034'] as string || '0'),
+                    speed: resolved.value,
+                    speedSource: resolved.source,
                     foc: getNormalizedEnergy(r) / 1_000_000, // Convert MJ to TJ
                     date: dateStr,
-                    name: r.items['R004'] as string || 'Noon Report'
+                    name: r.items['R004'] as string || 'Noon Report',
+                    eventType: evDef?.name || r.evCode,
+                    location: r.items['R002'] as string || ''
                 };
             })
             .filter(d => d.speed > 0 && d.foc > 0);
-    }, [displayedReports, selectedShip, codes, ships, weatherFilter]); // Add weatherFilter dependency
+    }, [displayedReports, selectedShip, codes, ships, weatherFilter, speedFilter, getNormalizedEnergy, resolveSpeed]); // Add filters dependency
 
     // Derived: Available Equipment for Toggles (from current report)
     const availableEquipment = useMemo(() => {
@@ -585,6 +642,82 @@ const FocAnalysis = () => {
             prev.includes(code)
                 ? prev.filter(c => c !== code)
                 : [...prev, code]
+        );
+    };
+
+    const CustomTooltip = ({ active, payload, label }: any) => {
+        if (!active || !payload || !payload.length) return null;
+
+        // Check for Noon Report (Scatter) - Check by date OR by known name
+        const noonReport = payload.find((p: any) => p.payload.date || p.name === 'Voyage Noon Reports');
+
+        if (noonReport) {
+            const data = noonReport.payload;
+            return (
+                <div className="bg-slate-900 border border-slate-700 p-4 rounded-xl shadow-2xl text-slate-200 text-sm z-50 min-w-[200px]">
+                    <div className="font-bold text-amber-400 mb-3 pb-2 border-b border-slate-700/50 flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                            {data.name || 'Voyage Data'}
+                        </div>
+                        {data.eventType && <span className="text-xs text-slate-400 font-normal pl-4">{data.eventType}</span>}
+                    </div>
+                    <div className="space-y-2">
+                        {data.location && (
+                            <div className="flex justify-between items-start gap-4 pb-2 border-b border-slate-700/30 mb-2">
+                                <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">Location</span>
+                                <span className="font-mono text-white text-right max-w-[150px] truncate" title={data.location}>{data.location}</span>
+                            </div>
+                        )}
+                        <div className="flex justify-between items-center gap-4">
+                            <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">Date</span>
+                            <span className="font-mono text-white">{data.date || 'N/A'}</span>
+                        </div>
+                        <div className="flex justify-between items-center gap-4">
+                            <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">Speed</span>
+                            <span className="font-mono text-white">
+                                {Number(data.speed).toFixed(1)} <span className="text-slate-500 text-xs">kts</span>
+                                {data.speedSource && <span className="ml-1 text-xs text-slate-500">({data.speedSource})</span>}
+                            </span>
+                        </div>
+                        <div className="flex justify-between items-center gap-4">
+                            <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">FOC</span>
+                            <span className="font-mono text-white">{Number(data.foc).toFixed(2)} <span className="text-slate-500 text-xs">TJ</span></span>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Default Layout for Line/Area
+        return (
+            <div className="bg-slate-900 border border-slate-700 p-3 rounded-lg shadow-xl text-slate-200 text-sm">
+                <div className="font-bold text-slate-300 mb-2 border-b border-slate-700/50 pb-1">Speed: {label} kts</div>
+                {payload.map((entry: any, index: number) => {
+                    if (entry.name === 'Tolerance (+/- 5%)') {
+                        return (
+                            <div key={index} className="flex items-center justify-between gap-4 text-xs mt-1">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></span>
+                                    <span className="text-slate-400">Range</span>
+                                </div>
+                                <span className="font-mono text-slate-200">
+                                    {entry.value[0].toFixed(2)} - {entry.value[1].toFixed(2)}
+                                </span>
+                            </div>
+                        );
+                    }
+                    return (
+                        <div key={index} className="flex items-center justify-between gap-4 mt-1">
+                            <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></span>
+                                <span className="text-slate-400">{entry.name === 'foc' ? 'Standard FOC' : entry.name}</span>
+                            </div>
+                            <span className="font-mono text-slate-200">{Number(entry.value).toFixed(2)}</span>
+                        </div>
+                    );
+                })}
+            </div>
         );
     };
 
@@ -704,6 +837,9 @@ const FocAnalysis = () => {
                         {chartData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <ComposedChart
+                                    width={500}
+                                    height={400}
+                                    data={chartData}
                                     margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
                                 >
                                     <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
@@ -721,45 +857,29 @@ const FocAnalysis = () => {
                                         label={{ value: 'Daily FOC (TJ)', angle: -90, position: 'insideLeft', offset: 0, fill: '#cbd5e1' }}
                                         domain={['auto', 'auto']}
                                     />
-                                    <Tooltip
-                                        shared={false}
-                                        cursor={{ strokeDasharray: '3 3' }}
-                                        contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#f8fafc' }}
-                                        itemStyle={{ color: '#f8fafc' }}
-                                        formatter={(value: any, name: any, props: any) => {
-                                            if (name === 'focRange') return [`${value[0].toFixed(2)} - ${value[1].toFixed(2)}`, 'Tolerance Range'];
-
-                                            // Show date for Noon Reports
-                                            if (props && props.payload && props.payload.date) {
-                                                return [Number(value).toFixed(2), `Daily FOC (${props.payload.date})`];
-                                            }
-
-                                            return [Number(value).toFixed(2), name === 'foc' ? 'Daily FOC' : name];
-                                        }}
-                                        labelFormatter={(label) => `Speed: ${label} kts`}
-                                    />
 
                                     {/* Tolerance Band Area */}
                                     <Area
                                         type="monotone"
-                                        data={chartData}
                                         dataKey="focRange"
                                         stroke="none"
                                         fill="#ef4444"
                                         fillOpacity={0.2}
                                         name="Tolerance (+/- 5%)"
+                                        isAnimationActive={false}
+                                        style={{ pointerEvents: 'none' }}
                                     />
 
                                     {/* Main Line */}
                                     <Line
                                         type="monotone"
-                                        data={chartData}
                                         dataKey="foc"
                                         stroke="#3b82f6"
                                         strokeWidth={3}
                                         dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
                                         activeDot={{ r: 6, fill: '#cbd5e1' }}
                                         name="Standard FOC"
+                                        isAnimationActive={false}
                                     />
 
                                     {/* Current Report Point */}
@@ -776,16 +896,22 @@ const FocAnalysis = () => {
                                     )}
 
                                     <Scatter
+                                        name="Voyage Noon Reports"
                                         data={voyageNoonData}
-                                        fill="#fdba74"
+                                        fill="#fbbf24"
                                         line={false}
                                         shape="circle"
-                                        name="Voyage Noon Reports"
-                                    >
-                                        {voyageNoonData.map((_, index) => (
-                                            <Cell key={`cell-${index}`} fill="#fdba74" />
-                                        ))}
-                                    </Scatter>
+                                        isAnimationActive={false}
+                                        r={6}
+                                        cursor="pointer"
+                                    />
+
+                                    <Tooltip
+                                        shared={false}
+                                        cursor={{ strokeDasharray: '3 3' }}
+                                        content={<CustomTooltip />}
+                                        isAnimationActive={false}
+                                    />
                                 </ComposedChart>
                             </ResponsiveContainer>
                         ) : (
@@ -843,8 +969,7 @@ const FocAnalysis = () => {
                                     <option value="">Select Event...</option>
                                     {displayedReports.map(r => {
                                         const ev = codes?.evCodes.find(e => e.code === r.evCode)?.name || r.evCode;
-                                        const noonTime = r.tasks?.['T04'];
-                                        const date = noonTime || (r.items['R003'] as string) || r.submittedAt;
+                                        const date = resolveEventTime(r);
                                         const displayDate = date?.replace('T', ' ').substring(0, 16);
                                         return (
                                             <option key={r.id} value={r.id as string}>
@@ -945,6 +1070,35 @@ const FocAnalysis = () => {
                                     </button>
                                 </div>
                             </div>
+
+                            {/* Speed Filter */}
+                            <div className="space-y-2 pt-2 border-t border-ocean-700/30">
+                                <div className="text-[10px] text-slate-400 font-medium">Speed Filter (kts)</div>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setSpeedFilter(prev => prev === 10 ? null : 10)}
+                                        className={cn(
+                                            "flex-1 px-2 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                                            speedFilter === 10
+                                                ? "bg-blue-500 text-white border-blue-500 shadow-lg shadow-blue-500/20"
+                                                : "bg-ocean-800 text-slate-400 border-ocean-600 hover:border-slate-500"
+                                        )}
+                                    >
+                                        &lt; 10
+                                    </button>
+                                    <button
+                                        onClick={() => setSpeedFilter(prev => prev === 13 ? null : 13)}
+                                        className={cn(
+                                            "flex-1 px-2 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                                            speedFilter === 13
+                                                ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-600/20"
+                                                : "bg-ocean-800 text-slate-400 border-ocean-600 hover:border-slate-500"
+                                        )}
+                                    >
+                                        &lt; 13
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -1014,7 +1168,7 @@ const FocAnalysis = () => {
                                 </div>
                             </div>
                         )}
-                        {renderMetricsContent(fuelMetrics.length > 0, fuelMetrics, equipmentMetrics)}
+                        {renderMetricsContent(fuelMetrics.length > 0, fuelMetrics, equipmentMetrics, excludedApps)}
                     </div>
 
                     {/* Analysis Cards (Moved to Bottom) */}
@@ -1312,7 +1466,7 @@ const FocAnalysis = () => {
 };
 
 // Helper for rendering metrics to keep main JSX clean
-const renderMetricsContent = (hasData: boolean, fuelMetrics: any[], equipmentMetrics: any[] = []) => {
+const renderMetricsContent = (hasData: boolean, fuelMetrics: any[], equipmentMetrics: any[] = [], excludedApps: string[] = []) => {
     if (!hasData) {
         return (
             <div className="h-full flex flex-col items-center justify-center text-slate-500 border-2 border-dashed border-ocean-700/50 rounded-xl p-8">
@@ -1322,11 +1476,21 @@ const renderMetricsContent = (hasData: boolean, fuelMetrics: any[], equipmentMet
         );
     }
 
+    const totalEnergy = fuelMetrics.reduce((sum, f) => sum + f.energy, 0);
+
     return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-ocean-900/30 rounded-xl border border-ocean-700/50 p-4">
-                    <h4 className="text-sm font-bold text-slate-300 mb-4 text-center">Fuel Consumption Breakdown</h4>
+                    <div className="flex justify-between items-end mb-4 px-2">
+                        <h4 className="text-sm font-bold text-slate-300">Fuel Consumption Breakdown</h4>
+                        <div className="text-right">
+                            <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Total Energy</div>
+                            <div className="text-xl font-bold text-emerald-400 leading-none">
+                                {(totalEnergy / 1000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-sm text-emerald-500/70 font-medium">GJ</span>
+                            </div>
+                        </div>
+                    </div>
                     <div className="h-[200px]">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
@@ -1377,25 +1541,34 @@ const renderMetricsContent = (hasData: boolean, fuelMetrics: any[], equipmentMet
                         Equipment Breakdown
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {equipmentMetrics.map((eq, i) => (
-                            <div key={i} className="bg-ocean-900 p-3 rounded-lg border border-ocean-700">
-                                <div className="flex justify-between items-start mb-2">
-                                    <span className="font-bold text-slate-200">{eq.name}</span>
-                                    <div className="text-right">
-                                        <div className="font-bold text-white">{eq.val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-slate-500">MT (24h)</span></div>
-                                        <div className="text-xs text-emerald-400">{(eq.energy / 1000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} GJ</div>
+                        {equipmentMetrics.map((eq, i) => {
+                            const isExcluded = excludedApps.includes(eq.code);
+                            return (
+                                <div key={i} className={cn(
+                                    "bg-ocean-900 p-3 rounded-lg border",
+                                    isExcluded ? "border-slate-700 opacity-60" : "border-ocean-700"
+                                )}>
+                                    <div className="flex justify-between items-start mb-2">
+                                        <span className="font-bold text-slate-200 flex items-center gap-2">
+                                            {eq.name}
+                                            {isExcluded && <span className="text-[10px] text-red-400 border border-red-500/30 px-1 rounded bg-red-500/10">EXCL</span>}
+                                        </span>
+                                        <div className="text-right">
+                                            <div className="font-bold text-white">{eq.val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-slate-500">MT (24h)</span></div>
+                                            <div className="text-xs text-emerald-400">{(eq.energy / 1000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} GJ</div>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        {Array.from(eq.fuels.values()).map((f: any) => (
+                                            <div key={f.name} className="flex justify-between text-xs text-slate-400">
+                                                <span>{f.name}</span>
+                                                <span>{f.val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MT</span>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
-                                <div className="space-y-1">
-                                    {Array.from(eq.fuels.values()).map((f: any) => (
-                                        <div key={f.name} className="flex justify-between text-xs text-slate-400">
-                                            <span>{f.name}</span>
-                                            <span>{f.val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MT</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             )}

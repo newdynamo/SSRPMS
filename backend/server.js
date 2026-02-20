@@ -190,6 +190,30 @@ app.delete('/api/reports/:id', async (req, res) => {
     }
 });
 
+// Delete Reports by Ship
+app.delete('/api/reports', async (req, res) => {
+    try {
+        const { ship } = req.query;
+        if (!ship) {
+            return res.status(400).json({ error: 'Ship name required' });
+        }
+
+        const reportsPath = path.join(__dirname, 'data', 'reports.json');
+        const data = await fs.promises.readFile(reportsPath, 'utf8');
+        let reports = JSON.parse(data);
+
+        const initialLength = reports.length;
+        reports = reports.filter(r => r.items && r.items['R001'] !== ship);
+        const deletedCount = initialLength - reports.length;
+
+        await fs.promises.writeFile(reportsPath, JSON.stringify(reports, null, 2));
+        res.json({ success: true, deletedCount });
+    } catch (err) {
+        console.error('Error deleting reports by ship:', err);
+        res.status(500).json({ error: 'Failed to delete reports' });
+    }
+});
+
 // Update Report
 app.put('/api/reports/:id', async (req, res) => {
     try {
