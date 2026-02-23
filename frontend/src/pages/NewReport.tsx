@@ -1494,7 +1494,7 @@ const NewReport: React.FC = () => {
                                     maxLength={5}
                                     value={itemValues[r.code] || ''}
                                     onChange={e => {
-                                        let val = e.target.value.toUpperCase();
+                                        const val = e.target.value.toUpperCase();
                                         const clean = val.replace(/[^0-9A-Z]/g, '');
 
                                         let formatted = '';

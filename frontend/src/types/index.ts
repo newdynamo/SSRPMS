@@ -111,6 +111,12 @@ export interface Ship {
         type: string;
         data: { speed: number; foc: number; rpm: number }[];
     }[]; // FOC Management Data
+    meRpmSpeedConfig?: {
+        id: string;
+        mode: 'laden' | 'ballast';
+        type: string;
+        data: { speed: number; rpm: number }[];
+    }[]; // M/E RPM-Speed Management Data
 }
 
 export interface Port {

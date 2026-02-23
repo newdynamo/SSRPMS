@@ -46,56 +46,34 @@ def update_ships():
     for ship in ships:
         if ship.get("code") in TARGET_CODES:
             print(f"Updating {ship['name']} ({ship['code']})...")
-            foc_mgmt = ship.get("focManagement", [])
             
-            # Ensure focManagement exists
-            if not foc_mgmt:
-                ship["focManagement"] = []
-                foc_mgmt = ship["focManagement"]
+            # Create meRpmSpeedConfig if it doesn't exist
+            ship["meRpmSpeedConfig"] = []
+            rpm_mgmt = ship["meRpmSpeedConfig"]
 
-            # 1. Update Existing Laden Entries
-            for entry in foc_mgmt:
-                if entry.get("mode") == "laden":
-                    print(f"  Updating Laden entry: {entry.get('id')}")
-                    # Update RPM for existing speeds, keep FOC
-                    for point in entry.get("data", []):
-                        spd = point.get("speed")
-                        if spd in LADEN_RPM:
-                            point["rpm"] = LADEN_RPM[spd]
+            # Add Laden Profile
+            laden_data = []
+            for spd in sorted(LADEN_RPM.keys()):
+                laden_data.append({"speed": spd, "rpm": LADEN_RPM[spd]})
             
-            # 2. Update/Add Ballast Entry
-            # We need to find if there are existing ballast entries and update them, 
-            # OR create new ones if they don't exist.
-            # The previous script logic only added if missing.
-            # We should probably update ALL ballast entries found, and if none, create one default.
+            rpm_mgmt.append({
+                "id": f"rpm-laden-ref-{ship['code']}",
+                "mode": "laden",
+                "type": "Reference",
+                "data": laden_data
+            })
+
+            # Add Ballast Profile
+            ballast_data = []
+            for spd in sorted(BALLAST_RPM.keys()):
+                ballast_data.append({"speed": spd, "rpm": BALLAST_RPM[spd]})
             
-            ballast_entries = [e for e in foc_mgmt if e.get("mode") == "ballast"]
-            
-            if ballast_entries:
-                for entry in ballast_entries:
-                     print(f"  Updating Ballast entry: {entry.get('id')}")
-                     for point in entry.get("data", []):
-                        spd = point.get("speed")
-                        if spd in BALLAST_RPM:
-                            point["rpm"] = BALLAST_RPM[spd]
-            else:
-                print("  Adding new Ballast Reference entry...")
-                new_ballast_data = []
-                for spd in sorted(BALLAST_RPM.keys()):
-                    new_ballast_data.append({
-                        "speed": spd,
-                        "foc": 0,
-                        "rpm": BALLAST_RPM[spd]
-                    })
-                
-                # Create a default ballast profile if none exists
-                new_entry = {
-                    "id": f"foc-ballast-ref-{ship['code']}",
-                    "mode": "ballast",
-                    "type": "Reference",
-                    "data": new_ballast_data
-                }
-                ship["focManagement"].append(new_entry)
+            rpm_mgmt.append({
+                "id": f"rpm-ballast-ref-{ship['code']}",
+                "mode": "ballast",
+                "type": "Reference",
+                "data": ballast_data
+            })
 
             updated_count += 1
 

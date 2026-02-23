@@ -2373,6 +2373,1400 @@
           }
         ]
       }
+    ],
+    "meRpmSpeedConfig": [
+      {
+        "id": "06a83492-2b03-4c0a-9f2a-64aea8a19b76",
+        "mode": "laden",
+        "type": "A-GL-PIAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "dfce22cd-8c9f-4529-b848-65562a7198bd",
+        "mode": "laden",
+        "type": "B-GL-PIAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "f7cf570f-4913-4577-98ae-455b63e4fabe",
+        "mode": "laden",
+        "type": "C-GL-PAAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "d968df11-6f4a-4ec7-ab2a-0c1caeaec49c",
+        "mode": "laden",
+        "type": "D-GL-PAAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "025db944-9e69-4488-9d2e-993f2e13a961",
+        "mode": "laden",
+        "type": "A-FL-PIAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "cae9cdd0-ead4-40de-a702-c1ae6b2483ea",
+        "mode": "laden",
+        "type": "B-FL-PIAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "a3e9ea7b-081a-4002-8cdf-29767e19082f",
+        "mode": "laden",
+        "type": "C-FL-PAAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "aad05e84-f764-4a67-80bb-bc52bdba5272",
+        "mode": "laden",
+        "type": "D-FL-PAAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "8e42646a-cd01-452f-a083-abfa1016524a",
+        "mode": "ballast",
+        "type": "A-GB-PIAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "b2781c2d-3165-46dc-9505-f5566fbabafc",
+        "mode": "ballast",
+        "type": "B-GB-PIAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "220dcb2d-8048-4e51-b475-b3e3edb1f7c9",
+        "mode": "ballast",
+        "type": "C-GB-PAAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "0053ed98-20e6-4fa3-ab87-0754ae0e128b",
+        "mode": "ballast",
+        "type": "D-GB-PAAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "5e5f9e30-b5bc-4c9c-b657-0026d05e6092",
+        "mode": "ballast",
+        "type": "A-FB-PIAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "9fa9f0f8-ce1a-4be6-b424-9e015f71649f",
+        "mode": "ballast",
+        "type": "B-FB-PIAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "cca137b1-e0a7-4902-8dcc-80352cc48b16",
+        "mode": "ballast",
+        "type": "C-FB-PAAI-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      },
+      {
+        "id": "2f68d114-8b77-46c2-afc0-cc27be722565",
+        "mode": "ballast",
+        "type": "D-FB-PAAA-Type",
+        "data": [
+          {
+            "speed": 19.5,
+            "rpm": 0
+          },
+          {
+            "speed": 19,
+            "rpm": 0
+          },
+          {
+            "speed": 18.5,
+            "rpm": 0
+          },
+          {
+            "speed": 18,
+            "rpm": 0
+          },
+          {
+            "speed": 17.5,
+            "rpm": 0
+          },
+          {
+            "speed": 17,
+            "rpm": 0
+          },
+          {
+            "speed": 16.5,
+            "rpm": 0
+          },
+          {
+            "speed": 16,
+            "rpm": 0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 0
+          },
+          {
+            "speed": 15,
+            "rpm": 0
+          },
+          {
+            "speed": 14.5,
+            "rpm": 0
+          },
+          {
+            "speed": 14,
+            "rpm": 0
+          },
+          {
+            "speed": 13.5,
+            "rpm": 0
+          },
+          {
+            "speed": 13,
+            "rpm": 0
+          },
+          {
+            "speed": 12.5,
+            "rpm": 0
+          },
+          {
+            "speed": 12,
+            "rpm": 0
+          },
+          {
+            "speed": 11.5,
+            "rpm": 0
+          },
+          {
+            "speed": 11,
+            "rpm": 0
+          },
+          {
+            "speed": 10.5,
+            "rpm": 0
+          },
+          {
+            "speed": 10,
+            "rpm": 0
+          }
+        ]
+      }
     ]
   },
   {
@@ -2606,52 +4000,52 @@
           {
             "speed": 19.5,
             "foc": 3.53,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.33,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.08,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.63,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.46,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.32,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.19,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.06,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.02,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -2659,7 +4053,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.79,
             "rpm": 0
           },
@@ -2669,7 +4063,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.61,
             "rpm": 0
           }
@@ -2683,52 +4077,52 @@
           {
             "speed": 19.5,
             "foc": 3.6,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.33,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.1,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.92,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.76,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.6,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.45,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.31,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.18,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.06,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -2736,7 +4130,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.84,
             "rpm": 0
           },
@@ -2746,7 +4140,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.65,
             "rpm": 0
           }
@@ -2760,52 +4154,52 @@
           {
             "speed": 19.5,
             "foc": 3.77,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.49,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.25,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.06,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.89,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.73,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.57,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.42,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.29,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.17,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -2813,7 +4207,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.93,
             "rpm": 0
           },
@@ -2823,7 +4217,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.73,
             "rpm": 0
           }
@@ -2837,52 +4231,52 @@
           {
             "speed": 19.5,
             "foc": 3.97,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.67,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.41,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.21,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 3.03,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.86,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.69,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.53,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.39,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.25,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -2890,7 +4284,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 2.01,
             "rpm": 0
           },
@@ -2900,7 +4294,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.79,
             "rpm": 0
           }
@@ -2914,52 +4308,52 @@
           {
             "speed": 19.5,
             "foc": 4.08,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.78,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.53,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.32,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 3.14,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.97,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.8,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.64,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.5,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.37,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -2967,7 +4361,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 2.12,
             "rpm": 0
           },
@@ -2977,7 +4371,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.91,
             "rpm": 0
           }
@@ -2991,52 +4385,52 @@
           {
             "speed": 19.5,
             "foc": 4.43,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 4.1,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.81,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.59,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 3.39,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 3.2,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 3.01,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.68,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.53,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -3044,7 +4438,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 2.25,
             "rpm": 0
           },
@@ -3054,7 +4448,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 2.02,
             "rpm": 0
           }
@@ -3068,52 +4462,52 @@
           {
             "speed": 19.5,
             "foc": 3.37,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.09,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 2.86,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.61,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.4,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.23,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.08,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 1.93,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 1.79,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.67,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -3121,7 +4515,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.43,
             "rpm": 0
           },
@@ -3131,7 +4525,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.25,
             "rpm": 0
           }
@@ -3145,52 +4539,52 @@
           {
             "speed": 19.5,
             "foc": 3.45,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.17,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 2.92,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.69,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.46,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.29,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.14,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 1.99,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 1.85,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.73,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -3198,7 +4592,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.49,
             "rpm": 0
           },
@@ -3208,7 +4602,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.32,
             "rpm": 0
           }
@@ -3222,52 +4616,52 @@
           {
             "speed": 19.5,
             "foc": 3.62,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.33,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.07,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.82,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.59,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.4,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.25,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.08,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 1.94,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.81,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -3275,7 +4669,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.57,
             "rpm": 0
           },
@@ -3285,7 +4679,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.38,
             "rpm": 0
           }
@@ -3299,52 +4693,52 @@
           {
             "speed": 19.5,
             "foc": 3.86,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.54,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.27,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
-            "foc": 3.0,
-            "rpm": 0
+            "speed": 18,
+            "foc": 3,
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.75,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.56,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.39,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.22,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.07,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.93,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -3352,7 +4746,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.67,
             "rpm": 0
           },
@@ -3362,7 +4756,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.47,
             "rpm": 0
           }
@@ -3376,52 +4770,52 @@
           {
             "speed": 19.5,
             "foc": 3.86,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.54,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.27,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
-            "foc": 3.0,
-            "rpm": 0
+            "speed": 18,
+            "foc": 3,
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.75,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.56,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.39,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.22,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.07,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.93,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -3429,7 +4823,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.67,
             "rpm": 0
           },
@@ -3439,7 +4833,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.47,
             "rpm": 0
           }
@@ -3453,52 +4847,52 @@
           {
             "speed": 19.5,
             "foc": 4.28,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.93,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.63,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.33,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 3.06,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.65,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.46,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.29,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.14,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -3506,7 +4900,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.85,
             "rpm": 0
           },
@@ -3516,7 +4910,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.63,
             "rpm": 0
           }
@@ -3530,52 +4924,52 @@
           {
             "speed": 19.5,
             "foc": 3.29,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.04,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 2.8,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.6,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.43,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.29,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.15,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.01,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 1.88,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.75,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -3583,7 +4977,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.52,
             "rpm": 0
           },
@@ -3593,7 +4987,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.33,
             "rpm": 0
           }
@@ -3607,52 +5001,52 @@
           {
             "speed": 19.5,
             "foc": 3.33,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.09,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 2.9,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.73,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.58,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.42,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.28,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.13,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 1.99,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.87,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -3660,7 +5054,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.62,
             "rpm": 0
           },
@@ -3670,7 +5064,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.42,
             "rpm": 0
           }
@@ -3684,52 +5078,52 @@
           {
             "speed": 19.5,
             "foc": 3.5,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.24,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.04,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.87,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.7,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.54,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.39,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.23,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.09,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.96,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -3737,7 +5131,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.7,
             "rpm": 0
           },
@@ -3747,7 +5141,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.48,
             "rpm": 0
           }
@@ -3761,52 +5155,52 @@
           {
             "speed": 19.5,
             "foc": 3.68,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.41,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.19,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.01,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.66,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.5,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.34,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.19,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.05,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -3814,7 +5208,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.77,
             "rpm": 0
           },
@@ -3824,7 +5218,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.54,
             "rpm": 0
           }
@@ -3838,52 +5232,52 @@
           {
             "speed": 19.5,
             "foc": 3.68,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.41,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.19,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.01,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.66,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.5,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.34,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.19,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.05,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -3891,7 +5285,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.77,
             "rpm": 0
           },
@@ -3901,7 +5295,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.54,
             "rpm": 0
           }
@@ -3915,52 +5309,52 @@
           {
             "speed": 19.5,
             "foc": 4.01,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.72,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.48,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.27,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 3.08,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.88,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.71,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.53,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.36,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.21,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -3968,7 +5362,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.9,
             "rpm": 0
           },
@@ -3978,7 +5372,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.65,
             "rpm": 0
           }
@@ -3992,52 +5386,52 @@
           {
             "speed": 19.5,
             "foc": 3.28,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.04,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.6,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.41,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.25,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.11,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 1.96,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 1.83,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.7,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -4045,7 +5439,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.45,
             "rpm": 0
           },
@@ -4055,7 +5449,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.26,
             "rpm": 0
           }
@@ -4069,52 +5463,52 @@
           {
             "speed": 19.5,
             "foc": 3.38,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.14,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 2.92,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.7,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.5,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.34,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.19,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.04,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 1.9,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.77,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -4122,7 +5516,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.52,
             "rpm": 0
           },
@@ -4132,7 +5526,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 0.94,
             "rpm": 0
           }
@@ -4146,52 +5540,52 @@
           {
             "speed": 19.5,
             "foc": 3.55,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.3,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.07,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.63,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.45,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.3,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.14,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
-            "foc": 2.0,
-            "rpm": 0
+            "foc": 2,
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.86,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -4199,7 +5593,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.6,
             "rpm": 0
           },
@@ -4209,7 +5603,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 0.99,
             "rpm": 0
           }
@@ -4223,52 +5617,52 @@
           {
             "speed": 19.5,
             "foc": 3.78,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.51,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.27,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.02,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.8,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.61,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.45,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.28,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.13,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.98,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -4276,7 +5670,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.7,
             "rpm": 0
           },
@@ -4286,7 +5680,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.05,
             "rpm": 0
           }
@@ -4300,52 +5694,52 @@
           {
             "speed": 19.5,
             "foc": 3.78,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.51,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.27,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.02,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.8,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.61,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.45,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.28,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.13,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.98,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -4353,7 +5747,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.7,
             "rpm": 0
           },
@@ -4363,7 +5757,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.05,
             "rpm": 0
           }
@@ -4377,52 +5771,52 @@
           {
             "speed": 19.5,
             "foc": 4.2,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.9,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.63,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.36,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 3.1,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.9,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.72,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.54,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.36,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.2,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -4430,7 +5824,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.89,
             "rpm": 0
           },
@@ -4440,7 +5834,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.17,
             "rpm": 0
           }
@@ -4546,7 +5940,103 @@
     "customValues": {
       "Propeller Pitch": "0.005005",
       "IMO Number": "9947691"
-    }
+    },
+    "meRpmSpeedConfig": [
+      {
+        "id": "rpm-laden-ref-HCT",
+        "mode": "laden",
+        "type": "Reference",
+        "data": [
+          {
+            "speed": 15.0,
+            "rpm": 51.6
+          },
+          {
+            "speed": 15.5,
+            "rpm": 53.2
+          },
+          {
+            "speed": 16.0,
+            "rpm": 54.8
+          },
+          {
+            "speed": 16.5,
+            "rpm": 56.5
+          },
+          {
+            "speed": 17.0,
+            "rpm": 58.2
+          },
+          {
+            "speed": 17.5,
+            "rpm": 59.8
+          },
+          {
+            "speed": 18.0,
+            "rpm": 61.5
+          },
+          {
+            "speed": 18.5,
+            "rpm": 63.2
+          },
+          {
+            "speed": 19.0,
+            "rpm": 65.0
+          },
+          {
+            "speed": 19.5,
+            "rpm": 66.9
+          }
+        ]
+      },
+      {
+        "id": "rpm-ballast-ref-HCT",
+        "mode": "ballast",
+        "type": "Reference",
+        "data": [
+          {
+            "speed": 15.0,
+            "rpm": 51.0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 52.6
+          },
+          {
+            "speed": 16.0,
+            "rpm": 54.1
+          },
+          {
+            "speed": 16.5,
+            "rpm": 55.6
+          },
+          {
+            "speed": 17.0,
+            "rpm": 57.2
+          },
+          {
+            "speed": 17.5,
+            "rpm": 58.7
+          },
+          {
+            "speed": 18.0,
+            "rpm": 60.3
+          },
+          {
+            "speed": 18.5,
+            "rpm": 61.9
+          },
+          {
+            "speed": 19.0,
+            "rpm": 63.5
+          },
+          {
+            "speed": 19.5,
+            "rpm": 65.2
+          }
+        ]
+      }
+    ]
   },
   {
     "yard": "DSME",
@@ -4642,52 +6132,52 @@
           {
             "speed": 19.5,
             "foc": 3.53,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.33,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.08,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.63,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.46,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.32,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.19,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.06,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.02,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -4695,7 +6185,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.79,
             "rpm": 0
           },
@@ -4705,7 +6195,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.61,
             "rpm": 0
           }
@@ -4719,52 +6209,52 @@
           {
             "speed": 19.5,
             "foc": 3.6,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.33,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.1,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.92,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.76,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.6,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.45,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.31,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.18,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.06,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -4772,7 +6262,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.84,
             "rpm": 0
           },
@@ -4782,7 +6272,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.65,
             "rpm": 0
           }
@@ -4796,52 +6286,52 @@
           {
             "speed": 19.5,
             "foc": 3.77,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.49,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.25,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.06,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.89,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.73,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.57,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.42,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.29,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.17,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -4849,7 +6339,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.93,
             "rpm": 0
           },
@@ -4859,7 +6349,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.73,
             "rpm": 0
           }
@@ -4873,52 +6363,52 @@
           {
             "speed": 19.5,
             "foc": 3.97,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.67,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.41,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.21,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 3.03,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.86,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.69,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.53,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.39,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.25,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -4926,7 +6416,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 2.01,
             "rpm": 0
           },
@@ -4936,7 +6426,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.79,
             "rpm": 0
           }
@@ -4950,52 +6440,52 @@
           {
             "speed": 19.5,
             "foc": 4.08,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.78,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.53,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.32,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 3.14,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.97,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.8,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.64,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.5,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.37,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -5003,7 +6493,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 2.12,
             "rpm": 0
           },
@@ -5013,7 +6503,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.91,
             "rpm": 0
           }
@@ -5027,52 +6517,52 @@
           {
             "speed": 19.5,
             "foc": 4.43,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 4.1,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.81,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.59,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 3.39,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 3.2,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 3.01,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.68,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.53,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -5080,7 +6570,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 2.25,
             "rpm": 0
           },
@@ -5090,7 +6580,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 2.02,
             "rpm": 0
           }
@@ -5104,52 +6594,52 @@
           {
             "speed": 19.5,
             "foc": 3.37,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.09,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 2.86,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.61,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.4,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.23,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.08,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 1.93,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 1.79,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.67,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -5157,7 +6647,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.43,
             "rpm": 0
           },
@@ -5167,7 +6657,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.25,
             "rpm": 0
           }
@@ -5181,52 +6671,52 @@
           {
             "speed": 19.5,
             "foc": 3.45,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.17,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 2.92,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.69,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.46,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.29,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.14,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 1.99,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 1.85,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.73,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -5234,7 +6724,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.49,
             "rpm": 0
           },
@@ -5244,7 +6734,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.32,
             "rpm": 0
           }
@@ -5258,52 +6748,52 @@
           {
             "speed": 19.5,
             "foc": 3.62,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.33,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.07,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.82,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.59,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.4,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.25,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.08,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 1.94,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.81,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -5311,7 +6801,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.57,
             "rpm": 0
           },
@@ -5321,7 +6811,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.38,
             "rpm": 0
           }
@@ -5335,52 +6825,52 @@
           {
             "speed": 19.5,
             "foc": 3.86,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.54,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.27,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
-            "foc": 3.0,
-            "rpm": 0
+            "speed": 18,
+            "foc": 3,
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.75,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.56,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.39,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.22,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.07,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.93,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -5388,7 +6878,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.67,
             "rpm": 0
           },
@@ -5398,7 +6888,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.47,
             "rpm": 0
           }
@@ -5412,52 +6902,52 @@
           {
             "speed": 19.5,
             "foc": 3.86,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.54,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.27,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
-            "foc": 3.0,
-            "rpm": 0
+            "speed": 18,
+            "foc": 3,
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 2.75,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.56,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.39,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.22,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.07,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.93,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -5465,7 +6955,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.67,
             "rpm": 0
           },
@@ -5475,7 +6965,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.47,
             "rpm": 0
           }
@@ -5489,52 +6979,52 @@
           {
             "speed": 19.5,
             "foc": 4.28,
-            "rpm": 0
+            "rpm": 66.9
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.93,
-            "rpm": 0
+            "rpm": 65.0
           },
           {
             "speed": 18.5,
             "foc": 3.63,
-            "rpm": 0
+            "rpm": 63.2
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.33,
-            "rpm": 0
+            "rpm": 61.5
           },
           {
             "speed": 17.5,
             "foc": 3.06,
-            "rpm": 0
+            "rpm": 59.8
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 58.2
           },
           {
             "speed": 16.5,
             "foc": 2.65,
-            "rpm": 0
+            "rpm": 56.5
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.46,
-            "rpm": 0
+            "rpm": 54.8
           },
           {
             "speed": 15.5,
             "foc": 2.29,
-            "rpm": 0
+            "rpm": 53.2
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.14,
-            "rpm": 0
+            "rpm": 51.6
           },
           {
             "speed": 14.5,
@@ -5542,7 +7032,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.85,
             "rpm": 0
           },
@@ -5552,7 +7042,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.63,
             "rpm": 0
           }
@@ -5566,52 +7056,52 @@
           {
             "speed": 19.5,
             "foc": 3.29,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.04,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 2.8,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.6,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.43,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.29,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.15,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.01,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 1.88,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.75,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -5619,7 +7109,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.52,
             "rpm": 0
           },
@@ -5629,7 +7119,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.33,
             "rpm": 0
           }
@@ -5643,52 +7133,52 @@
           {
             "speed": 19.5,
             "foc": 3.33,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.09,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 2.9,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.73,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.58,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.42,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.28,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.13,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 1.99,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.87,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -5696,7 +7186,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.62,
             "rpm": 0
           },
@@ -5706,7 +7196,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.42,
             "rpm": 0
           }
@@ -5720,52 +7210,52 @@
           {
             "speed": 19.5,
             "foc": 3.5,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.24,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.04,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.87,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.7,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.54,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.39,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.23,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.09,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.96,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -5773,7 +7263,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.7,
             "rpm": 0
           },
@@ -5783,7 +7273,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.48,
             "rpm": 0
           }
@@ -5797,52 +7287,52 @@
           {
             "speed": 19.5,
             "foc": 3.68,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.41,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.19,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.01,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.66,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.5,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.34,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.19,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.05,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -5850,7 +7340,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.77,
             "rpm": 0
           },
@@ -5860,7 +7350,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.54,
             "rpm": 0
           }
@@ -5874,52 +7364,52 @@
           {
             "speed": 19.5,
             "foc": 3.68,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.41,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.19,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.01,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.66,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.5,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.34,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.19,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.05,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -5927,7 +7417,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.77,
             "rpm": 0
           },
@@ -5937,7 +7427,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.54,
             "rpm": 0
           }
@@ -5951,52 +7441,52 @@
           {
             "speed": 19.5,
             "foc": 4.01,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.72,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.48,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.27,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 3.08,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.88,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.71,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.53,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.36,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.21,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -6004,7 +7494,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.9,
             "rpm": 0
           },
@@ -6014,7 +7504,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.65,
             "rpm": 0
           }
@@ -6028,52 +7518,52 @@
           {
             "speed": 19.5,
             "foc": 3.28,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.04,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.6,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.41,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.25,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.11,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 1.96,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 1.83,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.7,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -6081,7 +7571,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.45,
             "rpm": 0
           },
@@ -6091,7 +7581,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.26,
             "rpm": 0
           }
@@ -6105,52 +7595,52 @@
           {
             "speed": 19.5,
             "foc": 3.38,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.14,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 2.92,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.7,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.5,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.34,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.19,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.04,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 1.9,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.77,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -6158,7 +7648,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.52,
             "rpm": 0
           },
@@ -6168,7 +7658,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 0.94,
             "rpm": 0
           }
@@ -6182,52 +7672,52 @@
           {
             "speed": 19.5,
             "foc": 3.55,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.3,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.07,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 2.84,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.63,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.45,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.3,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.14,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
-            "foc": 2.0,
-            "rpm": 0
+            "foc": 2,
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.86,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -6235,7 +7725,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.6,
             "rpm": 0
           },
@@ -6245,7 +7735,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 0.99,
             "rpm": 0
           }
@@ -6259,52 +7749,52 @@
           {
             "speed": 19.5,
             "foc": 3.78,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.51,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.27,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.02,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.8,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.61,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.45,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.28,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.13,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.98,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -6312,7 +7802,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.7,
             "rpm": 0
           },
@@ -6322,7 +7812,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.05,
             "rpm": 0
           }
@@ -6336,52 +7826,52 @@
           {
             "speed": 19.5,
             "foc": 3.78,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.51,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.27,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.02,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 2.8,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.61,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.45,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.28,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.13,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 1.98,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -6389,7 +7879,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.7,
             "rpm": 0
           },
@@ -6399,7 +7889,7 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.05,
             "rpm": 0
           }
@@ -6413,52 +7903,52 @@
           {
             "speed": 19.5,
             "foc": 4.2,
-            "rpm": 0
+            "rpm": 65.2
           },
           {
-            "speed": 19.0,
+            "speed": 19,
             "foc": 3.9,
-            "rpm": 0
+            "rpm": 63.5
           },
           {
             "speed": 18.5,
             "foc": 3.63,
-            "rpm": 0
+            "rpm": 61.9
           },
           {
-            "speed": 18.0,
+            "speed": 18,
             "foc": 3.36,
-            "rpm": 0
+            "rpm": 60.3
           },
           {
             "speed": 17.5,
             "foc": 3.1,
-            "rpm": 0
+            "rpm": 58.7
           },
           {
-            "speed": 17.0,
+            "speed": 17,
             "foc": 2.9,
-            "rpm": 0
+            "rpm": 57.2
           },
           {
             "speed": 16.5,
             "foc": 2.72,
-            "rpm": 0
+            "rpm": 55.6
           },
           {
-            "speed": 16.0,
+            "speed": 16,
             "foc": 2.54,
-            "rpm": 0
+            "rpm": 54.1
           },
           {
             "speed": 15.5,
             "foc": 2.36,
-            "rpm": 0
+            "rpm": 52.6
           },
           {
-            "speed": 15.0,
+            "speed": 15,
             "foc": 2.2,
-            "rpm": 0
+            "rpm": 51.0
           },
           {
             "speed": 14.5,
@@ -6466,7 +7956,7 @@
             "rpm": 0
           },
           {
-            "speed": 14.0,
+            "speed": 14,
             "foc": 1.89,
             "rpm": 0
           },
@@ -6476,9 +7966,105 @@
             "rpm": 0
           },
           {
-            "speed": 13.0,
+            "speed": 13,
             "foc": 1.17,
             "rpm": 0
+          }
+        ]
+      }
+    ],
+    "meRpmSpeedConfig": [
+      {
+        "id": "rpm-laden-ref-HBO",
+        "mode": "laden",
+        "type": "Reference",
+        "data": [
+          {
+            "speed": 15.0,
+            "rpm": 51.6
+          },
+          {
+            "speed": 15.5,
+            "rpm": 53.2
+          },
+          {
+            "speed": 16.0,
+            "rpm": 54.8
+          },
+          {
+            "speed": 16.5,
+            "rpm": 56.5
+          },
+          {
+            "speed": 17.0,
+            "rpm": 58.2
+          },
+          {
+            "speed": 17.5,
+            "rpm": 59.8
+          },
+          {
+            "speed": 18.0,
+            "rpm": 61.5
+          },
+          {
+            "speed": 18.5,
+            "rpm": 63.2
+          },
+          {
+            "speed": 19.0,
+            "rpm": 65.0
+          },
+          {
+            "speed": 19.5,
+            "rpm": 66.9
+          }
+        ]
+      },
+      {
+        "id": "rpm-ballast-ref-HBO",
+        "mode": "ballast",
+        "type": "Reference",
+        "data": [
+          {
+            "speed": 15.0,
+            "rpm": 51.0
+          },
+          {
+            "speed": 15.5,
+            "rpm": 52.6
+          },
+          {
+            "speed": 16.0,
+            "rpm": 54.1
+          },
+          {
+            "speed": 16.5,
+            "rpm": 55.6
+          },
+          {
+            "speed": 17.0,
+            "rpm": 57.2
+          },
+          {
+            "speed": 17.5,
+            "rpm": 58.7
+          },
+          {
+            "speed": 18.0,
+            "rpm": 60.3
+          },
+          {
+            "speed": 18.5,
+            "rpm": 61.9
+          },
+          {
+            "speed": 19.0,
+            "rpm": 63.5
+          },
+          {
+            "speed": 19.5,
+            "rpm": 65.2
           }
         ]
       }

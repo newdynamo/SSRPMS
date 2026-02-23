@@ -19,15 +19,94 @@ import {
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CustomTooltip = ({ active, payload, label }: any) => {
+    if (!active || !payload || !payload.length) return null;
+
+    // Check for Noon Report (Scatter) - Check by date OR by known name
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const noonReport = payload.find((p: any) => p.payload.date || p.name === 'Voyage Noon Reports');
+
+    if (noonReport) {
+        const data = noonReport.payload;
+        return (
+            <div className="bg-slate-900 border border-slate-700 p-4 rounded-xl shadow-2xl text-slate-200 text-sm z-50 min-w-[200px]">
+                <div className="font-bold text-amber-400 mb-3 pb-2 border-b border-slate-700/50 flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                        {data.name || 'Voyage Data'}
+                    </div>
+                    {data.eventType && <span className="text-xs text-slate-400 font-normal pl-4">{data.eventType}</span>}
+                </div>
+                <div className="space-y-2">
+                    {data.location && (
+                        <div className="flex justify-between items-start gap-4 pb-2 border-b border-slate-700/30 mb-2">
+                            <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">Location</span>
+                            <span className="font-mono text-white text-right max-w-[150px] truncate" title={data.location}>{data.location}</span>
+                        </div>
+                    )}
+                    <div className="flex justify-between items-center gap-4">
+                        <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">Date</span>
+                        <span className="font-mono text-white">{data.date || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between items-center gap-4">
+                        <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">Speed</span>
+                        <span className="font-mono text-white">
+                            {Number(data.speed).toFixed(1)} <span className="text-slate-500 text-xs">kts</span>
+                            {data.speedSource && <span className="ml-1 text-xs text-slate-500">({data.speedSource})</span>}
+                        </span>
+                    </div>
+                    <div className="flex justify-between items-center gap-4">
+                        <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">FOC</span>
+                        <span className="font-mono text-white">{Number(data.foc).toFixed(2)} <span className="text-slate-500 text-xs">TJ</span></span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Default Layout for Line/Area
+    return (
+        <div className="bg-slate-900 border border-slate-700 p-3 rounded-lg shadow-xl text-slate-200 text-sm">
+            <div className="font-bold text-slate-300 mb-2 border-b border-slate-700/50 pb-1">Speed: {label} kts</div>
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {payload.map((entry: any, index: number) => {
+                if (entry.name === 'Tolerance (+/- 5%)') {
+                    return (
+                        <div key={index} className="flex items-center justify-between gap-4 text-xs mt-1">
+                            <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></span>
+                                <span className="text-slate-400">Range</span>
+                            </div>
+                            <span className="font-mono text-slate-200">
+                                {entry.value[0].toFixed(2)} - {entry.value[1].toFixed(2)}
+                            </span>
+                        </div>
+                    );
+                }
+                return (
+                    <div key={index} className="flex items-center justify-between gap-4 mt-1">
+                        <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></span>
+                            <span className="text-slate-400">{entry.name === 'foc' ? 'Standard FOC' : entry.name}</span>
+                        </div>
+                        <span className="font-mono text-slate-200">{Number(entry.value).toFixed(2)}</span>
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
 const FocAnalysis = () => {
     // ... (lines 19-210)
 
     <Tooltip
         contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#f8fafc' }}
         itemStyle={{ color: '#f8fafc' }}
-        formatter={(value: any, name: any) => {
-            if (name === 'focRange') return [`${value[0].toFixed(2)} - ${value[1].toFixed(2)}`, 'Tolerance Range'];
-            return [Number(value).toFixed(2), name === 'foc' ? 'Daily FOC' : name];
+        formatter={(value: unknown, name: unknown) => {
+            if (name === 'focRange') return [`${(value as [number, number])[0].toFixed(2)} - ${(value as [number, number])[1].toFixed(2)}`, 'Tolerance Range'];
+            return [Number(value).toFixed(2), name === 'foc' ? 'Daily FOC' : (name as string)];
         }}
         labelFormatter={(label) => `Speed: ${label} kts`}
     />
@@ -147,22 +226,26 @@ const FocAnalysis = () => {
     );
 
     // Reset selectors when ship changes
-    useEffect(() => {
+    const [prevShipCode, setPrevShipCode] = useState(selectedShipCode);
+    if (selectedShipCode !== prevShipCode) {
+        setPrevShipCode(selectedShipCode);
         setSelectedVoyage('');
         setSelectedReportId('');
         setExcludedApps([]); // Reset excluded apps
         setWeatherFilter(null); // Reset weather filter
         setSpeedFilter(null); // Reset speed filter
-    }, [selectedShipCode]);
+    }
 
     // Update local remark state when report changes
-    useEffect(() => {
+    const [prevReportId, setPrevReportId] = useState(selectedReport?.id);
+    if (selectedReport?.id !== prevReportId) {
+        setPrevReportId(selectedReport?.id);
         if (selectedReport) {
             setRemark(selectedReport.items['R207'] as string || '');
         } else {
             setRemark('');
         }
-    }, [selectedReport]);
+    }
 
     const handleRemarkSave = async () => {
         if (!selectedReport) return;
@@ -384,7 +467,10 @@ const FocAnalysis = () => {
     }, [selectedShip, focMode]);
 
     // Auto-select first profile when list changes
-    useEffect(() => {
+    const prevProfilesIds = useMemo(() => availableProfiles.map(p => p.type).join(','), [availableProfiles]);
+    const [prevProfilesHash, setPrevProfilesHash] = useState(prevProfilesIds);
+    if (prevProfilesHash !== prevProfilesIds) {
+        setPrevProfilesHash(prevProfilesIds);
         if (availableProfiles.length > 0) {
             // Try to keep selection if valid, else pick first
             const exists = availableProfiles.find(p => p.type === selectedType);
@@ -394,7 +480,7 @@ const FocAnalysis = () => {
         } else {
             setSelectedType('');
         }
-    }, [availableProfiles, selectedType]);
+    }
 
     const chartData = useMemo(() => {
         const profile = availableProfiles.find(p => p.type === selectedType);
@@ -412,6 +498,13 @@ const FocAnalysis = () => {
             max: d.foc * 1.05
         }));
     }, [availableProfiles, selectedType]);
+
+    const xAxisDomain = useMemo<[number | string, number | string]>(() => {
+        if (!speedFilter) return [12, 21];
+        if (speedFilter === 10) return [10, 21];
+        if (speedFilter === 13) return [13, 21];
+        return [12, 21];
+    }, [speedFilter]);
 
     // Helper to calculate total normalized energy for any report
     const getNormalizedEnergy = useCallback((r: Report) => {
@@ -478,7 +571,7 @@ const FocAnalysis = () => {
     }, [selectedShip, ships, codes, excludedApps]);
 
     // Helper to interpolate expected FOC from curve for any speed (TJ/24h)
-    const calculateExpectedCurveFoc = (speed: number) => {
+    const calculateExpectedCurveFoc = useCallback((speed: number) => {
         if (chartData.length < 2 || speed <= 0) return 0;
 
         // Ensure sorted - chartData is already sorted by speed
@@ -496,7 +589,7 @@ const FocAnalysis = () => {
             }
         }
         return 0;
-    };
+    }, [chartData]);
 
     const voyageStats = useMemo(() => {
         if (!displayedReports.length || chartData.length === 0) return null;
@@ -570,7 +663,7 @@ const FocAnalysis = () => {
             diffTJ, isSavings, absDiffGJ, lngEq, lsmgoEq, lngCost, lsmgoCost
         };
 
-    }, [displayedReports, chartData, getNormalizedEnergy, lngPrice, lsmgoPrice, analysisMode, weatherFilter, speedFilter, resolveSpeed]);
+    }, [displayedReports, chartData, getNormalizedEnergy, lngPrice, lsmgoPrice, analysisMode, weatherFilter, speedFilter, resolveSpeed, calculateExpectedCurveFoc]);
 
     const voyageNoonData = useMemo(() => {
         if (!displayedReports.length) return [];
@@ -617,7 +710,7 @@ const FocAnalysis = () => {
                 };
             })
             .filter(d => d.speed > 0 && d.foc > 0);
-    }, [displayedReports, selectedShip, codes, ships, weatherFilter, speedFilter, getNormalizedEnergy, resolveSpeed]); // Add filters dependency
+    }, [displayedReports, codes, weatherFilter, speedFilter, getNormalizedEnergy, resolveSpeed]); // Add filters dependency
 
     // Derived: Available Equipment for Toggles (from current report)
     const availableEquipment = useMemo(() => {
@@ -645,81 +738,7 @@ const FocAnalysis = () => {
         );
     };
 
-    const CustomTooltip = ({ active, payload, label }: any) => {
-        if (!active || !payload || !payload.length) return null;
 
-        // Check for Noon Report (Scatter) - Check by date OR by known name
-        const noonReport = payload.find((p: any) => p.payload.date || p.name === 'Voyage Noon Reports');
-
-        if (noonReport) {
-            const data = noonReport.payload;
-            return (
-                <div className="bg-slate-900 border border-slate-700 p-4 rounded-xl shadow-2xl text-slate-200 text-sm z-50 min-w-[200px]">
-                    <div className="font-bold text-amber-400 mb-3 pb-2 border-b border-slate-700/50 flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-amber-400"></div>
-                            {data.name || 'Voyage Data'}
-                        </div>
-                        {data.eventType && <span className="text-xs text-slate-400 font-normal pl-4">{data.eventType}</span>}
-                    </div>
-                    <div className="space-y-2">
-                        {data.location && (
-                            <div className="flex justify-between items-start gap-4 pb-2 border-b border-slate-700/30 mb-2">
-                                <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">Location</span>
-                                <span className="font-mono text-white text-right max-w-[150px] truncate" title={data.location}>{data.location}</span>
-                            </div>
-                        )}
-                        <div className="flex justify-between items-center gap-4">
-                            <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">Date</span>
-                            <span className="font-mono text-white">{data.date || 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between items-center gap-4">
-                            <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">Speed</span>
-                            <span className="font-mono text-white">
-                                {Number(data.speed).toFixed(1)} <span className="text-slate-500 text-xs">kts</span>
-                                {data.speedSource && <span className="ml-1 text-xs text-slate-500">({data.speedSource})</span>}
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center gap-4">
-                            <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">FOC</span>
-                            <span className="font-mono text-white">{Number(data.foc).toFixed(2)} <span className="text-slate-500 text-xs">TJ</span></span>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        // Default Layout for Line/Area
-        return (
-            <div className="bg-slate-900 border border-slate-700 p-3 rounded-lg shadow-xl text-slate-200 text-sm">
-                <div className="font-bold text-slate-300 mb-2 border-b border-slate-700/50 pb-1">Speed: {label} kts</div>
-                {payload.map((entry: any, index: number) => {
-                    if (entry.name === 'Tolerance (+/- 5%)') {
-                        return (
-                            <div key={index} className="flex items-center justify-between gap-4 text-xs mt-1">
-                                <div className="flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></span>
-                                    <span className="text-slate-400">Range</span>
-                                </div>
-                                <span className="font-mono text-slate-200">
-                                    {entry.value[0].toFixed(2)} - {entry.value[1].toFixed(2)}
-                                </span>
-                            </div>
-                        );
-                    }
-                    return (
-                        <div key={index} className="flex items-center justify-between gap-4 mt-1">
-                            <div className="flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></span>
-                                <span className="text-slate-400">{entry.name === 'foc' ? 'Standard FOC' : entry.name}</span>
-                            </div>
-                            <span className="font-mono text-slate-200">{Number(entry.value).toFixed(2)}</span>
-                        </div>
-                    );
-                })}
-            </div>
-        );
-    };
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -846,8 +865,8 @@ const FocAnalysis = () => {
                                     <XAxis
                                         dataKey="speed"
                                         type="number"
-                                        domain={['auto', 'auto']}
-                                        allowDataOverflow={false}
+                                        domain={xAxisDomain}
+                                        allowDataOverflow={true}
                                         tick={{ fill: '#94a3b8' }}
                                         label={{ value: 'Speed (kts)', position: 'insideBottom', offset: -10, fill: '#cbd5e1' }}
                                     />

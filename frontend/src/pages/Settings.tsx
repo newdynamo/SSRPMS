@@ -455,7 +455,7 @@ const Settings: React.FC = () => {
     };
 
     const updateEquipmentCount = (eCode: string, count: number) => {
-        let currentEq = [...(editingShip.equipment || [])];
+        const currentEq = [...(editingShip.equipment || [])];
         const idx = currentEq.findIndex(e => e.code === eCode);
         if (idx >= 0) {
             currentEq[idx] = { ...currentEq[idx], count };
@@ -1040,7 +1040,7 @@ const Settings: React.FC = () => {
                                                                         // Helper to toggle a fuel for this equipment
                                                                         const toggleEqFuel = (fCode: string, checked: boolean) => {
                                                                             if (isInherited) return; // Prevent edit if inherited
-                                                                            let currentEq = [...(editingShip.equipment || [])];
+                                                                            const currentEq = [...(editingShip.equipment || [])];
                                                                             const idx = currentEq.findIndex(eq => eq.code === e.code);
                                                                             if (idx >= 0) {
                                                                                 const currentFuels = currentEq[idx].validFuels || [];
@@ -2266,14 +2266,14 @@ const Settings: React.FC = () => {
                             // Helper logic for RPM Speed Matrix View
                             const RpmSpeedMatrix = () => {
                                 const [mode, setMode] = useState<'laden' | 'ballast'>('laden');
-                                const profiles = (selectedShip.focManagement || []).filter(p => p.mode === mode);
+                                const profiles = (selectedShip.meRpmSpeedConfig || []).filter(p => p.mode === mode);
 
                                 const allSpeeds = Array.from(new Set(
                                     profiles.flatMap(p => p.data.map(d => d.speed))
                                 )).sort((a, b) => b - a);
 
                                 const updateProfileData = (profileId: string, speed: number, value: number) => {
-                                    const updatedProfiles = [...(selectedShip.focManagement || [])];
+                                    const updatedProfiles = [...(selectedShip.meRpmSpeedConfig || [])];
                                     const pIndex = updatedProfiles.findIndex(p => p.id === profileId);
                                     if (pIndex === -1) return;
 
@@ -2281,30 +2281,30 @@ const Settings: React.FC = () => {
                                     if (existingDataIdx >= 0) {
                                         updatedProfiles[pIndex].data[existingDataIdx].rpm = value;
                                     } else {
-                                        updatedProfiles[pIndex].data.push({ speed, foc: 0, rpm: value });
+                                        updatedProfiles[pIndex].data.push({ speed, rpm: value });
                                         updatedProfiles[pIndex].data.sort((a, b) => b.speed - a.speed);
                                     }
-                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                    setSelectedShip({ ...selectedShip, meRpmSpeedConfig: updatedProfiles });
                                 };
 
                                 const addColumn = () => {
                                     const name = prompt("Enter Type Name (e.g. A-GL-Type):");
                                     if (!name) return;
-                                    const initialData = allSpeeds.map(s => ({ speed: s, foc: 0, rpm: 0 }));
+                                    const initialData = allSpeeds.map(s => ({ speed: s, rpm: 0 }));
                                     const newProfile = {
                                         id: Date.now().toString(),
                                         mode,
                                         type: name,
                                         data: initialData
                                     };
-                                    const updatedProfiles = [...(selectedShip.focManagement || []), newProfile];
-                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                    const updatedProfiles = [...(selectedShip.meRpmSpeedConfig || []), newProfile];
+                                    setSelectedShip({ ...selectedShip, meRpmSpeedConfig: updatedProfiles });
                                 };
 
                                 const deleteColumn = (id: string) => {
                                     if (!confirm("Delete this column?")) return;
-                                    const updatedProfiles = (selectedShip.focManagement || []).filter(p => p.id !== id);
-                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                    const updatedProfiles = (selectedShip.meRpmSpeedConfig || []).filter(p => p.id !== id);
+                                    setSelectedShip({ ...selectedShip, meRpmSpeedConfig: updatedProfiles });
                                 };
 
                                 const addRow = () => {
@@ -2314,25 +2314,25 @@ const Settings: React.FC = () => {
                                         alert("Speed already exists!");
                                         return;
                                     }
-                                    const updatedProfiles = [...(selectedShip.focManagement || [])];
+                                    const updatedProfiles = [...(selectedShip.meRpmSpeedConfig || [])];
                                     updatedProfiles.forEach(p => {
                                         if (p.mode === mode) {
-                                            p.data.push({ speed: newSpeed, foc: 0, rpm: 0 });
+                                            p.data.push({ speed: newSpeed, rpm: 0 });
                                             p.data.sort((a, b) => b.speed - a.speed);
                                         }
                                     });
-                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                    setSelectedShip({ ...selectedShip, meRpmSpeedConfig: updatedProfiles });
                                 };
 
                                 const deleteRow = (speed: number) => {
                                     if (!confirm(`Delete row for ${speed} kts?`)) return;
-                                    const updatedProfiles = [...(selectedShip.focManagement || [])];
+                                    const updatedProfiles = [...(selectedShip.meRpmSpeedConfig || [])];
                                     updatedProfiles.forEach(p => {
                                         if (p.mode === mode) {
                                             p.data = p.data.filter(d => d.speed !== speed);
                                         }
                                     });
-                                    setSelectedShip({ ...selectedShip, focManagement: updatedProfiles });
+                                    setSelectedShip({ ...selectedShip, meRpmSpeedConfig: updatedProfiles });
                                 };
 
                                 return (
@@ -2425,7 +2425,7 @@ const Settings: React.FC = () => {
                                                     try {
                                                         await saveShips(updatedShips);
                                                         setShips(updatedShips);
-                                                        alert("RPM-Speed Matrix saved successfully!");
+                                                        alert("M/E RPM-Speed data saved successfully!");
                                                     } catch (err) {
                                                         console.error("Failed to save ship", err);
                                                         alert("Failed to save configuration");

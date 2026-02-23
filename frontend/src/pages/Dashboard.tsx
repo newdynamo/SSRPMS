@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Activity, MapPin, Ship as ShipIcon, ChevronRight } from 'lucide-react';
 import { fetchShips } from '../api/ships';
@@ -13,12 +13,11 @@ const Dashboard: React.FC = () => {
     const [activeShip, setActiveShip] = useState<Ship | null>(null);
     const [ships, setShips] = useState<Ship[]>([]);
     const [reports, setReports] = useState<Report[]>([]);
-    const [latestReport, setLatestReport] = useState<Report | null>(null);
     const [evCodes, setEvCodes] = useState<CodeData['evCodes']>([]);
 
 
     // Helper to get effective event time from a report
-    const getReportTime = (report: Report): number => {
+    const getReportTime = useCallback((report: Report): number => {
         if (!report) return 0;
 
         // Try to find a valid T-Code time
@@ -35,7 +34,21 @@ const Dashboard: React.FC = () => {
 
         // Fallback to submittedAt if no event time found
         return report.submittedAt ? new Date(report.submittedAt).getTime() : 0;
-    };
+    }, []);
+
+    const latestReport = useMemo(() => {
+        if (!activeShip) {
+            return null;
+        }
+        // Filter and sort reports
+        // R001 is Vessel Name
+        const shipReports = reports.filter(r => r.items['R001'] === activeShip.name);
+        if (shipReports.length > 0) {
+            const sorted = [...shipReports].sort((a, b) => getReportTime(b) - getReportTime(a));
+            return sorted[0];
+        }
+        return null;
+    }, [activeShip, reports, getReportTime]);
 
     // Derived Values from Latest Report
     const lastEventName = latestReport
@@ -80,23 +93,6 @@ const Dashboard: React.FC = () => {
         };
         loadData();
     }, []);
-
-    useEffect(() => {
-        if (!activeShip) {
-            setLatestReport(null);
-            return;
-        }
-        // Filter and sort reports
-        // R001 is Vessel Name
-        const shipReports = reports.filter(r => r.items['R001'] === activeShip.name);
-        if (shipReports.length > 0) {
-            const sorted = [...shipReports].sort((a, b) => getReportTime(b) - getReportTime(a));
-            setLatestReport(sorted[0]);
-        } else {
-            setLatestReport(null);
-        }
-    }, [activeShip, reports]);
-
 
 
     return (

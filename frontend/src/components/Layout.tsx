@@ -89,7 +89,7 @@ const NavItem = ({ to, icon, label, onClick }: { to: string; icon: React.ReactNo
                 : "text-slate-400 hover:bg-ocean-700 hover:text-slate-100"
         )}
     >
-        {React.cloneElement(icon as React.ReactElement<any>, { size: 20 })}
+        {React.cloneElement(icon as React.ReactElement<{ size: number }>, { size: 20 })}
         <span className="font-medium">{label}</span>
     </NavLink>
 );

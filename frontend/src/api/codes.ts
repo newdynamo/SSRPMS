@@ -6,7 +6,7 @@ export const fetchCodes = async (): Promise<CodeData> => {
     return response.data;
 };
 
-export const saveEVCodes = async (codes: any[]): Promise<void> => {
+export const saveEVCodes = async (codes: unknown[]): Promise<void> => {
     await client.post('/ev-codes', codes);
 };
 

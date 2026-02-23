@@ -40,7 +40,7 @@ export const exportReportsToExcel = async (reports: Report[], codes: CodeData) =
         if (k.startsWith('CONS_')) {
             const parts = k.split('_');
             if (parts.length === 4) {
-                const [_, eCode, unit, fCode] = parts;
+                const [, eCode, unit, fCode] = parts;
                 const eName = codes.eCodes.find(e => e.code === eCode)?.name || eCode;
                 const fName = codes.fCodes.find(f => f.code === fCode)?.name || fCode;
                 headers.push(`${k} (${eName} NO.${unit} - ${fName})`);
@@ -51,7 +51,7 @@ export const exportReportsToExcel = async (reports: Report[], codes: CodeData) =
             // Format: RH_RCode_ECode_Unit
             const parts = k.split('_');
             if (parts.length === 4) {
-                const [_, rCode, eCode, unit] = parts;
+                const [, rCode, eCode, unit] = parts;
                 const rName = codes.rCodes.find(r => r.code === rCode)?.name || rCode;
                 const eName = codes.eCodes.find(e => e.code === eCode)?.name || eCode;
                 headers.push(`${k} (${eName} NO.${unit} ${rName})`);
@@ -101,7 +101,7 @@ export const exportReportsToExcel = async (reports: Report[], codes: CodeData) =
             if (k.startsWith('CONS_')) {
                 const parts = k.split('_');
                 if (parts.length === 4) {
-                    const [_, eCode, unit, fCode] = parts;
+                    const [, eCode, unit, fCode] = parts;
                     const eName = codes.eCodes.find(e => e.code === eCode)?.name || eCode;
                     const fName = codes.fCodes.find(f => f.code === fCode)?.name || fCode;
                     label = `${k} (${eName} NO.${unit} - ${fName})`;
@@ -109,7 +109,7 @@ export const exportReportsToExcel = async (reports: Report[], codes: CodeData) =
             } else if (k.startsWith('RH_')) {
                 const parts = k.split('_');
                 if (parts.length === 4) {
-                    const [_, rCode, eCode, unit] = parts;
+                    const [, rCode, eCode, unit] = parts;
                     const rName = codes.rCodes.find(r => r.code === rCode)?.name || rCode;
                     const eName = codes.eCodes.find(e => e.code === eCode)?.name || eCode;
                     label = `${k} (${eName} NO.${unit} ${rName})`;

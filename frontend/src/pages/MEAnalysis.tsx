@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Activity, Ship as ShipIcon, AlertTriangle, Calendar } from 'lucide-react';
+import { Activity, Ship as ShipIcon, AlertTriangle, Calendar, Gauge } from 'lucide-react';
 import { fetchShips } from '../api/ships';
 import { fetchReports } from '../api/reports';
-import type { Ship, Report } from '../types/index';
+import { fetchCodes } from '../api/codes';
+import type { Ship, Report, CodeData } from '../types/index';
 import { cn } from '../utils/cn';
 import {
     ComposedChart,
@@ -32,10 +33,10 @@ interface MEDataPoint {
     voyage?: string;
     devPort?: number;
     devStbd?: number;
-    maRpmPort?: number;
-    maHpPort?: number;
     maRpmStbd?: number;
     maHpStbd?: number;
+    mjPerHpPort?: number;
+    mjPerHpStbd?: number;
 }
 
 
@@ -44,6 +45,7 @@ const MEAnalysis = () => {
     const [ships, setShips] = useState<Ship[]>([]);
     const [selectedShipCode, setSelectedShipCode] = useState<string>('');
     const [reports, setReports] = useState<Report[]>([]);
+    const [codes, setCodes] = useState<CodeData | null>(null);
     const [alpha, setAlpha] = useState<number>(15.0); // Threshold % (3-50)
     const [tempAlpha, setTempAlpha] = useState<number>(15.0); // Temporary Input State
     const [maWindow, setMaWindow] = useState<number>(10); // Moving Average Window (5, 10, 15, 20)
@@ -61,13 +63,14 @@ const MEAnalysis = () => {
     useEffect(() => {
         const load = async () => {
             try {
-                const sData = await fetchShips();
+                const [sData, cData] = await Promise.all([fetchShips(), fetchCodes()]);
                 setShips(sData);
+                setCodes(cData);
                 const hct = sData.find((s: Ship) => s.code === 'HCT');
                 if (hct) setSelectedShipCode(hct.code);
                 else if (sData.length > 0) setSelectedShipCode(sData[0].code);
             } catch (err) {
-                console.error("Failed to load ships", err);
+                console.error("Failed to load initial data", err);
             }
         };
         load();
@@ -138,12 +141,13 @@ const MEAnalysis = () => {
     };
 
     // Process Data (Memoized)
-    const { chartData, portAnalysis, stbdAnalysis, portPrediction, stbdPrediction, baselinePort, baselineStbd, currentDevPort, currentDevStbd, ladenCount, ballastCount } = useMemo(() => {
+    const { chartData, portAnalysis, stbdAnalysis, portPrediction, stbdPrediction, baselinePort, baselineStbd, currentDevPort, currentDevStbd, currentMjPort, currentMjStbd, ladenCount, ballastCount } = useMemo(() => {
         console.log("MEAnalysis useMemo start", reports.length);
         if (!reports.length) return {
             chartData: [], portAnalysis: null, stbdAnalysis: null,
             portPrediction: null, stbdPrediction: null, baselinePort: 0, baselineStbd: 0,
             currentDevPort: 0, currentDevStbd: 0,
+            currentMjPort: 0, currentMjStbd: 0,
             ladenCount: 0, ballastCount: 0
         };
 
@@ -226,15 +230,38 @@ const MEAnalysis = () => {
 
 
             const voyage = r.items['R005'] ? String(r.items['R005']) : '';
-
-            // Determine Condition based on Voyage Suffix (User Rule: Ends with 'L' -> Laden, 'B' -> Ballast)
             const isLaden = voyage.trim().toUpperCase().endsWith('L');
-            // Note: If neither, we might default to one or exclude. For now, strict check? 
-            // Or if 'B' -> Ballast, else Laden? User said: "last letter B is Ballast, L is Laden".
-            // Let's assume strict check for now, but handle edge cases? 
-            // Actually, usually it's binary. If it ends in B, it's NOT Laden.
-            // If it ends in L, it IS Laden. 
-            // We'll stick to: isLaden = endsWith('L'). This implies !isLaden (Ballast) if it ends with 'B'.
+
+            // --- Specific Energy Calculation (MJ/HP-hr) ---
+            const activeShip = ships.find(s => s.code === selectedShipCode);
+            const configShip = activeShip?.configSourceShipId ? ships.find(s => s.code === activeShip.configSourceShipId) : activeShip;
+
+            let mjPerHpPort = 0;
+            let mjPerHpStbd = 0;
+
+            if (configShip && configShip.fuels && codes) {
+                let energyPort = 0;
+                let energyStbd = 0;
+
+                configShip.fuels.forEach(fuel => {
+                    const fDef = codes.fCodes.find(f => f.code === fuel.code);
+                    const lcv = (activeShip?.fuels?.find(f => f.code === fuel.code)?.lcv) || fuel.lcv || fDef?.lcv || 0.0405;
+
+                    let factor = 1;
+                    if (lcv < 0.1) factor = 1_000_000;
+                    else if (lcv >= 0.1 && lcv < 100) factor = 1000;
+                    else if (lcv >= 2000 && lcv < 30000) factor = 4.184;
+
+                    const consPort = parseVal(r.items[`CONS_E01_1_${fuel.code}`]);
+                    const consStbd = parseVal(r.items[`CONS_E01_2_${fuel.code}`]);
+
+                    energyPort += consPort * lcv * factor;
+                    energyStbd += consStbd * lcv * factor;
+                });
+
+                if (hpPort > 0 && r067_1 > 0) mjPerHpPort = energyPort / (hpPort * r067_1);
+                if (hpStbd > 0 && r067_2 > 0) mjPerHpStbd = energyStbd / (hpStbd * r067_2);
+            }
 
             // Only add if we have some valid data
             processed.push({
@@ -247,7 +274,9 @@ const MEAnalysis = () => {
                 hpStbd,
                 totalHp: hpPort + hpStbd,
                 isLaden,
-                voyage
+                voyage,
+                mjPerHpPort,
+                mjPerHpStbd
             });
         });
 
@@ -348,10 +377,13 @@ const MEAnalysis = () => {
             return new Date(targetTime);
         };
 
-        // 4. Current Average Deviation (Last 5 valid steady-state points)
+        // 4. Current Average Values (Last 5 valid steady-state points)
         const lastPoints = processedWithDev.filter(p => p.rpmPort > 40).slice(-5);
         const currentDevPortVal = lastPoints.length ? lastPoints.reduce((s, p) => s + p.devPort, 0) / lastPoints.length : 0;
         const currentDevStbdVal = lastPoints.length ? lastPoints.reduce((s, p) => s + p.devStbd, 0) / lastPoints.length : 0;
+
+        const currentMjPortVal = lastPoints.length ? lastPoints.reduce((s, p) => s + (p.mjPerHpPort || 0), 0) / lastPoints.length : 0;
+        const currentMjStbdVal = lastPoints.length ? lastPoints.reduce((s, p) => s + (p.mjPerHpStbd || 0), 0) / lastPoints.length : 0;
 
         // Keep baseline for legacy support if needed (or just calculate dummy)
         const bPort = 0;
@@ -399,12 +431,14 @@ const MEAnalysis = () => {
             stbdPrediction: calcDate(regStbd, alpha),
             currentDevPort: currentDevPortVal,
             currentDevStbd: currentDevStbdVal,
+            currentMjPort: currentMjPortVal,
+            currentMjStbd: currentMjStbdVal,
             baselinePort: bPort,
             baselineStbd: bStbd,
             ladenCount,
             ballastCount
         };
-    }, [reports, alpha, maWindow, selectedYear, periodType, periodValue, ships, selectedShipCode, condition]);
+    }, [reports, alpha, maWindow, selectedYear, periodType, periodValue, ships, selectedShipCode, condition, codes]);
 
     // Derived Threshold Lines for Charts
     const portLimitVal = baselinePort * (1 + alpha / 100);
@@ -556,22 +590,22 @@ const MEAnalysis = () => {
                     {/* Prediction Display */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <PredictionCard
-                            title="PORT Engine Limit"
+                            title="PORT Engine Specific Energy"
                             date={portPrediction}
-                            currentHp={currentDevPort || 0}
-                            limitHp={alpha}
+                            currentValue={currentMjPort || 0}
+                            limitValue={0} // MJ/HP limit not defined yet, showing absolute
+                            unit="MJ/HP-hr"
                             color="text-red-400"
                             borderColor="border-red-500/30"
-                            isDeviation={true}
                         />
                         <PredictionCard
-                            title="STBD Engine Limit"
+                            title="STBD Engine Specific Energy"
                             date={stbdPrediction}
-                            currentHp={currentDevStbd || 0}
-                            limitHp={alpha}
+                            currentValue={currentMjStbd || 0}
+                            limitValue={0}
+                            unit="MJ/HP-hr"
                             color="text-orange-400"
                             borderColor="border-orange-500/30"
-                            isDeviation={true}
                         />
                     </div>
                 </div>
@@ -684,14 +718,20 @@ const MEAnalysis = () => {
                         </ComposedChart>
                     </ResponsiveContainer>
                 </div>
-            </div >
-        </div >
+            </div>
+
+            {/* Graphs Row 4: RPM vs Speed */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <RpmSpeedCurveChart ship={ships.find(s => s.code === selectedShipCode)} actualData={chartData.filter(d => d.isLaden)} mode="laden" />
+                <RpmSpeedCurveChart ship={ships.find(s => s.code === selectedShipCode)} actualData={chartData.filter(d => !d.isLaden)} mode="ballast" />
+            </div>
+        </div>
     );
 };
 
 // --- Sub Components ---
 
-const PredictionCard = ({ title, date, currentHp, limitHp, color, borderColor }: any) => {
+const PredictionCard = ({ title, date, currentValue, limitValue, unit, color, borderColor }: any) => {
 
     return (
         <div className={`bg-ocean-900/50 rounded-xl p-4 border ${borderColor} relative overflow-hidden`}>
@@ -712,8 +752,8 @@ const PredictionCard = ({ title, date, currentHp, limitHp, color, borderColor }:
             </div>
 
             <div className="flex justify-between items-center text-xs border-t border-white/5 pt-2 mt-2">
-                <span className="text-slate-500">Current: <span className="text-white font-mono">{currentHp.toFixed(1)}</span></span>
-                <span className="text-slate-500">Limit: <span className={`${color} font-mono font-bold`}>{limitHp.toFixed(1)}</span></span>
+                <span className="text-slate-500">Current: <span className="text-white font-mono">{currentValue.toFixed(4)} <span className="text-[10px] opacity-70">{unit}</span></span></span>
+                {limitValue > 0 && <span className="text-slate-500">Limit: <span className={`${color} font-mono font-bold`}>{limitValue.toFixed(2)}</span></span>}
             </div>
 
             {/* Warning if close/past */}
@@ -910,5 +950,79 @@ const PerformanceCurveChart = ({ title, referenceData, actualData, color, analys
 };
 
 
+
+const RpmSpeedCurveChart = ({ ship, actualData, mode }: { ship?: Ship, actualData: any[], mode: 'laden' | 'ballast' }) => {
+    const refData = ship?.meRpmSpeedConfig?.find(p => p.mode === mode)?.data || [];
+
+    const sortedRef = [...refData].sort((a, b) => a.rpm - b.rpm).map(d => ({ rpm: d.rpm, speed: d.speed, type: `${mode === 'laden' ? 'Laden' : 'Ballast'} Ref.` }));
+
+    const actual = actualData.map(d => ({ rpm: d.rpmPort, speed: d.speed, date: d.date, type: 'Actual' }));
+    const color = mode === 'laden' ? '#f472b6' : '#22d3ee';
+
+    return (
+        <div className="bg-ocean-800 rounded-2xl p-6 border border-ocean-700 shadow-xl min-h-[400px] mt-6">
+            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                <Gauge size={20} className={mode === 'laden' ? 'text-pink-400' : 'text-cyan-400'} />
+                M/E RPM vs Speed ({mode.toUpperCase()})
+            </h3>
+            <div className="h-[350px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                        <XAxis
+                            dataKey="rpm"
+                            type="number"
+                            name="RPM"
+                            stroke="#94a3b8"
+                            domain={['dataMin - 2', 'dataMax + 2']}
+                            label={{ value: 'RPM', position: 'insideBottom', offset: -10, fill: '#94a3b8', fontSize: 12 }}
+                            tick={{ fontSize: 12 }}
+                        />
+                        <YAxis
+                            dataKey="speed"
+                            type="number"
+                            name="Speed"
+                            stroke="#10b981"
+                            domain={['dataMin - 1', 'dataMax + 1']}
+                            label={{ value: 'Speed (kts)', angle: -90, position: 'insideLeft', fill: '#10b981', fontSize: 12 }}
+                            tick={{ fontSize: 12 }}
+                        />
+                        <Tooltip
+                            cursor={{ strokeDasharray: '3 3' }}
+                            content={({ active, payload }) => {
+                                if (active && payload && payload.length) {
+                                    const data = payload[0].payload;
+                                    return (
+                                        <div className="bg-slate-900 border border-slate-700 p-3 rounded-lg shadow-xl text-xs z-50">
+                                            <div className="font-bold text-white mb-2" style={{ color: payload[0].color }}>
+                                                {data.date ? `Actual: ${data.date}` : data.type}
+                                            </div>
+                                            <div className="flex justify-between gap-4 mb-1">
+                                                <span className="text-slate-400">RPM:</span>
+                                                <span className="font-mono text-white">{Number(data.rpm).toFixed(1)}</span>
+                                            </div>
+                                            <div className="flex justify-between gap-4">
+                                                <span className="text-slate-400">Speed:</span>
+                                                <span className="font-mono text-white">{Number(data.speed).toFixed(1)} kts</span>
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                                return null;
+                            }}
+                        />
+                        <Legend />
+
+                        {/* Reference Curve */}
+                        {sortedRef.length > 0 && <Scatter name={`${mode === 'laden' ? 'Laden' : 'Ballast'} Ref.`} data={sortedRef} fill={color} line={{ stroke: color, strokeWidth: 2 }} shape="circle" />}
+
+                        {/* Actual Points */}
+                        {actual.length > 0 && <Scatter name={`Actual (${mode === 'laden' ? 'Laden' : 'Ballast'})`} data={actual} fill="#eab308" shape="diamond" />}
+                    </ComposedChart>
+                </ResponsiveContainer>
+            </div>
+        </div>
+    );
+};
 
 export default MEAnalysis;
