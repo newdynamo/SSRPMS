@@ -141,7 +141,7 @@ const MEAnalysis = () => {
     };
 
     // Process Data (Memoized)
-    const { chartData, portAnalysis, stbdAnalysis, portPrediction, stbdPrediction, baselinePort, baselineStbd, currentDevPort, currentDevStbd, currentMjPort, currentMjStbd, ladenCount, ballastCount } = useMemo(() => {
+    const { chartData, portAnalysis, stbdAnalysis, portPrediction, stbdPrediction, baselinePort, baselineStbd, currentMjPort, currentMjStbd, ladenCount, ballastCount } = useMemo(() => {
         console.log("MEAnalysis useMemo start", reports.length);
         if (!reports.length) return {
             chartData: [], portAnalysis: null, stbdAnalysis: null,
