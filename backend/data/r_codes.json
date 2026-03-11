@@ -111,6 +111,14 @@
     "group": "Conditions"
   },
   {
+    "code": "R210",
+    "name": "TEST",
+    "type": "number",
+    "unit": "",
+    "priority": 1,
+    "group": "Weather"
+  },
+  {
     "code": "R019",
     "name": "Wind force",
     "description": "Wind force (true wind speed)",
@@ -1177,6 +1185,22 @@
     "unit": "-12~+12 from UTC",
     "priority": 8,
     "group": "Common"
+  },
+  {
+    "code": "R208",
+    "name": "Reliq. start time",
+    "type": "number",
+    "unit": "Time",
+    "priority": 8,
+    "group": "Engine"
+  },
+  {
+    "code": "R209",
+    "name": "Relig system stop",
+    "type": "number",
+    "unit": "Time",
+    "priority": 8,
+    "group": "Engine"
   },
   {
     "code": "R062",

@@ -98,6 +98,7 @@ const NewReport: React.FC = () => {
     const [selectedEVCode, setSelectedEVCode] = useState<string | null>(null);
     const [taskValues, setTaskValues] = useState<Record<string, string>>({});
     const [itemValues, setItemValues] = useState<Record<string, string | number>>({});
+    const [activeTab, setActiveTab] = useState<string>('tasks');
     const [lastReport, setLastReport] = useState<Report | null>(null);
     // 2. Add ships/activeShip state
     const [ships, setShips] = useState<Ship[]>([]);
@@ -890,8 +891,16 @@ const NewReport: React.FC = () => {
 
     const renderStep1 = () => {
         const sortedEvents = [...codes.evCodes].sort((a, b) => (a.priority || 99) - (b.priority || 99));
-        const highPriorityEvents = sortedEvents.filter(ev => (ev.priority || 99) <= 5);
-        const lowPriorityEvents = sortedEvents.filter(ev => (ev.priority || 99) > 5);
+
+        const highPriorityEvents = sortedEvents.filter(ev => {
+            const group = ev.reportGroup || (ev.priority && ev.priority <= 6 ? 'FREQUENT' : 'OTHER');
+            return group === 'FREQUENT';
+        });
+
+        const lowPriorityEvents = sortedEvents.filter(ev => {
+            const group = ev.reportGroup || (ev.priority && ev.priority <= 6 ? 'FREQUENT' : 'OTHER');
+            return group === 'OTHER';
+        });
 
         return (
             <div className="space-y-8 animate-in fade-in duration-500">
@@ -1727,348 +1736,386 @@ const NewReport: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                {/* TABS NAVIGATION */}
+                {
+                    (() => {
+                        const tabs: { id: string, label: string, icon?: React.ReactNode }[] = [];
+                        if (validTCodes.length > 0) tabs.push({ id: 'tasks', label: 'Time & Tasks', icon: <Clock size={16} /> });
 
-                {/* TASKS SECTION */}
-                {validTCodes.length > 0 && (
-                    <CollapsibleSection
-                        title="Time & Tasks"
-                        icon={<Clock className="text-primary-400" />}
-                        isOpen={!collapsedSections['tasks']}
-                        onToggle={() => toggleSection('tasks')}
-                    >
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {validTCodes.map(t => {
-                                if (t.code === 'T46') {
-                                    return (
-                                        <div key={t.code} className="space-y-1 col-span-1 md:col-span-2 lg:col-span-1 bg-ocean-900/50 p-4 rounded-xl border border-primary-500/30">
-                                            <div className="flex items-center gap-2 text-primary-400 mb-2">
-                                                <History size={16} />
-                                                <span className="text-xs font-bold uppercase tracking-wider border border-primary-500/50 px-2 py-0.5 rounded">Last Event Report</span>
-                                            </div>
-                                            <div className="text-white font-medium text-lg">
-                                                {getLastEventName()}
-                                            </div>
-                                            <div className="text-slate-400 text-sm">
-                                                {getLastEventDate()}
-                                            </div>
-                                        </div>
-                                    );
+                        // Check groups
+                        for (const group of sortedGroups) {
+                            const groupItems = rCodeGroups[group];
+                            if (group === 'Consumable') {
+                                const fuelConsumableItems = groupItems.filter(r => ['R031'].includes(r.code));
+                                if (fuelConsumableItems.length > 0 || hasFuelStatus) {
+                                    tabs.push({ id: 'fuelConsumable', label: 'Fuel Consumable', icon: <div className="w-2.5 h-2.5 rounded-full bg-orange-400"></div> });
                                 }
-                                return (
-                                    <div key={t.code} className="space-y-1">
-                                        <label className="block text-sm font-medium text-slate-400 mb-1">{t.name}</label>
-                                        <DateTimeInput
-                                            value={taskValues[t.code] || (['EV05', 'EV06'].includes(ev.code) && t.name.toLowerCase().includes('noon') ? `${new Date().toISOString().split('T')[0]} 12:00` : '')}
-                                            onChange={e => {
-                                                let val = e.target.value;
-                                                // Lock time to 12:00 for Noon Reports (EV05, EV06) AND only for Noon related tasks
-                                                if (['EV05', 'EV06'].includes(ev.code) && t.name.toLowerCase().includes('noon') && val) {
-                                                    const datePart = val.replace('T', ' ').split(' ')[0] || val;
-                                                    val = `${datePart} 12:00`;
-                                                }
-                                                setTaskValues({ ...taskValues, [t.code]: val });
-                                            }}
-                                        // Optional: Pass a prop if DateTimeInput supports disabling time
-                                        />
-                                        <p className="text-xs text-slate-500 mt-1">{t.description} {['EV05', 'EV06'].includes(ev.code) && t.name.toLowerCase().includes('noon') && <span className="text-amber-500">(Fixed to 12:00)</span>}</p>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </CollapsibleSection>
-                )}
 
-                {/* ITEMS SECTION */}
-                {sortedGroups.map(group => {
-                    const groupItems = rCodeGroups[group]
-                        .sort((a, b) => (a.priority || 99) - (b.priority || 99));
+                                const STATUS_TABLE_CODES = ['R127', 'R123', 'R033', 'R158', 'R157', 'R159', 'R129', 'R128', 'R130', 'R126', 'R124', 'R122'];
+                                const loWaterItems = groupItems.filter(r => !['R030', 'R056', 'R031'].includes(r.code) && !STATUS_TABLE_CODES.includes(r.code));
 
-                    // SPLIT LOGIC FOR CONSUMABLE
-                    if (group === 'Consumable') {
-                        // 1. Fuel Consumable: R031 (Cons)
-                        // Note: R030, R056 are skipped here as they are in Fuel Status.
-                        const fuelConsumableItems = groupItems.filter(r => ['R031'].includes(r.code));
+                                if (loWaterItems.length > 0 || activeShip?.waters?.length || activeShip?.lubeOils?.length) {
+                                    tabs.push({ id: 'loWaterConsumable', label: 'L.O & Water Consumable', icon: <div className="w-2.5 h-2.5 rounded-full bg-blue-400"></div> });
+                                }
+                            } else {
+                                tabs.push({ id: group, label: group, icon: <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div> });
+                            }
+                        }
 
-                        // 2. L.O & Water: Everything else (R035-R050, R057, R058 etc.)
-                        // Excluding R030, R056 (Status) and R031 (Fuel Cons)
-                        // Also exclude Water/LO Table codes to avoid duplication:
-                        // Water: R127(ROB), R123(Cons), R033(Prod), R158(ROB), R157(Cons), R159(Sup), R129(ROB), R128(Cons), R130(Sup)
-                        // LO: R126(ROB), R124(Cons), R122(Sup)
-                        const STATUS_TABLE_CODES = [
-                            'R127', 'R123', 'R033', // FW
-                            'R158', 'R157', 'R159', // DW
-                            'R129', 'R128', 'R130', // BW
-                            'R126', 'R124', 'R122'  // LO
-                        ];
-                        const loWaterItems = groupItems.filter(r =>
-                            !['R030', 'R056', 'R031'].includes(r.code) &&
-                            !STATUS_TABLE_CODES.includes(r.code)
-                        );
+                        // Auto-select first tab if activeTab is not valid
+                        if (!tabs.find(t => t.id === activeTab)) {
+                            if (tabs.length > 0 && activeTab !== tabs[0].id) {
+                                setTimeout(() => setActiveTab(tabs[0].id), 0);
+                            }
+                        }
 
                         return (
-                            <React.Fragment key={group}>
-                                {/* 1. Fuel Consumable Section */}
-                                {fuelConsumableItems.length > 0 && (
-                                    <CollapsibleSection
-                                        title="Fuel Consumable"
-                                        icon={<div className="w-3 h-3 rounded-full bg-orange-400 shadow-[0_0_10px_rgba(251,146,60,0.5)]"></div>}
-                                        isOpen={!collapsedSections['fuelConsumable']}
-                                        onToggle={() => toggleSection('fuelConsumable')}
+                            <div className="flex flex-wrap gap-2 pb-4 border-b border-ocean-700/50 mb-6 w-full">
+                                {tabs.map(tab => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={cn(
+                                            "flex items-center gap-2 px-5 py-3 rounded-t-xl font-medium transition-all text-base whitespace-nowrap mb-1",
+                                            activeTab === tab.id
+                                                ? "bg-ocean-800 text-emerald-400 border-t-2 border-emerald-400 shadow-[0_-4px_10px_rgba(52,211,153,0.1)]"
+                                                : "text-slate-400 hover:text-slate-200 hover:bg-ocean-800/50 border-t-2 border-transparent"
+                                        )}
                                     >
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                        {tab.icon}
+                                        {tab.label}
+                                    </button>
+                                ))}
+                            </div>
+                        );
+                    })()
+                }
+
+                {/* TASKS SECTION */}
+                {
+                    activeTab === 'tasks' && validTCodes.length > 0 && (
+                        <div className="bg-ocean-800 rounded-2xl border border-ocean-700 overflow-hidden transition-all duration-300">
+                            <div className="w-full flex items-center justify-between p-6 hover:bg-ocean-700/50 transition-colors">
+                                <h3 className="text-xl font-bold text-white flex items-center gap-3">
+                                    <Clock className="text-primary-400" />
+                                    <span>Time & Tasks</span>
+                                </h3>
+                            </div>
+                            <div className="border-t border-ocean-700/50 p-6 animate-in slide-in-from-top-2 duration-200">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {validTCodes.map(t => {
+                                        if (t.code === 'T46') {
+                                            return (
+                                                <div key={t.code} className="space-y-1 col-span-1 md:col-span-2 lg:col-span-1 bg-ocean-900/50 p-4 rounded-xl border border-primary-500/30">
+                                                    <div className="flex items-center gap-2 text-primary-400 mb-2">
+                                                        <History size={16} />
+                                                        <span className="text-xs font-bold uppercase tracking-wider border border-primary-500/50 px-2 py-0.5 rounded">Last Event Report</span>
+                                                    </div>
+                                                    <div className="text-white font-medium text-lg">
+                                                        {getLastEventName()}
+                                                    </div>
+                                                    <div className="text-slate-400 text-sm">
+                                                        {getLastEventDate()}
+                                                    </div>
+                                                </div>
+                                            );
+                                        }
+                                        return (
+                                            <div key={t.code} className="space-y-1">
+                                                <label className="block text-sm font-medium text-slate-400 mb-1">{t.name}</label>
+                                                <DateTimeInput
+                                                    value={taskValues[t.code] || (['EV05', 'EV06'].includes(ev.code) && t.name.toLowerCase().includes('noon') ? `${new Date().toISOString().split('T')[0]} 12:00` : '')}
+                                                    onChange={e => {
+                                                        let val = e.target.value;
+                                                        // Lock time to 12:00 for Noon Reports (EV05, EV06) AND only for Noon related tasks
+                                                        if (['EV05', 'EV06'].includes(ev.code) && t.name.toLowerCase().includes('noon') && val) {
+                                                            const datePart = val.replace('T', ' ').split(' ')[0] || val;
+                                                            val = `${datePart} 12:00`;
+                                                        }
+                                                        setTaskValues({ ...taskValues, [t.code]: val });
+                                                    }}
+                                                // Optional: Pass a prop if DateTimeInput supports disabling time
+                                                />
+                                                <p className="text-xs text-slate-500 mt-1">{t.description} {['EV05', 'EV06'].includes(ev.code) && t.name.toLowerCase().includes('noon') && <span className="text-amber-500">(Fixed to 12:00)</span>}</p>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+
+                {/* ITEMS SECTION */}
+                {
+                    sortedGroups.map(group => {
+                        const groupItems = rCodeGroups[group]
+                            .sort((a, b) => (a.priority || 99) - (b.priority || 99));
+
+                        // SPLIT LOGIC FOR CONSUMABLE
+                        if (group === 'Consumable') {
+                            // 1. Fuel Consumable: R031 (Cons)
+                            const fuelConsumableItems = groupItems.filter(r => ['R031'].includes(r.code));
+
+                            const STATUS_TABLE_CODES = [
+                                'R127', 'R123', 'R033', // FW
+                                'R158', 'R157', 'R159', // DW
+                                'R129', 'R128', 'R130', // BW
+                                'R126', 'R124', 'R122'  // LO
+                            ];
+                            const loWaterItems = groupItems.filter(r =>
+                                !['R030', 'R056', 'R031'].includes(r.code) &&
+                                !STATUS_TABLE_CODES.includes(r.code)
+                            );
+
+                            return (
+                                <React.Fragment key={group}>
+                                    {/* 1. Fuel Consumable Section */}
+                                    {activeTab === 'fuelConsumable' && fuelConsumableItems.length > 0 && (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
                                             {renderItems(fuelConsumableItems)}
                                         </div>
-                                    </CollapsibleSection>
-                                )}
+                                    )}
 
-                                {/* 2. Fuel Status Section (MOVED HERE) */}
-                                {hasFuelStatus && (
-                                    <CollapsibleSection
-                                        title="Fuel Status (Auto-Calculated)"
-                                        icon={<ShipIcon className="text-amber-400" />}
-                                        isOpen={!collapsedSections['fuelStatus']}
-                                        onToggle={() => toggleSection('fuelStatus')}
-                                    >
-                                        <div className="overflow-x-auto">
-                                            <table className="w-full text-sm text-left">
-                                                <thead className="text-xs text-slate-400 uppercase bg-ocean-900/80">
-                                                    <tr>
-                                                        <th className="px-6 py-3 font-medium">Fuel Type</th>
-                                                        <th className="px-6 py-3 font-medium text-slate-300">Last Event ROB</th>
-                                                        <th className="px-6 py-3 font-medium text-amber-400">Today Bunkered (+)</th>
-                                                        <th className="px-6 py-3 font-medium text-red-400">Today Consumed (-)</th>
-                                                        <th className="px-6 py-3 font-medium text-emerald-400">Current ROB (=)</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-ocean-800">
-                                                    {activeShip!.fuels!.map(fuel => {
-                                                        const fCode = fuel.code;
-                                                        const fName = codes?.fCodes?.find(f => f.code === fCode)?.name || fCode;
+                                    {/* 2. Fuel Status Section (MOVED HERE) */}
+                                    {activeTab === 'fuelConsumable' && hasFuelStatus && (
+                                        <CollapsibleSection
+                                            title="Fuel Status (Auto-Calculated)"
+                                            icon={<ShipIcon className="text-amber-400" />}
+                                            isOpen={!collapsedSections['fuelStatus']}
+                                            onToggle={() => toggleSection('fuelStatus')}
+                                        >
+                                            <div className="overflow-x-auto">
+                                                <table className="w-full text-sm text-left">
+                                                    <thead className="text-xs text-slate-400 uppercase bg-ocean-900/80">
+                                                        <tr>
+                                                            <th className="px-6 py-3 font-medium">Fuel Type</th>
+                                                            <th className="px-6 py-3 font-medium text-slate-300">Last Event ROB</th>
+                                                            <th className="px-6 py-3 font-medium text-amber-400">Today Bunkered (+)</th>
+                                                            <th className="px-6 py-3 font-medium text-red-400">Today Consumed (-)</th>
+                                                            <th className="px-6 py-3 font-medium text-emerald-400">Current ROB (=)</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-ocean-800">
+                                                        {activeShip!.fuels!.map(fuel => {
+                                                            const fCode = fuel.code;
+                                                            const fName = codes?.fCodes?.find(f => f.code === fCode)?.name || fCode;
 
-                                                        // Keys
-                                                        const robKey = `R030_${fCode}`;
-                                                        const consKey = `R031_${fCode}`;
-                                                        const bunkerKey = `R056_${fCode}`;
+                                                            // Keys
+                                                            const robKey = `R030_${fCode}`;
+                                                            const consKey = `R031_${fCode}`;
+                                                            const bunkerKey = `R056_${fCode}`;
 
-                                                        // Get Previous ROB
-                                                        let prevRob = 0;
-                                                        if (lastReport && lastReport.items?.[robKey]) {
-                                                            prevRob = parseFloat(lastReport.items[robKey] as string);
-                                                        } else {
-                                                            prevRob = fuel.initialRob || 0;
-                                                        }
+                                                            // Get Previous ROB
+                                                            let prevRob = 0;
+                                                            if (lastReport && lastReport.items?.[robKey]) {
+                                                                prevRob = parseFloat(lastReport.items[robKey] as string);
+                                                            } else {
+                                                                prevRob = fuel.initialRob || 0;
+                                                            }
 
-                                                        return (
-                                                            <tr key={fCode} className="hover:bg-ocean-800/30 transition-colors">
-                                                                <td className="px-6 py-4 font-bold text-white">{fName}</td>
-                                                                <td className="px-6 py-4 font-mono text-slate-300">{prevRob.toFixed(2)}</td>
-                                                                <td className="px-6 py-4">
-                                                                    <input
-                                                                        type="number"
-                                                                        step="any"
-                                                                        className="w-32 bg-ocean-900 border border-ocean-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none text-right font-mono text-sm hover:border-ocean-600 transition-all placeholder-slate-700"
-                                                                        value={itemValues[bunkerKey] || ''}
-                                                                        onChange={e => setItemValues({ ...itemValues, [bunkerKey]: e.target.value })}
-                                                                        placeholder="0.00"
-                                                                    />
-                                                                </td>
-                                                                <td className="px-6 py-4 font-mono text-white">
-                                                                    <div className="bg-ocean-900/50 px-3 py-2 rounded border border-ocean-800 text-right w-32">
-                                                                        {itemValues[consKey] || '0.00'}
-                                                                    </div>
-                                                                </td>
-                                                                <td className="px-6 py-4">
-                                                                    <div className="bg-emerald-500/10 px-3 py-2 rounded border border-emerald-500/30 text-emerald-400 font-bold text-right w-32 font-mono">
-                                                                        {itemValues[robKey] || prevRob.toFixed(2)}
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </CollapsibleSection>
-                                )}
+                                                            return (
+                                                                <tr key={fCode} className="hover:bg-ocean-800/30 transition-colors">
+                                                                    <td className="px-6 py-4 font-bold text-white">{fName}</td>
+                                                                    <td className="px-6 py-4 font-mono text-slate-300">{prevRob.toFixed(2)}</td>
+                                                                    <td className="px-6 py-4">
+                                                                        <input
+                                                                            type="number"
+                                                                            step="any"
+                                                                            className="w-32 bg-ocean-900 border border-ocean-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none text-right font-mono text-sm hover:border-ocean-600 transition-all placeholder-slate-700"
+                                                                            value={itemValues[bunkerKey] || ''}
+                                                                            onChange={e => setItemValues({ ...itemValues, [bunkerKey]: e.target.value })}
+                                                                            placeholder="0.00"
+                                                                        />
+                                                                    </td>
+                                                                    <td className="px-6 py-4 font-mono text-white">
+                                                                        <div className="bg-ocean-900/50 px-3 py-2 rounded border border-ocean-800 text-right w-32">
+                                                                            {itemValues[consKey] || '0.00'}
+                                                                        </div>
+                                                                    </td>
+                                                                    <td className="px-6 py-4">
+                                                                        <div className="bg-emerald-500/10 px-3 py-2 rounded border border-emerald-500/30 text-emerald-400 font-bold text-right w-32 font-mono">
+                                                                            {itemValues[robKey] || prevRob.toFixed(2)}
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </CollapsibleSection>
+                                    )}
 
-                                {/* 3. L.O & Water Consumable Section (Generic Items) */}
-                                {loWaterItems.length > 0 && (
-                                    <CollapsibleSection
-                                        title="L.O & Water Consumable"
-                                        icon={<div className="w-3 h-3 rounded-full bg-blue-400 shadow-[0_0_10px_rgba(96,165,250,0.5)]"></div>}
-                                        isOpen={!collapsedSections['loWaterConsumable']}
-                                        onToggle={() => toggleSection('loWaterConsumable')}
-                                    >
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    {/* 3. L.O & Water Consumable Section (Generic Items) */}
+                                    {activeTab === 'loWaterConsumable' && loWaterItems.length > 0 && (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
                                             {renderItems(loWaterItems)}
                                         </div>
-                                    </CollapsibleSection>
-                                )}
+                                    )}
 
-                                {/* 4. L.O & Water Status (Auto-Calculated) - SEPARATE SECTION */}
-                                {(activeShip?.waters?.length || activeShip?.lubeOils?.length) ? (
-                                    <CollapsibleSection
-                                        title="L.O & Water Consumable"
-                                        icon={<div className="w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]"></div>}
-                                        isOpen={!collapsedSections['loWaterStatus']}
-                                        onToggle={() => toggleSection('loWaterStatus')}
-                                    >
-                                        <div className="overflow-x-auto rounded-xl border border-ocean-700 bg-ocean-900/30">
-                                            <div className="p-4 bg-ocean-900/50 border-b border-ocean-700 flex items-center gap-2">
-                                                <ShipIcon size={16} className="text-secondary-400" />
-                                                <h4 className="text-sm font-bold text-secondary-400 uppercase tracking-wider">
-                                                    L.O & Water Consumable
-                                                </h4>
+                                    {/* 4. L.O & Water Status (Auto-Calculated) - SEPARATE SECTION */}
+                                    {activeTab === 'loWaterConsumable' && (activeShip?.waters?.length || activeShip?.lubeOils?.length) && (
+                                        <CollapsibleSection
+                                            title="L.O & Water Consumable"
+                                            icon={<div className="w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]"></div>}
+                                            isOpen={!collapsedSections['loWaterStatus']}
+                                            onToggle={() => toggleSection('loWaterStatus')}
+                                        >
+                                            <div className="overflow-x-auto rounded-xl border border-ocean-700 bg-ocean-900/30">
+                                                <div className="p-4 bg-ocean-900/50 border-b border-ocean-700 flex items-center gap-2">
+                                                    <ShipIcon size={16} className="text-secondary-400" />
+                                                    <h4 className="text-sm font-bold text-secondary-400 uppercase tracking-wider">
+                                                        L.O & Water Consumable
+                                                    </h4>
+                                                </div>
+                                                <table className="w-full text-sm text-left">
+                                                    <thead className="text-xs text-slate-400 uppercase bg-ocean-900/80">
+                                                        <tr>
+                                                            <th className="px-6 py-3 font-medium">Type</th>
+                                                            <th className="px-6 py-3 font-medium text-slate-300">Last Event ROB</th>
+                                                            <th className="px-6 py-3 font-medium text-amber-400">production or Ashore Supply</th>
+                                                            <th className="px-6 py-3 font-medium text-red-400">Consumed (-)</th>
+                                                            <th className="px-6 py-3 font-medium text-emerald-400">Current ROB (=)</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-ocean-800">
+                                                        {/* WATER ROWS */}
+                                                        {activeShip?.waters?.map(water => {
+                                                            const mapData: any = {
+                                                                'W01': { rob: 'R127', cons: 'R123', add: 'R033' }, // FW: ROB=R127, Cons=R123, Add=R033(Prod)
+                                                                'W02': { rob: 'R158', cons: 'R157', add: 'R159' }, // DW: ROB=R158, Cons=R157, Add=R159(Sup)
+                                                                'W03': { rob: 'R129', cons: 'R128', add: 'R130' }  // BW: ROB=R129, Cons=R128, Add=R130(Sup)
+                                                            };
+                                                            const wMap = mapData[water.code];
+                                                            if (!wMap) return null;
+
+                                                            const wName = codes?.wCodes?.find(w => w.code === water.code)?.name || water.code;
+
+                                                            // Values
+                                                            let prevRob = 0;
+                                                            if (lastReport && lastReport.items?.[wMap.rob]) {
+                                                                prevRob = parseFloat(lastReport.items[wMap.rob] as string);
+                                                            } else {
+                                                                prevRob = water.initialRob || 0;
+                                                            }
+
+                                                            return (
+                                                                <tr key={water.code} className="hover:bg-ocean-800/30 transition-colors">
+                                                                    <td className="px-6 py-4 font-bold text-white">{wName}</td>
+                                                                    <td className="px-6 py-4 font-mono text-slate-300">{prevRob.toFixed(2)}</td>
+                                                                    <td className="px-6 py-4">
+                                                                        <input
+                                                                            type="number"
+                                                                            step="any"
+                                                                            className="w-32 bg-ocean-900 border border-ocean-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none text-right font-mono text-sm hover:border-ocean-600 transition-all placeholder-slate-700"
+                                                                            value={itemValues[wMap.add] || ''}
+                                                                            onChange={e => setItemValues({ ...itemValues, [wMap.add]: e.target.value })}
+                                                                            placeholder="0.00"
+                                                                        />
+                                                                    </td>
+                                                                    <td className="px-6 py-4">
+                                                                        <input
+                                                                            type="number"
+                                                                            step="any"
+                                                                            className="w-32 bg-ocean-900 border border-ocean-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none text-right font-mono text-sm hover:border-ocean-600 transition-all placeholder-slate-700"
+                                                                            value={itemValues[wMap.cons] || ''}
+                                                                            onChange={e => setItemValues({ ...itemValues, [wMap.cons]: e.target.value })}
+                                                                            placeholder="0.00"
+                                                                        />
+                                                                    </td>
+                                                                    <td className="px-6 py-4">
+                                                                        <div className="bg-emerald-500/10 px-3 py-2 rounded border border-emerald-500/30 text-emerald-400 font-bold text-right w-32 font-mono">
+                                                                            {itemValues[wMap.rob] || prevRob.toFixed(2)}
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        })}
+
+                                                        {/* LO ROWS */}
+                                                        {activeShip?.lubeOils?.map(lo => {
+                                                            const lCode = lo.code;
+                                                            const lName = codes?.lCodes?.find(l => l.code === lCode)?.name || lCode;
+
+                                                            // Keys
+                                                            const robKey = `R126_${lCode}`;
+                                                            const consKey = `R124_${lCode}`;
+                                                            const supKey = `R122_${lCode}`;
+
+                                                            // Get Previous ROB
+                                                            let prevRob = 0;
+                                                            if (lastReport && lastReport.items?.[robKey]) {
+                                                                prevRob = parseFloat(lastReport.items[robKey] as string);
+                                                            } else {
+                                                                prevRob = lo.initialRob || 0;
+                                                            }
+
+                                                            return (
+                                                                <tr key={lCode} className="hover:bg-ocean-800/30 transition-colors">
+                                                                    <td className="px-6 py-4 font-bold text-white">{lName}</td>
+                                                                    <td className="px-6 py-4 font-mono text-slate-300">{prevRob.toFixed(2)}</td>
+                                                                    <td className="px-6 py-4">
+                                                                        <input
+                                                                            type="number"
+                                                                            step="any"
+                                                                            className="w-32 bg-ocean-900 border border-ocean-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none text-right font-mono text-sm hover:border-ocean-600 transition-all placeholder-slate-700"
+                                                                            value={itemValues[supKey] || ''}
+                                                                            onChange={e => setItemValues({ ...itemValues, [supKey]: e.target.value })}
+                                                                            placeholder="0.00"
+                                                                        />
+                                                                    </td>
+                                                                    <td className="px-6 py-4">
+                                                                        <input
+                                                                            type="number"
+                                                                            step="any"
+                                                                            className="w-32 bg-ocean-900 border border-ocean-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none text-right font-mono text-sm hover:border-ocean-600 transition-all placeholder-slate-700"
+                                                                            value={itemValues[consKey] || ''}
+                                                                            onChange={e => setItemValues({ ...itemValues, [consKey]: e.target.value })}
+                                                                            placeholder="0.00"
+                                                                        />
+                                                                    </td>
+                                                                    <td className="px-6 py-4">
+                                                                        <div className="bg-emerald-500/10 px-3 py-2 rounded border border-emerald-500/30 text-emerald-400 font-bold text-right w-32 font-mono">
+                                                                            {itemValues[robKey] || prevRob.toFixed(2)}
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        })}
+                                                    </tbody>
+                                                </table>
                                             </div>
-                                            <table className="w-full text-sm text-left">
-                                                <thead className="text-xs text-slate-400 uppercase bg-ocean-900/80">
-                                                    <tr>
-                                                        <th className="px-6 py-3 font-medium">Type</th>
-                                                        <th className="px-6 py-3 font-medium text-slate-300">Last Event ROB</th>
-                                                        <th className="px-6 py-3 font-medium text-amber-400">production or Ashore Supply</th>
-                                                        <th className="px-6 py-3 font-medium text-red-400">Consumed (-)</th>
-                                                        <th className="px-6 py-3 font-medium text-emerald-400">Current ROB (=)</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-ocean-800">
-                                                    {/* WATER ROWS */}
-                                                    {activeShip?.waters?.map(water => {
-                                                        const mapData: any = {
-                                                            'W01': { rob: 'R127', cons: 'R123', add: 'R033' }, // FW: ROB=R127, Cons=R123, Add=R033(Prod)
-                                                            'W02': { rob: 'R158', cons: 'R157', add: 'R159' }, // DW: ROB=R158, Cons=R157, Add=R159(Sup)
-                                                            'W03': { rob: 'R129', cons: 'R128', add: 'R130' }  // BW: ROB=R129, Cons=R128, Add=R130(Sup)
-                                                        };
-                                                        const wMap = mapData[water.code];
-                                                        if (!wMap) return null;
+                                        </CollapsibleSection>
+                                    )}
+                                </React.Fragment>
+                            );
+                        }
 
-                                                        const wName = codes?.wCodes?.find(w => w.code === water.code)?.name || water.code;
+                        // NORMAL RENDER for other groups
+                        if (activeTab === group) {
+                            return (
+                                <div key={group} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                                    {renderItems(groupItems)}
+                                </div>
+                            );
+                        }
 
-                                                        // Values
-                                                        let prevRob = 0;
-                                                        if (lastReport && lastReport.items?.[wMap.rob]) {
-                                                            prevRob = parseFloat(lastReport.items[wMap.rob] as string);
-                                                        } else {
-                                                            prevRob = water.initialRob || 0;
-                                                        }
+                        return null;
+                    })
+                }
 
-                                                        return (
-                                                            <tr key={water.code} className="hover:bg-ocean-800/30 transition-colors">
-                                                                <td className="px-6 py-4 font-bold text-white">{wName}</td>
-                                                                <td className="px-6 py-4 font-mono text-slate-300">{prevRob.toFixed(2)}</td>
-                                                                <td className="px-6 py-4">
-                                                                    <input
-                                                                        type="number"
-                                                                        step="any"
-                                                                        className="w-32 bg-ocean-900 border border-ocean-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none text-right font-mono text-sm hover:border-ocean-600 transition-all placeholder-slate-700"
-                                                                        value={itemValues[wMap.add] || ''}
-                                                                        onChange={e => setItemValues({ ...itemValues, [wMap.add]: e.target.value })}
-                                                                        placeholder="0.00"
-                                                                    />
-                                                                </td>
-                                                                <td className="px-6 py-4">
-                                                                    <input
-                                                                        type="number"
-                                                                        step="any"
-                                                                        className="w-32 bg-ocean-900 border border-ocean-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none text-right font-mono text-sm hover:border-ocean-600 transition-all placeholder-slate-700"
-                                                                        value={itemValues[wMap.cons] || ''}
-                                                                        onChange={e => setItemValues({ ...itemValues, [wMap.cons]: e.target.value })}
-                                                                        placeholder="0.00"
-                                                                    />
-                                                                </td>
-                                                                <td className="px-6 py-4">
-                                                                    <div className="bg-emerald-500/10 px-3 py-2 rounded border border-emerald-500/30 text-emerald-400 font-bold text-right w-32 font-mono">
-                                                                        {itemValues[wMap.rob] || prevRob.toFixed(2)}
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })}
-
-                                                    {/* LO ROWS */}
-                                                    {activeShip?.lubeOils?.map(lo => {
-                                                        const lCode = lo.code;
-                                                        const lName = codes?.lCodes?.find(l => l.code === lCode)?.name || lCode;
-
-                                                        // Keys
-                                                        const robKey = `R126_${lCode}`;
-                                                        const consKey = `R124_${lCode}`;
-                                                        const supKey = `R122_${lCode}`;
-
-                                                        // Get Previous ROB
-                                                        let prevRob = 0;
-                                                        if (lastReport && lastReport.items?.[robKey]) {
-                                                            prevRob = parseFloat(lastReport.items[robKey] as string);
-                                                        } else {
-                                                            prevRob = lo.initialRob || 0;
-                                                        }
-
-                                                        return (
-                                                            <tr key={lCode} className="hover:bg-ocean-800/30 transition-colors">
-                                                                <td className="px-6 py-4 font-bold text-white">{lName}</td>
-                                                                <td className="px-6 py-4 font-mono text-slate-300">{prevRob.toFixed(2)}</td>
-                                                                <td className="px-6 py-4">
-                                                                    <input
-                                                                        type="number"
-                                                                        step="any"
-                                                                        className="w-32 bg-ocean-900 border border-ocean-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none text-right font-mono text-sm hover:border-ocean-600 transition-all placeholder-slate-700"
-                                                                        value={itemValues[supKey] || ''}
-                                                                        onChange={e => setItemValues({ ...itemValues, [supKey]: e.target.value })}
-                                                                        placeholder="0.00"
-                                                                    />
-                                                                </td>
-                                                                <td className="px-6 py-4">
-                                                                    <input
-                                                                        type="number"
-                                                                        step="any"
-                                                                        className="w-32 bg-ocean-900 border border-ocean-700 rounded px-3 py-2 text-white focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none text-right font-mono text-sm hover:border-ocean-600 transition-all placeholder-slate-700"
-                                                                        value={itemValues[consKey] || ''}
-                                                                        onChange={e => setItemValues({ ...itemValues, [consKey]: e.target.value })}
-                                                                        placeholder="0.00"
-                                                                    />
-                                                                </td>
-                                                                <td className="px-6 py-4">
-                                                                    <div className="bg-emerald-500/10 px-3 py-2 rounded border border-emerald-500/30 text-emerald-400 font-bold text-right w-32 font-mono">
-                                                                        {itemValues[robKey] || prevRob.toFixed(2)}
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </CollapsibleSection>
-                                ) : null}
-                            </React.Fragment>
-                        );
-                    }
-
-                    // NORMAL RENDER for other groups
-                    return (
-                        <CollapsibleSection
-                            key={group}
-                            title={group}
-                            isOpen={!collapsedSections[group]}
-                            onToggle={() => toggleSection(group)}
-                            icon={<div className="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>}
-                        >
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                {renderItems(groupItems)}
-                            </div>
-                        </CollapsibleSection>
-                    );
-                })}
-
-                {validTCodes.length === 0 && validRCodes.length === 0 && (
-                    <div className="text-center py-20 text-slate-500 bg-ocean-800/50 rounded-2xl border border-dashed border-ocean-700">
-                        <p className="text-xl">No configurations found for this event.</p>
-                        <p className="text-sm mt-2">Please configure T-Codes and R-Codes in Settings.</p>
-                    </div>
-                )}
+                {
+                    validTCodes.length === 0 && validRCodes.length === 0 && (
+                        <div className="text-center py-20 text-slate-500 bg-ocean-800/50 rounded-2xl border border-dashed border-ocean-700">
+                            <p className="text-xl">No configurations found for this event.</p>
+                            <p className="text-sm mt-2">Please configure T-Codes and R-Codes in Settings.</p>
+                        </div>
+                    )
+                }
             </div>
         );
     };
-
     return (
         <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
             {/* Header with Ship Selection */}

@@ -366,11 +366,21 @@ const Settings: React.FC = () => {
 
         try {
             if (activeTab === 'events') {
+                const isFrequent = (editingCode.reportGroup || 'FREQUENT') === 'FREQUENT';
+                if (isFrequent) {
+                    const currentFrequent = codes.evCodes.filter(c => (c.reportGroup || (c.priority && c.priority <= 6 ? 'FREQUENT' : 'OTHER')) === 'FREQUENT' && c.code !== editingCode.code);
+                    if (currentFrequent.length >= 6) {
+                        alert("Frequent Event는 최대 6개까지만 등록할 수 있습니다. (Maximum 6 Frequent Events allowed)");
+                        return;
+                    }
+                }
+
                 const updatedList = codes.evCodes.filter(c => c.code !== editingCode.code);
                 updatedList.push({
                     code: editingCode.code,
                     name: editingCode.name,
                     mCode: editingCode.mCode || 'M01',
+                    reportGroup: editingCode.reportGroup || (editingCode.priority && editingCode.priority <= 6 ? 'FREQUENT' : 'OTHER'),
                     description: editingCode.description || '',
                     priority: Number(editingCode.priority) || 0,
                     validTCodes: editingCode.validTCodes || [],
@@ -1363,12 +1373,20 @@ const Settings: React.FC = () => {
                                     </div>
 
                                     {/* Basic Info */}
-                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                                         <Input placeholder="Code (e.g., EV01)" value={editingCode.code} onChange={v => setEditingCode({ ...editingCode, code: v })} />
                                         <Input placeholder="Event Name" value={editingCode.name} onChange={v => setEditingCode({ ...editingCode, name: v })} />
                                         <Input placeholder="Priority" type="number" value={editingCode.priority} onChange={v => setEditingCode({ ...editingCode, priority: Number(v) })} />
                                         <Input placeholder="Related M-Code (e.g., M01)" value={editingCode.mCode} onChange={v => setEditingCode({ ...editingCode, mCode: v })} />
-                                        <div className="md:col-span-4">
+                                        <select
+                                            value={editingCode.reportGroup || (editingCode.priority && editingCode.priority <= 6 ? 'FREQUENT' : 'OTHER')}
+                                            onChange={e => setEditingCode({ ...editingCode, reportGroup: e.target.value })}
+                                            className="bg-ocean-900 border border-ocean-600 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-primary-500"
+                                        >
+                                            <option value="FREQUENT">Frequent Event</option>
+                                            <option value="OTHER">Other Event</option>
+                                        </select>
+                                        <div className="md:col-span-5">
                                             <Input placeholder="Description" value={editingCode.description} onChange={v => setEditingCode({ ...editingCode, description: v })} />
                                         </div>
                                     </div>
@@ -1471,8 +1489,12 @@ const Settings: React.FC = () => {
                         )}
 
                         <CodeTable
-                            data={filterData(codes.evCodes)}
+                            data={filterData(codes.evCodes).map(ev => ({
+                                ...ev,
+                                reportGroup: ev.reportGroup || (ev.priority && ev.priority <= 6 ? 'FREQUENT' : 'OTHER')
+                            }))}
                             columns={[
+                                { k: 'reportGroup', l: 'Category' },
                                 { k: 'priority', l: 'Priority' },
                                 { k: 'code', l: 'Code' },
                                 { k: 'name', l: 'Event Name' },

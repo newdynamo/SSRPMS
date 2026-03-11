@@ -9,6 +9,7 @@ export interface EVCode {
     description?: string; // Added description
     mCode: string; // references MCode
     priority?: number; // Added priority
+    reportGroup?: 'FREQUENT' | 'OTHER'; // Added group mechanism
     validTCodes: string[];
     validRCodes: string[];
 }
