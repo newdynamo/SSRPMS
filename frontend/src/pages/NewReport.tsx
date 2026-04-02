@@ -162,7 +162,7 @@ const NewReport: React.FC = () => {
 
                 // Update Total Consumption (R031) from Sums
                 const totalCons = fuelTotals[fCode] || 0;
-                const formattedCons = totalCons.toFixed(2);
+                const formattedCons = totalCons.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                 if (newItemValues[consKey] !== formattedCons) {
                     newItemValues[consKey] = formattedCons;
@@ -192,7 +192,7 @@ const NewReport: React.FC = () => {
                     newRob = 0;
                 }
 
-                const formattedRob = newRob.toFixed(2);
+                const formattedRob = newRob.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                 if (newItemValues[robKey] !== formattedRob) {
                     newItemValues[robKey] = formattedRob;
@@ -227,7 +227,7 @@ const NewReport: React.FC = () => {
                 config.plus.forEach(code => change += parseFloat(newItemValues[code] as string || '0'));
 
                 const newRob = Math.max(0, prevRob + change);
-                const formatted = newRob.toFixed(2);
+                const formatted = newRob.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                 if (newItemValues[config.rob] !== formatted) {
                     newItemValues[config.rob] = formatted;
@@ -258,7 +258,7 @@ const NewReport: React.FC = () => {
 
                 // Calculate New ROB
                 const newRob = Math.max(0, prevRob - consumption + supplied);
-                const formattedRob = newRob.toFixed(2);
+                const formattedRob = newRob.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                 if (newItemValues[robKey] !== formattedRob) {
                     newItemValues[robKey] = formattedRob;
@@ -380,7 +380,7 @@ const NewReport: React.FC = () => {
 
             // Validation: If > 1000, display "Error" (likely invalid or missing history causing huge jump from 0)
             // But if users enter correct Start Revo, it should be fine.
-            const formatted = todayMile > 1000 ? "Error" : todayMile.toFixed(2);
+            const formatted = todayMile > 1000 ? "Error" : todayMile.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
             if (itemValues[ENG_MILE_CODE] !== formatted) {
                 setItemValues(prev => ({ ...prev, [ENG_MILE_CODE]: formatted }));
@@ -389,7 +389,7 @@ const NewReport: React.FC = () => {
             // Fallback for Single Engine if validEngines logic missed it (unlikely but safe)
             const todayMile = totalDiffSum * pitch;
             calculatedTodayMile = todayMile;
-            const formatted = todayMile > 1000 ? "Error" : todayMile.toFixed(2);
+            const formatted = todayMile > 1000 ? "Error" : todayMile.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             if (itemValues[ENG_MILE_CODE] !== formatted) {
                 setItemValues(prev => ({ ...prev, [ENG_MILE_CODE]: formatted }));
             }
@@ -406,7 +406,7 @@ const NewReport: React.FC = () => {
             if (calculatedTodayMile > 0 || lastTotalMile > 0) {
                 const newTotal = lastTotalMile + calculatedTodayMile;
                 currentTotalEngMile = newTotal;
-                const formatted = newTotal.toFixed(2);
+                const formatted = newTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                 if (itemValues[TOTAL_ENG_MILE_CODE] !== formatted) {
                     setItemValues(prev => {
@@ -433,7 +433,7 @@ const NewReport: React.FC = () => {
             if (todayDist > 0 || lastTotalDist > 0) {
                 const newTotal = lastTotalDist + todayDist;
                 currentTotalDist = newTotal;
-                const formatted = newTotal.toFixed(2);
+                const formatted = newTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                 if (itemValues[TOTAL_DIST_CODE] !== formatted) {
                     setItemValues(prev => {
@@ -456,7 +456,7 @@ const NewReport: React.FC = () => {
 
             if (engMile > 0) {
                 const slip = ((engMile - dist) / engMile) * 100;
-                const fmtSlip = slip.toFixed(2);
+                const fmtSlip = slip.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                 if (itemValues[TODAY_SLIP_CODE] !== fmtSlip) {
                     setItemValues(prev => ({ ...prev, [TODAY_SLIP_CODE]: fmtSlip }));
@@ -468,7 +468,7 @@ const NewReport: React.FC = () => {
         // Formula: (TotalEngMile - TotalDistance) / TotalEngMile * 100
         if (currentTotalEngMile > 0) {
             const totalSlip = ((currentTotalEngMile - currentTotalDist) / currentTotalEngMile) * 100;
-            const fmtTotalSlip = totalSlip.toFixed(2);
+            const fmtTotalSlip = totalSlip.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
             if (itemValues[TOTAL_SLIP_CODE] !== fmtTotalSlip) {
                 setItemValues(prev => {
@@ -524,7 +524,7 @@ const NewReport: React.FC = () => {
             // Usually op time > 0. If very small, might equal 0.
             if (diffMs >= 0) {
                 const diffHours = diffMs / (1000 * 60 * 60);
-                const formatted = diffHours.toFixed(2);
+                const formatted = diffHours.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                 if (itemValues['R200'] !== formatted) {
                     setItemValues(prev => ({ ...prev, 'R200': formatted }));
@@ -811,7 +811,7 @@ const NewReport: React.FC = () => {
             const code = t.code;
             let val = taskValues[code];
 
-            // AUTO-FILL DEFAULT: Noon Report Logic (Fixed 12:00)
+            // AUTO-FILL DEFAULT: Noon Report Logic (toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })2:00)
             // If value is missing, but it's a Noon report, populate the default.
             if (!val && ['EV05', 'EV06'].includes(ev.code) && t.name.toLowerCase().includes('noon')) {
                 const datePart = new Date().toISOString().split('T')[0];
@@ -1917,7 +1917,7 @@ const NewReport: React.FC = () => {
                                                             return (
                                                                 <tr key={fCode} className="hover:bg-ocean-800/30 transition-colors">
                                                                     <td className="px-6 py-4 font-bold text-white">{fName}</td>
-                                                                    <td className="px-6 py-4 font-mono text-slate-300">{prevRob.toFixed(2)}</td>
+                                                                    <td className="px-6 py-4 font-mono text-slate-300">{prevRob.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                                                     <td className="px-6 py-4">
                                                                         <input
                                                                             type="number"
@@ -1935,7 +1935,7 @@ const NewReport: React.FC = () => {
                                                                     </td>
                                                                     <td className="px-6 py-4">
                                                                         <div className="bg-emerald-500/10 px-3 py-2 rounded border border-emerald-500/30 text-emerald-400 font-bold text-right w-32 font-mono">
-                                                                            {itemValues[robKey] || prevRob.toFixed(2)}
+                                                                            {itemValues[robKey] || prevRob.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                                         </div>
                                                                     </td>
                                                                 </tr>
@@ -2003,7 +2003,7 @@ const NewReport: React.FC = () => {
                                                             return (
                                                                 <tr key={water.code} className="hover:bg-ocean-800/30 transition-colors">
                                                                     <td className="px-6 py-4 font-bold text-white">{wName}</td>
-                                                                    <td className="px-6 py-4 font-mono text-slate-300">{prevRob.toFixed(2)}</td>
+                                                                    <td className="px-6 py-4 font-mono text-slate-300">{prevRob.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                                                     <td className="px-6 py-4">
                                                                         <input
                                                                             type="number"
@@ -2026,7 +2026,7 @@ const NewReport: React.FC = () => {
                                                                     </td>
                                                                     <td className="px-6 py-4">
                                                                         <div className="bg-emerald-500/10 px-3 py-2 rounded border border-emerald-500/30 text-emerald-400 font-bold text-right w-32 font-mono">
-                                                                            {itemValues[wMap.rob] || prevRob.toFixed(2)}
+                                                                            {itemValues[wMap.rob] || prevRob.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                                         </div>
                                                                     </td>
                                                                 </tr>
@@ -2054,7 +2054,7 @@ const NewReport: React.FC = () => {
                                                             return (
                                                                 <tr key={lCode} className="hover:bg-ocean-800/30 transition-colors">
                                                                     <td className="px-6 py-4 font-bold text-white">{lName}</td>
-                                                                    <td className="px-6 py-4 font-mono text-slate-300">{prevRob.toFixed(2)}</td>
+                                                                    <td className="px-6 py-4 font-mono text-slate-300">{prevRob.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                                                     <td className="px-6 py-4">
                                                                         <input
                                                                             type="number"
@@ -2077,7 +2077,7 @@ const NewReport: React.FC = () => {
                                                                     </td>
                                                                     <td className="px-6 py-4">
                                                                         <div className="bg-emerald-500/10 px-3 py-2 rounded border border-emerald-500/30 text-emerald-400 font-bold text-right w-32 font-mono">
-                                                                            {itemValues[robKey] || prevRob.toFixed(2)}
+                                                                            {itemValues[robKey] || prevRob.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                                         </div>
                                                                     </td>
                                                                 </tr>

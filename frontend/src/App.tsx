@@ -10,6 +10,7 @@ const History = lazy(() => import('./pages/History'));
 const Monitoring = lazy(() => import('./pages/Monitoring'));
 const FocAnalysis = lazy(() => import('./pages/FocAnalysis'));
 const MEAnalysis = lazy(() => import('./pages/MEAnalysis'));
+const PtoAnalysis = lazy(() => import('./pages/PtoAnalysis'));
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/monitoring" element={<Monitoring />} />
             <Route path="/foc-analysis" element={<FocAnalysis />} />
             <Route path="/me-analysis" element={<MEAnalysis />} />
+            <Route path="/pto-analysis" element={<PtoAnalysis />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

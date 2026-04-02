@@ -232,25 +232,23 @@ const Monitoring = () => {
         const lcv = rawLcv;
 
         // Unit Normalization Heuristic
-        // Target: MJ/Ton (Standard HFO: ~40,500, LNG: ~50,000)
+        // Target: TJ/MT (Standard HFO: ~0.0405, LNG: ~0.0491)
 
         let factor = 1;
 
         if (lcv < 0.1) {
-            // TJ/Ton (e.g. 0.0405) -> 40,500 MJ/Ton
-            factor = 1_000_000;
-        } else if (lcv >= 0.1 && lcv < 100) {
-            // MJ/kg or GJ/Ton (e.g. 40.5) -> 40,500 MJ/Ton
-            factor = 1000;
-        } else if (lcv >= 2000 && lcv < 30000) {
-            // kcal/kg (e.g. 10,000 HFO, 11,900 LNG) -> Convert to MJ/Ton
-            // 1 kcal = 4.184 kJ = 0.004184 MJ
-            // 1 kcal/kg = 4.184 kJ/kg = 4.184 MJ/Ton
-            factor = 4.184;
-        } else {
-            // MJ/Ton directly (e.g. 40500) -> 1
-            // Also handles edge cases like hydrogen (120,000) if passed as 120000
+            // Already in TJ/MT
             factor = 1;
+        } else if (lcv >= 0.1 && lcv < 100) {
+            // Likely MJ/kg or GJ/MT -> Convert to TJ/MT
+            factor = 0.001;
+        } else if (lcv >= 2000 && lcv < 30000) {
+            // kcal/kg -> Convert to TJ/MT
+            // 1 kcal/kg = 0.004184 MJ/kg = 0.004184 GJ/MT = 0.000004184 TJ/MT
+            factor = 0.000004184;
+        } else {
+            // Likely MJ/MT -> Convert to TJ/MT
+            factor = 0.000001;
         }
 
         const r031Key = `R031_${fuel.code}`;
@@ -510,19 +508,19 @@ const Monitoring = () => {
                             <MetricCard
                                 icon={<Gauge className="w-5 h-5 text-cyan-400" />}
                                 label="SPEED"
-                                value={speed.toFixed(2)}
+                                value={speed.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 unit="Knot"
                             />
                             <MetricCard
                                 icon={<Activity className="w-5 h-5 text-blue-400" />}
                                 label="RPM"
-                                value={rpm.toFixed(1)}
+                                value={rpm.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                                 unit=""
                             />
                             <MetricCard
                                 icon={<Navigation className="w-5 h-5 text-purple-400" />}
                                 label="Distance"
-                                value={distance.toFixed(1)}
+                                value={distance.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                                 unit="Mile"
                             />
                             <div className="bg-ocean-900/50 p-3 rounded-lg border border-ocean-700 flex items-center justify-between">
@@ -540,9 +538,9 @@ const Monitoring = () => {
 
                         {/* Consumption Row */}
                         <div className="grid grid-cols-4 gap-3 mb-4">
-                            <SmallMetricBox label="Total Energy" value={totalEnergy.toLocaleString(undefined, { maximumFractionDigits: 0 })} unit="MJ" icon={<Zap size={14} />} />
+                            <SmallMetricBox label="Total Energy" value={totalEnergy.toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })} unit="TJ" icon={<Zap size={14} />} />
                             {fuelMetrics.map((f, idx) => (
-                                <SmallMetricBox key={idx} label={f.name} value={f.val.toFixed(2)} unit="Ton" icon={<Droplet size={14} />} />
+                                <SmallMetricBox key={idx} label={f.name} value={f.val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} unit="Ton" icon={<Droplet size={14} />} />
                             ))}
                         </div>
 

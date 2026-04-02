@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FileText, History, Activity, Settings, Ship, LineChart, Menu, X, Gauge } from 'lucide-react';
+import { LayoutDashboard, FileText, History, Activity, Settings, Ship, LineChart, Menu, X, Gauge, Zap } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 interface LayoutProps {
@@ -58,6 +58,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     <NavItem to="/monitoring" icon={<Activity />} label="Monitoring" onClick={() => setIsSidebarOpen(false)} />
                     <NavItem to="/foc-analysis" icon={<LineChart />} label="FOC Analysis" onClick={() => setIsSidebarOpen(false)} />
                     <NavItem to="/me-analysis" icon={<Gauge />} label="M/E Analysis" onClick={() => setIsSidebarOpen(false)} />
+                    <NavItem to="/pto-analysis" icon={<Zap />} label="PTO Analysis" onClick={() => setIsSidebarOpen(false)} />
                 </nav>
 
                 <div className="p-4 border-t border-ocean-700">

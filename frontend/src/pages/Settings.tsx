@@ -1734,8 +1734,8 @@ const Settings: React.FC = () => {
                                                 <th className="px-6 py-4">Load (%)</th>
                                                 <th className="px-6 py-4">Power (kW)</th>
                                                 <th className="px-6 py-4">RPM</th>
-                                                <th className="px-6 py-4">SFOC (g/kWh)</th>
-                                                <th className="px-6 py-4">GFOC (g/kWh)</th>
+                                                <th className="px-6 py-4">SFOC (kg/TJ)</th>
+                                                <th className="px-6 py-4">GFOC (kg/TJ)</th>
                                                 <th className="px-6 py-4 text-right">Actions</th>
                                             </tr>
                                         </thead>
@@ -1912,8 +1912,8 @@ const Settings: React.FC = () => {
                                             <tr>
                                                 <th className="px-6 py-4">Load (%)</th>
                                                 <th className="px-6 py-4">Power (kW)</th>
-                                                <th className="px-6 py-4">SFOC (g/kWh)</th>
-                                                <th className="px-6 py-4">GFOC (g/kWh)</th>
+                                                <th className="px-6 py-4">SFOC (kg/TJ)</th>
+                                                <th className="px-6 py-4">GFOC (kg/TJ)</th>
                                                 <th className="px-6 py-4 text-right">Actions</th>
                                             </tr>
                                         </thead>

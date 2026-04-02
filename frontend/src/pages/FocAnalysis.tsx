@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Activity, Ship as ShipIcon, Droplet, Zap, AlertCircle, History, Map as MapIcon, Fuel, Calendar, ArrowUp, ArrowDown, Printer } from 'lucide-react';
+import { Activity, Ship as ShipIcon, Droplet, Zap, AlertCircle, History, Map as MapIcon, Fuel, Calendar, ArrowUp, ArrowDown, Printer, Gauge, Navigation } from 'lucide-react';
 import { fetchShips } from '../api/ships';
 import { fetchReports, updateReport } from '../api/reports';
 import { fetchCodes } from '../api/codes';
@@ -52,13 +52,13 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                     <div className="flex justify-between items-center gap-4">
                         <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">Speed</span>
                         <span className="font-mono text-white">
-                            {Number(data.speed).toFixed(1)} <span className="text-slate-500 text-xs">kts</span>
+                            {Number(data.speed).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span className="text-slate-500 text-xs">kts</span>
                             {data.speedSource && <span className="ml-1 text-xs text-slate-500">({data.speedSource})</span>}
                         </span>
                     </div>
                     <div className="flex justify-between items-center gap-4">
                         <span className="text-slate-400 text-xs uppercase tracking-wider font-medium">FOC</span>
-                        <span className="font-mono text-white">{Number(data.foc).toFixed(2)} <span className="text-slate-500 text-xs">TJ</span></span>
+                        <span className="font-mono text-white">{Number(data.foc).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-slate-500 text-xs">TJ</span></span>
                     </div>
                 </div>
             </div>
@@ -79,7 +79,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                                 <span className="text-slate-400">Range</span>
                             </div>
                             <span className="font-mono text-slate-200">
-                                {entry.value[0].toFixed(2)} - {entry.value[1].toFixed(2)}
+                                {entry.value[0].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} - {entry.value[1].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </span>
                         </div>
                     );
@@ -90,7 +90,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></span>
                             <span className="text-slate-400">{entry.name === 'foc' ? 'Standard FOC' : entry.name}</span>
                         </div>
-                        <span className="font-mono text-slate-200">{Number(entry.value).toFixed(2)}</span>
+                        <span className="font-mono text-slate-200">{Number(entry.value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                 );
             })}
@@ -105,8 +105,8 @@ const FocAnalysis = () => {
         contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#f8fafc' }}
         itemStyle={{ color: '#f8fafc' }}
         formatter={(value: unknown, name: unknown) => {
-            if (name === 'focRange') return [`${(value as [number, number])[0].toFixed(2)} - ${(value as [number, number])[1].toFixed(2)}`, 'Tolerance Range'];
-            return [Number(value).toFixed(2), name === 'foc' ? 'Daily FOC' : (name as string)];
+            if (name === 'focRange') return [`${(value as [number, number])[0].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} - ${(value as [number, number])[1].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'Tolerance Range'];
+            return [Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), name === 'foc' ? 'Daily FOC' : (name as string)];
         }}
         labelFormatter={(label) => `Speed: ${label} kts`}
     />
@@ -297,10 +297,10 @@ const FocAnalysis = () => {
             const lcv = rawLcv;
 
             let factor = 1;
-            if (lcv < 0.1) factor = 1_000_000;
-            else if (lcv >= 0.1 && lcv < 100) factor = 1000;
-            else if (lcv >= 2000 && lcv < 30000) factor = 4.184;
-            else factor = 1;
+            if (lcv < 0.1) factor = 1; // Already in TJ/MT
+            else if (lcv >= 0.1 && lcv < 100) factor = 0.001; // MJ/kg or GJ/MT -> TJ/MT
+            else if (lcv >= 2000 && lcv < 30000) factor = 0.000004184; // kcal/kg -> TJ/MT
+            else factor = 0.000001; // MJ/MT -> TJ/MT
 
             const r031Key = `R031_${fuel.code}`;
             let val = parseFloat(selectedReport.items[r031Key] as string) || 0;
@@ -407,9 +407,10 @@ const FocAnalysis = () => {
                 : (fuel?.lcv || fDef?.lcv || 0.0405);
 
             let factor = 1;
-            if (rawLcv < 0.1) factor = 1_000_000;
-            else if (rawLcv >= 0.1 && rawLcv < 100) factor = 1000;
-            else if (rawLcv >= 2000 && rawLcv < 30000) factor = 4.184;
+            if (rawLcv < 0.1) factor = 1; // Already TJ/MT
+            else if (rawLcv >= 0.1 && rawLcv < 100) factor = 0.001; // MJ/kg or GJ/MT -> TJ/MT
+            else if (rawLcv >= 2000 && rawLcv < 30000) factor = 0.000004184; // kcal/kg -> TJ/MT
+            else factor = 0.000001; // MJ/MT -> TJ/MT
 
             const energy = val * rawLcv * factor;
 
@@ -434,7 +435,7 @@ const FocAnalysis = () => {
     }, [selectedReport, codes, selectedShip, ships]);
 
     const totalEnergy = fuelMetrics.reduce((sum, item) => sum + item.energy, 0);
-    const totalEnergyTJ = totalEnergy / 1_000_000;
+    const totalEnergyTJ = totalEnergy;
 
     // Helper to resolve Speed (Prioritizing Spot > Average > Calculated)
     const resolveSpeed = useCallback((r: Report) => {
@@ -460,6 +461,56 @@ const FocAnalysis = () => {
         if (!selectedReport) return 0;
         return resolveSpeed(selectedReport).value;
     }, [selectedReport, resolveSpeed]);
+
+    const currentRpm = useMemo(() => {
+        if (!selectedReport) return 0;
+        const r = selectedReport;
+        
+        // RPM Calculation Logic (consistent with Monitoring.tsx)
+        const configShip = selectedShip?.configSourceShipId
+            ? ships.find(s => s.code === selectedShip.configSourceShipId) || selectedShip
+            : selectedShip;
+
+        const propPitch = parseFloat(configShip?.customValues?.['Propeller Pitch'] || '0');
+        const todayEngMile = parseFloat(r.items['R073'] as string) || 0;
+        
+        const targetShipForEq = selectedShip?.equipment?.length ? selectedShip : configShip;
+        const meEq = targetShipForEq?.equipment?.find(e => e.code === 'E01' && e.installed);
+
+        let avgMeRh = 0;
+        if (meEq && meEq.count > 0) {
+            let totalRh = 0;
+            let activeCount = 0;
+            for (let i = 1; i <= meEq.count; i++) {
+                const rhVal = parseFloat(r.items[`RH_R067_E01_${i}`] as string) || 0;
+                if (rhVal > 0) {
+                    totalRh += rhVal;
+                    activeCount++;
+                }
+            }
+            if (activeCount > 0) avgMeRh = totalRh / activeCount;
+        }
+
+        if (propPitch > 0 && avgMeRh > 0) {
+            return (todayEngMile / propPitch) / avgMeRh / 60;
+        }
+        
+        // Fallback to R074 if available
+        return parseFloat(r.items['R074'] as string) || 
+               parseFloat(r.items['RH_R074_E01_1'] as string) || 0;
+    }, [selectedReport, selectedShip, ships]);
+
+    const currentMePower = useMemo(() => {
+        if (!selectedReport) return 0;
+        const r = selectedReport;
+        
+        // Sum HP from all M/E units
+        const hp1 = parseFloat(r.items['RH_R078_E01_1'] as string) || 0;
+        const hp2 = parseFloat(r.items['RH_R078_E01_2'] as string) || 0;
+        
+        // Convert total HP to kW (1 HP = 0.7457 kW)
+        return (hp1 + hp2) * 0.7457;
+    }, [selectedReport]);
 
     const availableProfiles = useMemo(() => {
         if (!selectedShip?.focManagement) return [];
@@ -528,9 +579,10 @@ const FocAnalysis = () => {
                 : (fuel.lcv || fDef?.lcv || 0.0405);
 
             let factor = 1;
-            if (rawLcv < 0.1) factor = 1_000_000;
-            else if (rawLcv >= 0.1 && rawLcv < 100) factor = 1000;
-            else if (rawLcv >= 2000 && rawLcv < 30000) factor = 4.184;
+            if (rawLcv < 0.1) factor = 1; // Already in TJ/MT
+            else if (rawLcv >= 0.1 && rawLcv < 100) factor = 0.001; // MJ/kg or GJ/MT -> TJ/MT
+            else if (rawLcv >= 2000 && rawLcv < 30000) factor = 0.000004184; // kcal/kg -> TJ/MT
+            else factor = 0.000001; // MJ/MT -> TJ/MT
 
             const r031Key = `R031_${fuel.code}`;
             let val = parseFloat(r.items[r031Key] as string) || 0;
@@ -612,27 +664,20 @@ const FocAnalysis = () => {
         });
 
         statsReports.forEach(r => {
-            // Use resolveSpeed here as well
             const speed = resolveSpeed(r).value;
             if (speed <= 0) return;
 
             const opTimeStr = r.items['R200'] as string || r.items['R011'] as string;
             const opTime = parseFloat(opTimeStr) || 24;
 
-            // Actual MJ
-            const normMJ = getNormalizedEnergy(r);
-            const actualMJ = normMJ * (opTime / 24);
-
-            // Expected TJ
+            const actualTJ = getNormalizedEnergy(r) * (opTime / 24);
             const expectedDailyTJ = calculateExpectedCurveFoc(speed);
             const expectedRealTJ = expectedDailyTJ * (opTime / 24);
 
-            const reportActualTJ = actualMJ / 1_000_000;
-            const reportExpectedTJ = expectedRealTJ;
-            const diff = reportActualTJ - reportExpectedTJ;
+            const diff = actualTJ - expectedRealTJ;
 
-            totalActualTJ += reportActualTJ;
-            totalExpectedTJ += reportExpectedTJ;
+            totalActualTJ += actualTJ;
+            totalExpectedTJ += expectedRealTJ;
 
             if (diff > 0) {
                 totalExcessTJ += diff;
@@ -648,19 +693,19 @@ const FocAnalysis = () => {
         }
 
         const isSavings = diffTJ < 0;
-        const absDiffGJ = Math.abs(diffTJ) * 1000;
+        const absDiffTJ = Math.abs(diffTJ);
 
-        const lngLCV = 50.0;
-        const lsmgoLCV = 42.7;
+        const lngLCV = 0.050;
+        const lsmgoLCV = 0.0427;
 
-        const lngEq = (lngLCV > 0) ? absDiffGJ / lngLCV : 0;
-        const lsmgoEq = (lsmgoLCV > 0) ? absDiffGJ / lsmgoLCV : 0;
+        const lngEq = (lngLCV > 0) ? absDiffTJ / lngLCV : 0;
+        const lsmgoEq = (lsmgoLCV > 0) ? absDiffTJ / lsmgoLCV : 0;
 
         const lngCost = lngEq * lngPrice;
         const lsmgoCost = lsmgoEq * lsmgoPrice;
 
         return {
-            diffTJ, isSavings, absDiffGJ, lngEq, lsmgoEq, lngCost, lsmgoCost
+            diffTJ, isSavings, absDiffTJ, lngEq, lsmgoEq, lngCost, lsmgoCost
         };
 
     }, [displayedReports, chartData, getNormalizedEnergy, lngPrice, lsmgoPrice, analysisMode, weatherFilter, speedFilter, resolveSpeed, calculateExpectedCurveFoc]);
@@ -702,7 +747,7 @@ const FocAnalysis = () => {
                 return {
                     speed: resolved.value,
                     speedSource: resolved.source,
-                    foc: getNormalizedEnergy(r) / 1_000_000, // Convert MJ to TJ
+                    foc: getNormalizedEnergy(r), // Already TJ
                     date: dateStr,
                     name: r.items['R004'] as string || 'Noon Report',
                     eventType: evDef?.name || r.evCode,
@@ -1125,63 +1170,93 @@ const FocAnalysis = () => {
                     {/* Breakdown Side */}
                     <div className="lg:col-span-8">
                         {selectedReport && (
-                            <div className="grid grid-cols-4 gap-6 mb-6">
-                                <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-6 relative overflow-hidden group">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-5 relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                                        <Zap size={56} className="text-indigo-400" />
+                                        <Zap size={48} className="text-indigo-400" />
                                     </div>
-                                    <h3 className="text-indigo-300 font-bold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                                    <h3 className="text-indigo-300 font-bold mb-2 flex items-center gap-2 text-[10px] uppercase tracking-wider">
                                         Energy
                                     </h3>
-                                    <div className="text-3xl font-bold text-white tracking-tight">
-                                        {(totalEnergy / 1000).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span className="text-lg text-slate-400 font-normal">GJ</span>
+                                    <div className="text-2xl font-bold text-white tracking-tight">
+                                        {totalEnergy.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span className="text-sm text-slate-400 font-normal">TJ</span>
                                     </div>
-                                    <div className="text-xs text-indigo-400/70 mt-1 truncate">
+                                    <div className="text-[10px] text-indigo-400/70 mt-1 truncate">
                                         {fuelMetrics.length} sources
                                     </div>
                                 </div>
 
-                                <div className="bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-6 relative overflow-hidden group">
+                                <div className="bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-5 relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                                        <Activity size={56} className="text-emerald-400" />
+                                        <Navigation size={48} className="text-emerald-400 transform rotate-45" />
                                     </div>
-                                    <h3 className="text-emerald-300 font-bold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                                    <h3 className="text-emerald-300 font-bold mb-2 flex items-center gap-2 text-[10px] uppercase tracking-wider">
                                         Speed
                                     </h3>
-                                    <div className="text-3xl font-bold text-white tracking-tight">
-                                        {currentSpeed.toFixed(1)} <span className="text-lg text-slate-400 font-normal">kts</span>
+                                    <div className="text-2xl font-bold text-white tracking-tight">
+                                        {currentSpeed.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span className="text-sm text-slate-400 font-normal">kts</span>
                                     </div>
-                                    <div className="text-xs text-emerald-400/70 mt-1 truncate">
-                                        {selectedReport.items['R004'] as string || 'Noon'}
+                                    <div className="text-[10px] text-emerald-400/70 mt-1 truncate">
+                                        {selectedReport.items['R004'] as string || 'Daily'}
                                     </div>
                                 </div>
 
-                                <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-6 relative overflow-hidden group">
+                                <div className="bg-cyan-900/20 border border-cyan-500/30 rounded-xl p-5 relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                                        <History size={56} className="text-blue-400" />
+                                        <Gauge size={48} className="text-cyan-400" />
                                     </div>
-                                    <h3 className="text-blue-300 font-bold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                                    <h3 className="text-cyan-300 font-bold mb-2 flex items-center gap-2 text-[10px] uppercase tracking-wider">
+                                        RPM
+                                    </h3>
+                                    <div className="text-2xl font-bold text-white tracking-tight">
+                                        {currentRpm.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span className="text-sm text-slate-400 font-normal">rpm</span>
+                                    </div>
+                                    <div className="text-[10px] text-cyan-400/70 mt-1 truncate">
+                                        M/E Rotation
+                                    </div>
+                                </div>
+
+                                <div className="bg-rose-900/20 border border-rose-500/30 rounded-xl p-5 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <Activity size={48} className="text-rose-400" />
+                                    </div>
+                                    <h3 className="text-rose-300 font-bold mb-2 flex items-center gap-2 text-[10px] uppercase tracking-wider">
+                                        ME Power
+                                    </h3>
+                                    <div className="text-2xl font-bold text-white tracking-tight">
+                                        {currentMePower.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} <span className="text-sm text-slate-400 font-normal">kW</span>
+                                    </div>
+                                    <div className="text-[10px] text-rose-400/70 mt-1 truncate">
+                                        Total Output
+                                    </div>
+                                </div>
+
+                                <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-5 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <History size={48} className="text-blue-400" />
+                                    </div>
+                                    <h3 className="text-blue-300 font-bold mb-2 flex items-center gap-2 text-[10px] uppercase tracking-wider">
                                         Time
                                     </h3>
-                                    <div className="text-3xl font-bold text-white tracking-tight">
-                                        {parseFloat(selectedReport.items['R200'] as string || selectedReport.items['R011'] as string || '24').toFixed(2)} <span className="text-lg text-slate-400 font-normal">h</span>
+                                    <div className="text-2xl font-bold text-white tracking-tight">
+                                        {parseFloat(selectedReport.items['R200'] as string || selectedReport.items['R011'] as string || '24').toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span className="text-sm text-slate-400 font-normal">h</span>
                                     </div>
-                                    <div className="text-xs text-blue-400/70 mt-1 truncate">
+                                    <div className="text-[10px] text-blue-400/70 mt-1 truncate">
                                         Normalized
                                     </div>
                                 </div>
 
-                                <div className="bg-amber-900/20 border border-amber-500/30 rounded-xl p-6 relative overflow-hidden group">
+                                <div className="bg-amber-900/20 border border-amber-500/30 rounded-xl p-5 relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                                        <AlertCircle size={56} className="text-amber-400" />
+                                        <AlertCircle size={48} className="text-amber-400" />
                                     </div>
-                                    <h3 className="text-amber-300 font-bold mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                                    <h3 className="text-amber-300 font-bold mb-2 flex items-center gap-2 text-[10px] uppercase tracking-wider">
                                         Weather
                                     </h3>
-                                    <div className="text-3xl font-bold text-white tracking-tight">
-                                        {selectedReport.items['R137'] as string || '-'} <span className="text-lg text-slate-400 font-normal">B/F</span>
+                                    <div className="text-2xl font-bold text-white tracking-tight">
+                                        {selectedReport.items['R137'] as string || '-'} <span className="text-sm text-slate-400 font-normal">B/F</span>
                                     </div>
-                                    <div className="text-xs text-amber-400/70 mt-1 truncate">
+                                    <div className="text-[10px] text-amber-400/70 mt-1 truncate">
                                         Sea State
                                     </div>
                                 </div>
@@ -1215,21 +1290,21 @@ const FocAnalysis = () => {
                             }
                         }
 
-                        const actualGJ = totalEnergy / 1000;
-                        const expectedGJ = expectedTJ * 1000;
-                        const diffGJ = actualGJ - expectedGJ;
-                        const isSavings = diffGJ < 0;
-                        const absDiff = Math.abs(diffGJ);
+                        const actualTJ_report = totalEnergy;
+                        const expectedTJ_report = expectedTJ;
+                        const diffTJ_report = actualTJ_report - expectedTJ_report;
+                        const isSavings = diffTJ_report < 0;
+                        const absDiff = Math.abs(diffTJ_report);
 
                         // Actual diff based on Op Time
                         const opTimeVal = parseFloat(selectedReport.items['R200'] as string || selectedReport.items['R011'] as string || '24');
-                        const diffActual = diffGJ * (opTimeVal / 24);
+                        const diffActual = diffTJ_report * (opTimeVal / 24);
                         const absDiffActual = Math.abs(diffActual);
                         const showActual = Math.abs(opTimeVal - 24) > 0.1;
 
                         // Fuel Equivalents (LCV Based)
-                        const lngLCV = 50.0; // GJ/MT default
-                        const lsmgoLCV = 42.7; // GJ/MT default
+                        const lngLCV = 0.050; // TJ/MT default
+                        const lsmgoLCV = 0.0427; // TJ/MT default
 
                         const lngEq = (lngLCV > 0 && !isNaN(absDiffActual)) ? absDiffActual / lngLCV : 0;
                         const lsmgoEq = (lsmgoLCV > 0 && !isNaN(absDiffActual)) ? absDiffActual / lsmgoLCV : 0;
@@ -1241,7 +1316,7 @@ const FocAnalysis = () => {
                         const lsmgoCost = lsmgoEq * lsmgoPrice;
 
                         // Helper for safe display
-                        const safeVal = (v: number) => isNaN(v) || !isFinite(v) ? '0.00' : v.toFixed(2);
+                        const safeVal = (v: number) => isNaN(v) || !isFinite(v) ? '0.00' : v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                         return (
                             <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-6 lg:col-span-12 mt-6">
@@ -1274,7 +1349,7 @@ const FocAnalysis = () => {
                                             isSavings ? "text-emerald-400" : "text-red-400"
                                         )}>
                                             {isSavings ? <ArrowDown size={24} /> : <ArrowUp size={24} />}
-                                            {safeVal(absDiff)} <span className="text-lg text-slate-400 font-normal">GJ</span>
+                                            {safeVal(absDiff)} <span className="text-lg text-slate-400 font-normal">TJ</span>
                                         </div>
 
                                         {showActual && (
@@ -1284,7 +1359,7 @@ const FocAnalysis = () => {
                                         )}
                                     </div>
                                     <div className="text-xs text-purple-400/70 mt-2">
-                                        {isSavings ? 'Savings' : 'Excess'} @ {currentSpeed.toFixed(1)} kts
+                                        {isSavings ? 'Savings' : 'Excess'} @ {currentSpeed.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kts
                                     </div>
                                 </div>
 
@@ -1405,7 +1480,7 @@ const FocAnalysis = () => {
                                         voyageStats!.isSavings ? "text-emerald-400" : "text-red-400"
                                     )}>
                                         {voyageStats!.isSavings ? <ArrowDown size={24} /> : <ArrowUp size={24} />}
-                                        {voyageStats!.absDiffGJ.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-lg text-slate-400 font-normal">GJ</span>
+                                        {voyageStats!.absDiffTJ.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-lg text-slate-400 font-normal">TJ</span>
                                     </div>
                                 </div>
                                 <div className="text-xs text-purple-400/70 mt-2">
@@ -1506,7 +1581,7 @@ const renderMetricsContent = (hasData: boolean, fuelMetrics: any[], equipmentMet
                         <div className="text-right">
                             <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Total Energy</div>
                             <div className="text-xl font-bold text-emerald-400 leading-none">
-                                {(totalEnergy / 1000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-sm text-emerald-500/70 font-medium">GJ</span>
+                                {totalEnergy.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-sm text-emerald-500/70 font-medium">TJ</span>
                             </div>
                         </div>
                     </div>
@@ -1529,7 +1604,7 @@ const renderMetricsContent = (hasData: boolean, fuelMetrics: any[], equipmentMet
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#f8fafc' }}
                                     itemStyle={{ color: '#f8fafc' }}
-                                    formatter={(val: any) => [Number(val).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' MT (24h)', 'Consumption']}
+                                    formatter={(val: any) => [Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' MT (24h)', 'Consumption']}
                                 />
                                 <Legend />
                             </PieChart>
@@ -1545,8 +1620,8 @@ const renderMetricsContent = (hasData: boolean, fuelMetrics: any[], equipmentMet
                                 <span className="font-medium text-slate-200">{f.name}</span>
                             </div>
                             <div className="text-right">
-                                <div className="font-bold text-white">{f.val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-slate-500">MT (24h)</span></div>
-                                <div className="text-xs text-emerald-400">{(f.energy / 1000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} GJ</div>
+                                <div className="font-bold text-white">{f.val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-slate-500">MT (24h)</span></div>
+                                <div className="text-xs text-emerald-400">{f.energy.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} TJ</div>
                             </div>
                         </div>
                     ))}
@@ -1573,15 +1648,15 @@ const renderMetricsContent = (hasData: boolean, fuelMetrics: any[], equipmentMet
                                             {isExcluded && <span className="text-[10px] text-red-400 border border-red-500/30 px-1 rounded bg-red-500/10">EXCL</span>}
                                         </span>
                                         <div className="text-right">
-                                            <div className="font-bold text-white">{eq.val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-slate-500">MT (24h)</span></div>
-                                            <div className="text-xs text-emerald-400">{(eq.energy / 1000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} GJ</div>
+                                            <div className="font-bold text-white">{eq.val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-slate-500">MT (24h)</span></div>
+                                            <div className="text-xs text-emerald-400">{eq.energy.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} TJ</div>
                                         </div>
                                     </div>
                                     <div className="space-y-1">
                                         {Array.from(eq.fuels.values()).map((f: any) => (
                                             <div key={f.name} className="flex justify-between text-xs text-slate-400">
                                                 <span>{f.name}</span>
-                                                <span>{f.val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MT</span>
+                                                <span>{f.val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MT</span>
                                             </div>
                                         ))}
                                     </div>

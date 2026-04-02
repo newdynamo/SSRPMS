@@ -35,8 +35,8 @@ interface MEDataPoint {
     devStbd?: number;
     maRpmStbd?: number;
     maHpStbd?: number;
-    mjPerHpPort?: number;
-    mjPerHpStbd?: number;
+    tjPerHpPort?: number;
+    tjPerHpStbd?: number;
 }
 
 
@@ -141,13 +141,13 @@ const MEAnalysis = () => {
     };
 
     // Process Data (Memoized)
-    const { chartData, portAnalysis, stbdAnalysis, portPrediction, stbdPrediction, baselinePort, baselineStbd, currentMjPort, currentMjStbd, ladenCount, ballastCount } = useMemo(() => {
+    const { chartData, portAnalysis, stbdAnalysis, portPrediction, stbdPrediction, baselinePort, baselineStbd, currentTjPort, currentTjStbd, ladenCount, ballastCount } = useMemo(() => {
         console.log("MEAnalysis useMemo start", reports.length);
         if (!reports.length) return {
             chartData: [], portAnalysis: null, stbdAnalysis: null,
             portPrediction: null, stbdPrediction: null, baselinePort: 0, baselineStbd: 0,
             currentDevPort: 0, currentDevStbd: 0,
-            currentMjPort: 0, currentMjStbd: 0,
+            currentTjPort: 0, currentTjStbd: 0,
             ladenCount: 0, ballastCount: 0
         };
 
@@ -236,8 +236,8 @@ const MEAnalysis = () => {
             const activeShip = ships.find(s => s.code === selectedShipCode);
             const configShip = activeShip?.configSourceShipId ? ships.find(s => s.code === activeShip.configSourceShipId) : activeShip;
 
-            let mjPerHpPort = 0;
-            let mjPerHpStbd = 0;
+            let tjPerHpPort = 0;
+            let tjPerHpStbd = 0;
 
             if (configShip && configShip.fuels && codes) {
                 let energyPort = 0;
@@ -248,9 +248,10 @@ const MEAnalysis = () => {
                     const lcv = (activeShip?.fuels?.find(f => f.code === fuel.code)?.lcv) || fuel.lcv || fDef?.lcv || 0.0405;
 
                     let factor = 1;
-                    if (lcv < 0.1) factor = 1_000_000;
-                    else if (lcv >= 0.1 && lcv < 100) factor = 1000;
-                    else if (lcv >= 2000 && lcv < 30000) factor = 4.184;
+                    if (lcv < 0.1) factor = 1; // Already TJ/MT
+                    else if (lcv >= 0.1 && lcv < 100) factor = 0.001; // MJ/kg or GJ/MT -> TJ/MT
+                    else if (lcv >= 2000 && lcv < 30000) factor = 0.000004184; // kcal/kg -> TJ/MT
+                    else factor = 0.000001; // MJ/MT -> TJ/MT
 
                     const consPort = parseVal(r.items[`CONS_E01_1_${fuel.code}`]);
                     const consStbd = parseVal(r.items[`CONS_E01_2_${fuel.code}`]);
@@ -259,8 +260,8 @@ const MEAnalysis = () => {
                     energyStbd += consStbd * lcv * factor;
                 });
 
-                if (hpPort > 0 && r067_1 > 0) mjPerHpPort = energyPort / (hpPort * r067_1);
-                if (hpStbd > 0 && r067_2 > 0) mjPerHpStbd = energyStbd / (hpStbd * r067_2);
+                if (hpPort > 0 && r067_1 > 0) tjPerHpPort = energyPort / (hpPort * r067_1);
+                if (hpStbd > 0 && r067_2 > 0) tjPerHpStbd = energyStbd / (hpStbd * r067_2);
             }
 
             // Only add if we have some valid data
@@ -275,8 +276,8 @@ const MEAnalysis = () => {
                 totalHp: hpPort + hpStbd,
                 isLaden,
                 voyage,
-                mjPerHpPort,
-                mjPerHpStbd
+                tjPerHpPort,
+                tjPerHpStbd
             });
         });
 
@@ -382,8 +383,8 @@ const MEAnalysis = () => {
         const currentDevPortVal = lastPoints.length ? lastPoints.reduce((s, p) => s + p.devPort, 0) / lastPoints.length : 0;
         const currentDevStbdVal = lastPoints.length ? lastPoints.reduce((s, p) => s + p.devStbd, 0) / lastPoints.length : 0;
 
-        const currentMjPortVal = lastPoints.length ? lastPoints.reduce((s, p) => s + (p.mjPerHpPort || 0), 0) / lastPoints.length : 0;
-        const currentMjStbdVal = lastPoints.length ? lastPoints.reduce((s, p) => s + (p.mjPerHpStbd || 0), 0) / lastPoints.length : 0;
+        const currentTjPortVal = lastPoints.length ? lastPoints.reduce((s, p) => s + (p.tjPerHpPort || 0), 0) / lastPoints.length : 0;
+        const currentTjStbdVal = lastPoints.length ? lastPoints.reduce((s, p) => s + (p.tjPerHpStbd || 0), 0) / lastPoints.length : 0;
 
         // Keep baseline for legacy support if needed (or just calculate dummy)
         const bPort = 0;
@@ -399,8 +400,8 @@ const MEAnalysis = () => {
             let count = 0;
 
             data.forEach(d => {
-                const rpm = d[rpmKey];
-                const actualHp = d[hpKey];
+                const rpm = d[rpmKey] as number;
+                const actualHp = d[hpKey] as number;
 
                 // Only analyze if running (e.g. > 10 RPM)
                 if (rpm > 10 && actualHp > 100) {
@@ -431,8 +432,8 @@ const MEAnalysis = () => {
             stbdPrediction: calcDate(regStbd, alpha),
             currentDevPort: currentDevPortVal,
             currentDevStbd: currentDevStbdVal,
-            currentMjPort: currentMjPortVal,
-            currentMjStbd: currentMjStbdVal,
+            currentTjPort: currentTjPortVal,
+            currentTjStbd: currentTjStbdVal,
             baselinePort: bPort,
             baselineStbd: bStbd,
             ladenCount,
@@ -538,7 +539,7 @@ const MEAnalysis = () => {
                                     Power Threshold (α)
                                 </label>
                                 <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold border border-blue-500/30">
-                                    {alpha.toFixed(1)}%
+                                    {alpha.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
                                 </span>
                             </div>
                             <div className="flex items-center gap-2">
@@ -592,18 +593,18 @@ const MEAnalysis = () => {
                         <PredictionCard
                             title="PORT Engine Specific Energy"
                             date={portPrediction}
-                            currentValue={currentMjPort || 0}
-                            limitValue={0} // MJ/HP limit not defined yet, showing absolute
-                            unit="MJ/HP-hr"
+                            currentValue={currentTjPort || 0}
+                            limitValue={0} // TJ/HP limit not defined yet, showing absolute
+                            unit="TJ/HP-hr"
                             color="text-red-400"
                             borderColor="border-red-500/30"
                         />
                         <PredictionCard
                             title="STBD Engine Specific Energy"
                             date={stbdPrediction}
-                            currentValue={currentMjStbd || 0}
+                            currentValue={currentTjStbd || 0}
                             limitValue={0}
-                            unit="MJ/HP-hr"
+                            unit="TJ/HP-hr"
                             color="text-orange-400"
                             borderColor="border-orange-500/30"
                         />
@@ -752,8 +753,8 @@ const PredictionCard = ({ title, date, currentValue, limitValue, unit, color, bo
             </div>
 
             <div className="flex justify-between items-center text-xs border-t border-white/5 pt-2 mt-2">
-                <span className="text-slate-500">Current: <span className="text-white font-mono">{currentValue.toFixed(4)} <span className="text-[10px] opacity-70">{unit}</span></span></span>
-                {limitValue > 0 && <span className="text-slate-500">Limit: <span className={`${color} font-mono font-bold`}>{limitValue.toFixed(2)}</span></span>}
+                <span className="text-slate-500">Current: <span className="text-white font-mono">{currentValue.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} <span className="text-[10px] opacity-70">{unit}</span></span></span>
+                {limitValue > 0 && <span className="text-slate-500">Limit: <span className={`${color} font-mono font-bold`}>{limitValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></span>}
             </div>
 
             {/* Warning if close/past */}
@@ -838,7 +839,7 @@ const CustomTooltipEngine = ({ active, payload, label }: any) => {
             {payload.map((p: any) => (
                 <div key={p.name} className="flex items-center gap-2 mb-1" style={{ color: p.color }}>
                     <span className="font-medium">{p.name}:</span>
-                    <span className="font-mono">{Number(p.value).toFixed(1)}</span>
+                    <span className="font-mono">{Number(p.value).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
                 </div>
             ))}
         </div>
@@ -853,11 +854,11 @@ const CustomTooltipSpeed = ({ active, payload, label }: any) => {
             <div className="space-y-1">
                 <div className="text-purple-400 flex justify-between gap-4">
                     <span>Speed:</span>
-                    <span className="font-mono">{Number(payload[0]?.value).toFixed(1)} kts</span>
+                    <span className="font-mono">{Number(payload[0]?.value).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kts</span>
                 </div>
                 <div className="text-slate-300 flex justify-between gap-4">
                     <span>Total HP:</span>
-                    <span className="font-mono">{Number(payload[1]?.value).toFixed(1)} HP</span>
+                    <span className="font-mono">{Number(payload[1]?.value).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} HP</span>
                 </div>
             </div>
         </div>
@@ -875,8 +876,8 @@ const PerformanceCurveChart = ({ title, referenceData, actualData, color, analys
                 <div className="absolute top-6 right-6 z-10 bg-slate-900/90 border border-slate-700 p-3 rounded-xl shadow-lg backdrop-blur-sm">
                     <div className="text-xs text-slate-400 mb-1 uppercase font-bold tracking-wider">Perf. Deviation</div>
                     <div className={cn("text-xl font-mono font-bold flex items-center gap-2", analysis.avgDiff > 0 ? "text-red-400" : "text-emerald-400")}>
-                        {analysis.avgDiff > 0 ? '+' : ''}{analysis.avgDiff.toFixed(1)} <span className="text-xs text-slate-500">KW</span>
-                        <span className="text-sm ml-1 opacity-80">({analysis.avgDiff > 0 ? '+' : ''}{analysis.avgDiffPercent.toFixed(1)}%)</span>
+                        {analysis.avgDiff > 0 ? '+' : ''}{analysis.avgDiff.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span className="text-xs text-slate-500">KW</span>
+                        <span className="text-sm ml-1 opacity-80">({analysis.avgDiff > 0 ? '+' : ''}{analysis.avgDiffPercent.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%)</span>
                     </div>
                 </div>
             )}
@@ -913,8 +914,8 @@ const PerformanceCurveChart = ({ title, referenceData, actualData, color, analys
                                     return (
                                         <div className="bg-slate-900 border border-slate-700 p-2 rounded shadow-xl text-xs">
                                             <div className="font-bold text-white mb-1">{isRef ? 'Reference Curve' : data.date}</div>
-                                            <div>RPM: {Number(data.rpm).toFixed(1)}</div>
-                                            <div>Power: {Number(data.power).toFixed(1)} KW</div>
+                                            <div>RPM: {Number(data.rpm).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</div>
+                                            <div>Power: {Number(data.power).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} KW</div>
                                         </div>
                                     )
                                 }
@@ -999,11 +1000,11 @@ const RpmSpeedCurveChart = ({ ship, actualData, mode }: { ship?: Ship, actualDat
                                             </div>
                                             <div className="flex justify-between gap-4 mb-1">
                                                 <span className="text-slate-400">RPM:</span>
-                                                <span className="font-mono text-white">{Number(data.rpm).toFixed(1)}</span>
+                                                <span className="font-mono text-white">{Number(data.rpm).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
                                             </div>
                                             <div className="flex justify-between gap-4">
                                                 <span className="text-slate-400">Speed:</span>
-                                                <span className="font-mono text-white">{Number(data.speed).toFixed(1)} kts</span>
+                                                <span className="font-mono text-white">{Number(data.speed).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kts</span>
                                             </div>
                                         </div>
                                     )

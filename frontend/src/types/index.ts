@@ -95,7 +95,7 @@ export interface Ship {
     dwt: number;
     // Configuration
     equipment?: { code: string; installed: boolean; count: number; validFuels?: string[] }[];
-    fuels?: { code: string; initialRob?: number; lcv?: number /* Unit: TJ/Ton */ }[]; // Array of FCode codes
+    fuels?: { code: string; initialRob?: number; lcv?: number /* Unit: TJ/MT */ }[]; // Array of FCode codes
     lubeOils?: { code: string; initialRob?: number }[]; // Array of LCode codes
     waters?: { code: string; initialRob?: number }[]; // Array of WCode codes
     tankCounts?: {

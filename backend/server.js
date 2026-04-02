@@ -5,8 +5,23 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 8500;
 
+const multer = require('multer');
+const csv = require('csv-parser');
+const upload = multer({ dest: 'uploads/' });
+
 app.use(cors());
 app.use(express.json());
+
+// --- PTO Analysis High-Speed Engine Configuration ---
+const PTO_DATA_DIR = path.join(__dirname, 'data', 'pto_summaries');
+if (!fs.existsSync(PTO_DATA_DIR)) fs.mkdirSync(PTO_DATA_DIR, { recursive: true });
+
+const getPtoFilePath = (reportId) => {
+    if (!reportId || reportId === 'null' || reportId === 'undefined') {
+        return path.join(__dirname, 'data', 'pto_summary.json');
+    }
+    return path.join(PTO_DATA_DIR, `pto_${reportId}.json`);
+};
 
 // Helper to read JSON
 const readJson = (fileName) => {
@@ -21,7 +36,138 @@ const readJson = (fileName) => {
     }
 };
 
-// --- APIs ---
+// PTO Data API: Get
+app.get('/api/pto/data', async (req, res) => {
+    const { reportId } = req.query;
+    const filePath = getPtoFilePath(reportId);
+    
+    try {
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ error: 'No PTO data found' });
+        }
+        const data = await fs.promises.readFile(filePath, 'utf8');
+        res.json(JSON.parse(data));
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to read PTO data' });
+    }
+});
+
+// PTO Data API: Upload & High-Speed Aggregation
+app.post('/api/pto/upload', upload.single('file'), (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+    const results = [];
+    let rowCount = 0;
+    const SAMPLING_INTERVAL = 30;
+    let lastProcessedIndex = -1;
+    let lastRowObj = null;
+
+    // Persisted column keys for performance
+    let tsKey = null;
+    let ptoKey = null;
+    let esdKey = null;
+    let portRpmKey = null, portKwKey = null, stbdRpmKey = null, stbdKwKey = null;
+
+    const cleanHead = (s) => s.toString().toLowerCase().replace(/[^a-z0-9]/g, '');
+    const parseSignal = (val) => {
+        if (val === undefined || val === null || val === '') return 0;
+        const n = parseFloat(val);
+        if (!isNaN(n)) return n >= 0.5 ? 1 : 0;
+        const v = val.toString().trim().toLowerCase();
+        return ['true', 'on', 'active', 'run', 'yes', '1'].includes(v) ? 1 : 0;
+    };
+
+    fs.createReadStream(req.file.path)
+        .pipe(csv())
+        .on('data', (row) => {
+            rowCount++;
+            
+            // Identification phase (Row 1)
+            if (rowCount === 1) {
+                const keys = Object.keys(row);
+                const ptoKeywords = ['ptoactive', 'ptoen', 'pto', 'active', 'running'];
+                const esdKeywords = ['esd', 'emergency', 'stop', 'shutdown', 'trigger'];
+                const tsKeywords = ['timestamp', 'time', 'date'];
+
+                tsKey = keys.find(k => tsKeywords.some(w => cleanHead(k).includes(w))) || keys[0];
+                ptoKey = keys.find(k => ptoKeywords.some(w => cleanHead(k).includes(w)));
+                esdKey = keys.find(k => esdKeywords.some(w => cleanHead(k).includes(w)));
+
+                const isShaftMatch = (c, typeKeywords, num) => {
+                    const clean = cleanHead(c);
+                    return clean.includes('shaft') && typeKeywords.some(tk => clean.includes(tk)) && clean.includes(num);
+                };
+                
+                stbdKwKey = keys.find(k => isShaftMatch(k, ['power', 'kw', 'load'], '1'));
+                stbdRpmKey = keys.find(k => isShaftMatch(k, ['speed', 'rpm'], '1'));
+                portKwKey = keys.find(k => isShaftMatch(k, ['power', 'kw', 'load'], '2'));
+                portRpmKey = keys.find(k => isShaftMatch(k, ['speed', 'rpm'], '2'));
+
+                const isMatch = (c, keysA, keysB) => keysA.some(a => c.includes(a)) && keysB.some(b => c.includes(b));
+                if (!portRpmKey) portRpmKey = keys.find(k => isMatch(cleanHead(k), ['port', 'me1', 'engine1'], ['rpm', 'speed']));
+                if (!portKwKey) portKwKey = keys.find(k => isMatch(cleanHead(k), ['port', 'me1', 'engine1'], ['power', 'kw', 'load']));
+                if (!stbdRpmKey) stbdRpmKey = keys.find(k => isMatch(cleanHead(k), ['stbd', 'starboard', 'me2', 'engine2'], ['rpm', 'speed']));
+                if (!stbdKwKey) stbdKwKey = keys.find(k => isMatch(cleanHead(k), ['stbd', 'starboard', 'me2', 'engine2'], ['power', 'kw', 'load']));
+            }
+
+            const p = processRow(row, rowCount);
+            if (p) {
+                // Include row if: it's a sampling point OR ESD is triggered
+                if (rowCount % SAMPLING_INTERVAL === 0 || rowCount === 1 || p.esdTrigger === 1) {
+                    lastProcessedIndex = rowCount;
+                    results.push(p);
+                }
+            }
+            lastRowObj = row;
+        })
+        .on('end', async () => {
+            // Ensure the very last row is always included in the summary
+            if (lastRowObj && lastProcessedIndex !== rowCount) {
+                const p = processRow(lastRowObj, rowCount);
+                if (p) results.push(p);
+            }
+            try {
+                // Ensure results are sorted
+                results.sort((a, b) => a.timestamp - b.timestamp);
+                
+                const { reportId } = req.body;
+                const filePath = getPtoFilePath(reportId);
+                await fs.promises.writeFile(filePath, JSON.stringify(results));
+                
+                // Cleanup temp file
+                fs.unlinkSync(req.file.path);
+                
+                res.json({ 
+                    success: true, 
+                    count: results.length, 
+                    originalRows: rowCount,
+                    message: `Processed ${rowCount} rows into ${results.length} summary points.` 
+                });
+            } catch (err) {
+                console.error('Error saving PTO summary:', err);
+                res.status(500).json({ error: 'Failed to process CSV' });
+            }
+        })
+        .on('error', (err) => {
+            console.error('CSV Parsing error:', err);
+            res.status(500).json({ error: 'CSV Parsing failed' });
+        });
+});
+
+// PTO Data API: Delete
+app.delete('/api/pto/data', async (req, res) => {
+    const { reportId } = req.query;
+    const filePath = getPtoFilePath(reportId);
+    
+    try {
+        if (fs.existsSync(filePath)) {
+            await fs.promises.unlink(filePath);
+        }
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to delete PTO data' });
+    }
+});
 
 // --- API Routes ---
 
@@ -192,26 +338,51 @@ app.delete('/api/reports/:id', async (req, res) => {
 
 // Delete Reports by Ship
 app.delete('/api/reports', async (req, res) => {
-    try {
-        const { ship } = req.query;
-        if (!ship) {
-            return res.status(400).json({ error: 'Ship name required' });
-        }
-
-        const reportsPath = path.join(__dirname, 'data', 'reports.json');
-        const data = await fs.promises.readFile(reportsPath, 'utf8');
-        let reports = JSON.parse(data);
-
-        const initialLength = reports.length;
-        reports = reports.filter(r => r.items && r.items['R001'] !== ship);
-        const deletedCount = initialLength - reports.length;
-
-        await fs.promises.writeFile(reportsPath, JSON.stringify(reports, null, 2));
-        res.json({ success: true, deletedCount });
-    } catch (err) {
-        console.error('Error deleting reports by ship:', err);
-        res.status(500).json({ error: 'Failed to delete reports' });
+    const { ship } = req.query;
+    if (!ship) {
+        return res.status(400).json({ error: 'Ship name required' });
     }
+
+    const targetShip = ship.trim().toUpperCase();
+    const reportsPath = path.join(__dirname, 'data', 'reports.json');
+
+    const maxRetries = 3;
+    let attempt = 0;
+
+    const performDelete = async () => {
+        try {
+            const data = await fs.promises.readFile(reportsPath, 'utf8');
+            let reports = JSON.parse(data);
+
+            const initialLength = reports.length;
+            reports = reports.filter(r => {
+                const reportShip = r.items?.['R001']?.trim().toUpperCase();
+                return reportShip !== targetShip;
+            });
+            
+            const deletedCount = initialLength - reports.length;
+
+            // Simple retry logic for Windows EBUSY
+            while (attempt < maxRetries) {
+                try {
+                    await fs.promises.writeFile(reportsPath, JSON.stringify(reports, null, 2));
+                    return res.json({ success: true, deletedCount });
+                } catch (writeErr) {
+                    if (writeErr.code === 'EBUSY' && attempt < maxRetries - 1) {
+                        attempt++;
+                        await new Promise(resolve => setTimeout(resolve, 500)); // Wait 500ms
+                        continue;
+                    }
+                    throw writeErr;
+                }
+            }
+        } catch (err) {
+            console.error('Error deleting reports by ship:', err);
+            res.status(500).json({ error: `Failed to delete reports: ${err.message}` });
+        }
+    };
+
+    await performDelete();
 });
 
 // Update Report
